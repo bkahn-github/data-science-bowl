@@ -3,6 +3,6 @@ tensorflow
 keras
 tqdm
 sklearn
-skimage
+scikit-image
 imageio
 kaggle
