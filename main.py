@@ -11,7 +11,7 @@ test_ids = next(os.walk(test_path))[1]
 
 # if __name__ == '__main__':
 
-def main():
+def show():
     print('Loading Data')
 
     x_train, y_train = load_train_data()
