@@ -3,7 +3,7 @@
 ## Installation
 
 ### Install packages
-```pip install -r requirements.txt` or `pip3 install -r requirements.txt```
+```pip install -r data-science-bowl/requirements.txt``` or ```pip3 install -r data-science-bowl/requirements.txt```
 
 ### Create a .kaggle directory
 ```!mkdir ~/.kaggle```
@@ -23,4 +23,10 @@ f.close()
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train.zip -d ~/.kaggle/competitions/data-science-bowl-2018/train
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_test.zip -d ~/.kaggle/competitions/data-science-bowl-2018/test
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train_labels.csv.zip -d ~/.kaggle/competitions/data-science-bowl-2018/labels
+```
+### Change working directory (For jupyter notebooks)
+
+```python 
+import os
+os.chdir('data-science-bowl/')
 ```
