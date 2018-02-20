@@ -1,3 +1,6 @@
+# ////for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
+
+
 import os
 
 import numpy as np
@@ -16,7 +19,6 @@ def load_train_data():
     x_train = np.zeros((len(train_ids), 128, 128, 3))
     y_train = np.zeros((len(train_ids), 128, 128, 1))
 
-    # for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
     for i, index in enumerate(train_ids):
 
         img = imageio.imread(train_path + '/' + index + '/images/' + index + ".png")
