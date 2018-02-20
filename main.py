@@ -9,10 +9,10 @@ from metrics import my_iou_metric, dice_coef_loss
 from process_data import upsample, encode
 from submit import submit
 
-test_path = '.kaggle/competitions/data-science-bowl-2018/test/'
+test_path = '../.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
 
-def test1():
+def test2():
     print('Loading Data')
 
     x_train, y_train = load_train_data()
