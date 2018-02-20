@@ -11,7 +11,7 @@
 ### Create a `kaggle.json` file
 ```python
 f = open(".kaggle/kaggle.json", "w")
-f.write('{"username":"bkkaggle","key":[KEY]"}')
+f.write('{"username":"bkkaggle","key":[KEY]}')
 f.close()
 ```
 
