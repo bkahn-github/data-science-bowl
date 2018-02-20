@@ -1,6 +1,3 @@
-# ////for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
-
-
 import os
 
 import numpy as np
@@ -15,18 +12,11 @@ test_path = '../.kaggle/competitions/data-science-bowl-2018/test/'
 train_ids = next(os.walk(train_path))[1]
 test_ids = next(os.walk(test_path))[1]
 
-def test():
-    print('hello')
-
 def load_train_data():
-    train_path = '../.kaggle/competitions/data-science-bowl-2018/train/'
-    train_ids = next(os.walk(train_path))[1]
-
     x_train = np.zeros((len(train_ids), 128, 128, 3))
     y_train = np.zeros((len(train_ids), 128, 128, 1))
 
-    for i, index in enumerate(train_ids):
-
+    for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
         img = imageio.imread(train_path + '/' + index + '/images/' + index + ".png")
         img = img[:,:,:3]
         img = resize(img, (128, 128, 3), mode='constant')
