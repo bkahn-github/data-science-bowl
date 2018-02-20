@@ -24,3 +24,9 @@ f.close()
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_test.zip -d ~/.kaggle/competitions/data-science-bowl-2018/test
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train_labels.csv.zip -d ~/.kaggle/competitions/data-science-bowl-2018/labels
 ```
+### Change working directory (For jupyter notebooks)
+
+```python 
+import os
+os.chdir('data-science-bowl/')
+```
