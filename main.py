@@ -1,3 +1,6 @@
+import os
+
+import numpy as np
 import pandas as pd
 
 from load_data import load_train_data, load_test_data, load_test_image_sizes
@@ -9,9 +12,7 @@ from submit import submit
 test_path = '.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
 
-# if __name__ == '__main__':
-
-def show():
+def test1():
     print('Loading Data')
 
     x_train, y_train = load_train_data()
