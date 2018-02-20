@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
+from skimage.morphology import label
 
 def iou_metric(y_true_in, y_pred_in, print_table=False):
     labels = label(y_true_in > 0.5)
