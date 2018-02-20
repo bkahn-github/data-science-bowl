@@ -3,7 +3,7 @@
 ## Installation
 
 ### Install packages
-```pip install -r data-science-bowl/requirements.txt``` or ```pip3 install -r requirements.txt```
+```pip install -r data-science-bowl/requirements.txt``` or ```pip3 install -r data-science-bowl/requirements.txt```
 
 ### Create a .kaggle directory
 ```!mkdir ~/.kaggle```
