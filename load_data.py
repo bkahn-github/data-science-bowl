@@ -16,6 +16,9 @@ train_ids = next(os.walk(train_path))[1]
 test_ids = next(os.walk(test_path))[1]
 
 def load_train_data():
+    train_path = '../.kaggle/competitions/data-science-bowl-2018/train/'
+    train_ids = next(os.walk(train_path))[1]
+
     x_train = np.zeros((len(train_ids), 128, 128, 3))
     y_train = np.zeros((len(train_ids), 128, 128, 1))
 
