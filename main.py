@@ -12,7 +12,7 @@ from submit import submit
 test_path = '../.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
 
-def test3():
+def demo():
     print('Loading Data')
 
     x_train, y_train = load_train_data()
