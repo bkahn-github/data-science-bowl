@@ -12,7 +12,7 @@ from submit import submit
 test_path = '../.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
 
-def test2():
+def test3():
     print('Loading Data')
 
     x_train, y_train = load_train_data()
@@ -20,13 +20,13 @@ def test2():
     x_test_sizes = load_test_image_sizes()
 
     print('Making model')
-    model = model()
+    unet = model()
 
-    print('Fitting model')
-    model.fit(x_train, y_train, batch_size=8, validation_split=0.1, epochs=10)
+    print('Fitting unet')
+    unet.fit(x_train, y_train, batch_size=8, validation_split=0.1, epochs=10)
 
     print('Predict')
-    preds = model.predict(x_test, verbose=1)
+    preds = unet.predict(x_test, verbose=1)
     preds = (preds > 0.5).astype(np.uint8)
 
     print('Upsample')
