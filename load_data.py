@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import tqdm
+from tqdm import tqdm
 import imageio
 
 from skimage.transform import resize
