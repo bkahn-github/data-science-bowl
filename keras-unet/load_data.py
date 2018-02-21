@@ -6,7 +6,7 @@ import imageio
 
 from skimage.transform import resize
 
-if os.environ['platform'] == 'surface':
+if os.environ.get('platform') == 'surface':
     train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
     test_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/test/'
 else:    
