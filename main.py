@@ -37,5 +37,3 @@ def demo():
 
     print('Submit')
     submit(rles, ids)
-
-    pd.read_csv('./submission.csv')
