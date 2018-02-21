@@ -16,7 +16,7 @@ f.close()
 ```
 
 ### Download the data 
-`!kaggle competitions download -c data-science-bowl-2018`
+`!kaggle competitions download -c data-science-bowl-2018` or `kaggle competitions download -c data-science-bowl-2018`
 
 ### unzip the data
 ```
@@ -24,6 +24,14 @@ f.close()
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_test.zip -d ~/.kaggle/competitions/data-science-bowl-2018/test
 !unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train_labels.csv.zip -d ~/.kaggle/competitions/data-science-bowl-2018/labels
 ```
+
+Or 
+```
+unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train.zip -d ~/.kaggle/competitions/data-science-bowl-2018/train
+unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_test.zip -d ~/.kaggle/competitions/data-science-bowl-2018/test
+unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train_labels.csv.zip -d ~/.kaggle/competitions/data-science-bowl-2018/labels
+```
+
 ### Change working directory (For jupyter notebooks)
 
 ```python 
