@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from metrics import iou
 
-def show_val(ix, model):
+def show_val(ix, model, iou, val_dataset):
   input = Variable(val_dataset[ix][0]).cuda()
   model = model.eval()
   out = model(input.unsqueeze(0))
@@ -24,7 +24,7 @@ def show_val(ix, model):
 
   print(iou)
 
-def show_test(ix, model):
+def show_test(ix, model, test_dataset):
   input = Variable(test_dataset[ix]).cuda()
   model = model.eval()
   out = model(input.unsqueeze(0))
