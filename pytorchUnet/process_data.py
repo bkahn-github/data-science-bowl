@@ -4,6 +4,9 @@ from tqdm import tqdm
 import torch
 from torch.autograd import Variable
 
+from skimage.transform import resize
+from skimage.morphology import label
+
 def predict(model, test_dataset, test_dataloader, optimizer):
     preds = np.zeros((len(test_dataset), 128, 128))
 
