@@ -2,7 +2,7 @@ import numpy as np
 from tqdm import tqdm
 
 import torch
-import torch.autograd.Variable as Variable
+from torch.autograd import Variable
 
 def predict(model, test_dataset, test_dataloader, optimizer):
     preds = np.zeros((len(test_dataset), 128, 128))

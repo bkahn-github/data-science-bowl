@@ -1,5 +1,5 @@
 import torch
-import torch.autograd.Variable as Variable
+from torch.autograd import Variable
 
 import matplotlib.pyplot as plt
 
