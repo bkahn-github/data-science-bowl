@@ -8,7 +8,7 @@ from load_data import TrainDataset, TestDataset, load_data
 from model import UNet
 from metrics import dice_loss, iou
 
-def train(model, data_loader, loss, metric  epochs=10):
+def train(model, data_loader, loss, metric, epochs=10):
     model = model
     optimizer = torch.optim.Adam(model.parameters(), lr = 1e-4)
 
