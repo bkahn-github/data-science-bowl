@@ -1,10 +1,11 @@
 import os
 import imageio
 import torch
-
 from tqdm import tqdm
 import numpy as np
 import torchvision.transforms as transforms
+
+from sklearn.model_selection import train_test_split
 
 if os.environ.get('platform') == 'surface':
     train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
@@ -53,6 +54,17 @@ def load_test_data():
 
   return items
 
+def load_test_image_sizes():
+    x_test_sizes = []
+
+    for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
+        img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
+        x = img.shape[0]
+        y = img.shape[1]
+        
+        x_test_sizes.append([x, y])
+
+    return x_test_sizes
 class TrainDataset():
   def __init__(self, data, x_transform, y_transform):
     self.data = data
@@ -101,3 +113,20 @@ y_transform = transforms.Compose([
     transforms.Resize((128,128),interpolation=PIL.Image.NEAREST),
     transforms.ToTensor()
 ])
+
+def load_data(train_val_split=0.2):
+  train = load_train_data()
+  test = load_test_data()
+  x_test_sizes = load_test_image_sizes()
+
+  train, val = train_test_split(train, test_size=train_val_split)
+
+  train_dataset = TrainDataset(train, x_transform, y_transform) 
+  val_dataset = TrainDataset(val, x_transform, y_transform)
+  test_dataset = TestDataset(test, x_transform)
+
+  train_dataloader = torch.utils.data.DataLoader(train_dataset, num_workers=2, batch_size=4)
+  val_dataloader = torch.utils.data.DataLoader(val_dataset, num_workers=2, batch_size=4)
+  test_dataloader = torch.utils.data.DataLoader(test_dataset, num_workers=2)
+
+  return train, val, x_test_sizes, train_dataset, val_dataset, test_dataset, train_dataloader, val_dataloader, test_dataloader
