@@ -4,7 +4,7 @@ from tqdm import tqdm
 import torch
 import torch.autograd.Variable as Variable
 
-def predict(model, test_dataset, test_dataloader, optimizer)
+def predict(model, test_dataset, test_dataloader, optimizer):
     preds = np.zeros((len(test_dataset), 128, 128))
 
     for i, x in tqdm(enumerate(test_dataloader)):
