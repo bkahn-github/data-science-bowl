@@ -18,7 +18,7 @@ else:
 train_ids = next(os.walk(train_path))[1]
 test_ids = next(os.walk(test_path))[1]
 
-def load_train_data():
+def load_train_data(train_ids=train_ids, train_path=train_path):
   items = []
   
   for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
@@ -41,7 +41,7 @@ def load_train_data():
    
   return items
 
-def load_test_data():
+def load_test_data(test_ids=test_ids, test_path=test_path):
   items = []    
   for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
     item = {}
@@ -55,7 +55,7 @@ def load_test_data():
 
   return items
 
-def load_test_image_sizes():
+def load_test_image_sizes(test_ids=test_ids, test_path=test_path):
     x_test_sizes = []
 
     for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
@@ -66,6 +66,7 @@ def load_test_image_sizes():
         x_test_sizes.append([x, y])
 
     return x_test_sizes
+
 class TrainDataset():
   def __init__(self, data, x_transform, y_transform):
     self.data = data
