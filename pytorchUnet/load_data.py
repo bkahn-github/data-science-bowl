@@ -120,7 +120,7 @@ def load_data(train_val_split=0.2):
   test = load_test_data()
   x_test_sizes = load_test_image_sizes()
 
-  train, val = train_test_split(train, test_size=train_val_split)
+  train, val = train_test_split(train, test_size=train_val_split, random_state=0)
 
   train_dataset = TrainDataset(train, x_transform, y_transform) 
   val_dataset = TrainDataset(val, x_transform, y_transform)
