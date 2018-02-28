@@ -116,7 +116,7 @@ y_transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-def load_data(train_val_split=0.2):
+def load_data(train_val_split=0.2, batch_size=4):
   train = load_train_data()
   test = load_test_data()
   x_test_sizes = load_test_image_sizes()
@@ -127,8 +127,8 @@ def load_data(train_val_split=0.2):
   val_dataset = TrainDataset(val, x_transform, y_transform)
   test_dataset = TestDataset(test, x_transform)
 
-  train_dataloader = torch.utils.data.DataLoader(train_dataset, num_workers=2, batch_size=4)
-  val_dataloader = torch.utils.data.DataLoader(val_dataset, num_workers=2, batch_size=4)
-  test_dataloader = torch.utils.data.DataLoader(test_dataset, num_workers=2)
+  train_dataloader = torch.utils.data.DataLoader(train_dataset, num_workers=2, batch_size=batch_size)
+  val_dataloader = torch.utils.data.DataLoader(val_dataset, num_workers=2, batch_size=batch_size)
+  test_dataloader = torch.utils.data.DataLoader(test_dataset, num_workers=batch_size)
 
   return train, val, x_test_sizes, train_dataset, val_dataset, test_dataset, train_dataloader, val_dataloader, test_dataloader
