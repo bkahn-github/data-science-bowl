@@ -1,7 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, Lambda, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate, Dropout
 
-from metrics import my_iou_metric
+from metrics import keras_iou
 
 def model():
     input_conv = Input((128, 128, 3))
@@ -53,7 +53,7 @@ def model():
     outputs = Conv2D(1, (1, 1), activation='sigmoid') (conv_21)
 
     model = Model(inputs=input_conv, outputs=outputs)
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[my_iou_metric])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[keras_iou])
     model.summary()
 
     return model
