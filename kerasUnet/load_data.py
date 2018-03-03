@@ -24,14 +24,14 @@ def load_train_data(train_ids=train_ids, train_path=train_path):
   for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
     img = imageio.imread(train_path + '/' + index + '/images/' + index + ".png")
     img = img[:,:,:3]
-    img = resize(img, (128, 128, 3), mode='constant')
+    img = resize(img, (128, 128, 3), mode='constant', preserve_range=True)
 
     masks = np.zeros((128, 128, 1))
     mask_files = next(os.walk(train_path + index + '/masks/'))[2]
 
     for mask in mask_files:
       mask = imageio.imread(train_path + '/' + index + '/masks/' + mask)
-      mask = resize(mask, (128, 128, 1), mode='constant')
+      mask = resize(mask, (128, 128, 1), mode='constant', preserve_range=True)
       masks = np.maximum(masks, mask)
         
     x_train[i] = img
@@ -47,7 +47,7 @@ def load_test_data(test_ids=test_ids, test_path=test_path):
     
     img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
     img = img[:,:,:3]
-    img = resize(img, (128, 128, 3))
+    img = resize(img, (128, 128, 3), preserve_range=True)
     
     x_test[i] = img
 
