@@ -1,7 +1,7 @@
 from keras.models import Model
 from keras.layers import Input, Lambda, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate, Dropout
 
-from metrics import my_iou_metric
+from metrics import iou
 
 def model():
     input_conv = Input((128, 128, 3))
