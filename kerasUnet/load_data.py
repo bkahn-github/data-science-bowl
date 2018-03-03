@@ -7,6 +7,8 @@ from skimage.transform import resize
 
 from sklearn.model_selection import train_test_split
 
+from keras.preprocessing.image import ImageDataGenerator
+
 if os.environ.get('platform') == 'surface':
     train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
     test_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/test/'
@@ -73,3 +75,16 @@ def load_data(train_val_split=0.2, batch_size=4):
   x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=train_val_split, random_state=0)
 
   return x_train, y_train, x_val, y_val
+
+def get_train_augmented(x_train, y_train, batch_size, seed):
+  data_gen_args = dict(rotation_range=45., width_shift_range=0.1, height_shift_range=0.1, shear_range=0.2, zoom_range=0.2, horizontal_flip=True, vertical_flip=True, fill_mode='reflect')
+
+  x_datagen = ImageDataGenerator(**data_gen_args)
+  y_datagen = ImageDataGenerator(**data_gen_args)
+  x_datagen.fit(x_train, augment=True, seed=seed)
+  y_datagen.fit(y_train, augment=True, seed=seed)
+  x_train_augmented = x_datagen.flow(x_train, batch_size=batch_size, shuffle=True, seed=seed)
+  y_train_augmented = y_datagen.flow(y_train, batch_size=batch_size, shuffle=True, seed=seed)
+
+  train_generator = zip(x_train_augmented, y_train_augmented)
+  return train_generator
