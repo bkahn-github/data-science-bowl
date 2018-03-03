@@ -31,9 +31,8 @@ def load_train_data(train_ids=train_ids, train_path=train_path):
 
     for mask in mask_files:
         mask = imageio.imread(train_path + '/' + index + '/masks/' + mask)
+        mask = resize(mask, (128, 128, 1))
         masks = np.maximum(masks, mask)
-    
-    masks = resize(masks, (128, 128, 1))
     
     x_train[i] = img
     y_train[i] = masks
