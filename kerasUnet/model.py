@@ -53,7 +53,7 @@ def model():
     outputs = Conv2D(1, (1, 1), activation='sigmoid') (conv_21)
 
     model = Model(inputs=input_conv, outputs=outputs)
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[my_iou_metric])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[iou])
     model.summary()
 
     return model
