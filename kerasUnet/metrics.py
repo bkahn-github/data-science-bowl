@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import keras.backend as K
 
 def dice_loss(inputs, targets):
     num = targets.size(0)
