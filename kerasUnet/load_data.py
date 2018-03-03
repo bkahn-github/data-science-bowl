@@ -1,10 +1,9 @@
 import os
 import imageio
 import PIL
-import torch
 from tqdm import tqdm
 import numpy as np
-import torchvision.transforms as transforms
+from skimage.transform import resize
 
 from sklearn.model_selection import train_test_split
 
@@ -25,14 +24,17 @@ def load_train_data(train_ids=train_ids, train_path=train_path):
   for i, index in tqdm(list(enumerate(train_ids)), total=len(train_ids)):
     img = imageio.imread(train_path + '/' + index + '/images/' + index + ".png")
     img = img[:,:,:3]
+    img = resize(img, (128, 128, 3))
 
     masks = np.zeros((img.shape[0], img.shape[1]))
     mask_files = next(os.walk(train_path + index + '/masks/'))[2]
 
     for mask in mask_files:
-      mask = imageio.imread(train_path + '/' + index + '/masks/' + mask)
-      masks = np.maximum(masks, mask)
-        
+        mask = imageio.imread(train_path + '/' + index + '/masks/' + mask)
+        masks = np.maximum(masks, mask)
+    
+    masks = resize(masks, (128, 128, 1))
+    
     x_train[i] = img
     y_train[i] = masks
 
