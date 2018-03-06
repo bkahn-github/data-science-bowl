@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from tqdm import tqdm
 
@@ -8,6 +10,16 @@ import skimage
 import skimage.io
 import skimage.morphology
 from skimage.transform import resize
+
+if os.environ.get('platform') == 'surface':
+    train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
+    test_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/test/'
+else:    
+    train_path = '../../.kaggle/competitions/data-science-bowl-2018/train/'
+    test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
+
+train_ids = next(os.walk(train_path))[1]
+test_ids = next(os.walk(test_path))[1]
 
 def predict(model, test_dataset, test_dataloader, optimizer):
     preds = np.zeros((len(test_dataset), 128, 128))
