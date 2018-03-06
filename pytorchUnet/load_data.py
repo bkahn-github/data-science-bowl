@@ -38,8 +38,8 @@ def load_train_data(train_ids=train_ids, train_path=train_path):
       mask = np.expand_dims(resize(mask, (128, 128), mode='constant', preserve_range=True), axis=-1)
       masks = np.maximum(masks, mask)
         
-    item['img'] = torch.from_numpy(img)
-    item['mask'] = torch.from_numpy(masks)
+    item['img'] = img.astype(np.uint8)
+    item['mask'] = masks.astype(np.uint8)
 
     items.append(item)
 
