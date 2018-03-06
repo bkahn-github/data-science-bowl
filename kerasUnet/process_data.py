@@ -1,14 +1,14 @@
+import os
+
 import numpy as np
+from tqdm import tqdm
 
-from skimage.transform import resize
-from skimage.morphology import label
+import skimage
+import skimage.io
+import skimage.morphology
 
-def upsample(x, sizes):
-    upsampled = []
-    for i in range(len(x)):
-        upsampled.append(resize(np.squeeze(x[i]), sizes[i], mode='constant', preserve_range=True))
-    
-    return upsampled
+test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
+test_ids = next(os.walk(test_path))[1]
 
 def rle_encoding(x):
     dots = np.where(x.T.flatten() == 1)[0]
@@ -21,15 +21,24 @@ def rle_encoding(x):
     return run_lengths
 
 def prob_to_rles(x, cutoff=0.5):
-    lab_img = label(x > cutoff)
+    lab_img = skimage.morphology.label(x > cutoff)
     for i in range(1, lab_img.max() + 1):
         yield rle_encoding(lab_img == i)
 
-def encode(preds, ids):
+def upsample(preds, test_path=test_path, test_ids=test_ids):
+    preds_test_upsampled = []
+    for i, test_id in enumerate(test_ids):
+        img = skimage.io.imread('{0}/{1}/images/{1}.png'.format(test_path, test_id))
+        img_upscaled = skimage.transform.resize(preds[i], (img.shape[0], img.shape[1]), mode='constant', preserve_range=True)
+        preds_test_upsampled.append(img_upscaled)
+
+    return preds_test_upsampled
+
+def encode(preds_test_upsampled, test_ids):
     new_test_ids = []
     rles = []
-    for n, id_ in enumerate(ids):
-        rle = list(prob_to_rles(preds[n]))
+    for n, id_ in enumerate(test_ids):
+        rle = list(prob_to_rles(preds_test_upsampled[n]))
         rles.extend(rle)
         new_test_ids.extend([id_] * len(rle))
 

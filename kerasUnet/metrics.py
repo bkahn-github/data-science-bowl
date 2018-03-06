@@ -2,22 +2,48 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from skimage.morphology import label
+def dice_loss(inputs, targets):
+    num = targets.size(0)
+    m1  = inputs.view(num,-1)
+    m2  = targets.view(num,-1)
+    intersection = (m1 * m2)
+    score = 2. * (intersection.sum(1)+1) / (m1.sum(1) + m2.sum(1)+1)
+    score = 1 - score.sum()/num
+    return score
 
-def iou_metric(y_true_in, y_pred_in, print_table=False):
-    labels = label(y_true_in > 0.5)
-    y_pred = label(y_pred_in > 0.5)
-    
-    true_objects = len(np.unique(labels))
-    pred_objects = len(np.unique(y_pred))
+def keras_iou(y_true, y_pred):
+    prec = []
+    for t in np.arange(0.5, 1.0, 0.05):
+        y_pred_ = tf.to_int32(y_pred > t)
+        score, up_opt = tf.metrics.mean_iou(y_true, y_pred_, 2)
+        K.get_session().run(tf.local_variables_initializer())
+        with tf.control_dependencies([up_opt]):
+            score = tf.identity(score)
+        prec.append(score)
+    return K.mean(K.stack(prec), axis=0)
 
-    intersection = np.histogram2d(labels.flatten(), y_pred.flatten(), bins=(true_objects, pred_objects))[0]
+def iou(predict, label):
+
+    # Precision helper function
+    def compute_precision(threshold, iou):
+        matches = iou > threshold
+        true_positives  = np.sum(matches, axis=1) == 1  # Correct objects
+        false_positives = np.sum(matches, axis=0) == 0  # Missed objects
+        false_negatives = np.sum(matches, axis=1) == 0  # Extra objects
+        tp, fp, fn = np.sum(true_positives), np.sum(false_positives), np.sum(false_negatives)
+        return tp, fp, fn
+
+    num_label   = len(np.unique(label  ))
+    num_predict = len(np.unique(predict))
+
+    # Compute intersection between all objects
+    intersection = np.histogram2d(label.flatten(), predict.flatten(), bins=(num_label, num_predict))[0]
 
     # Compute areas (needed for finding the union between all objects)
-    area_true = np.histogram(labels, bins = true_objects)[0]
-    area_pred = np.histogram(y_pred, bins = pred_objects)[0]
+    area_true = np.histogram(label,   bins = num_label  )[0]
+    area_pred = np.histogram(predict, bins = num_predict)[0]
     area_true = np.expand_dims(area_true, -1)
-    area_pred = np.expand_dims(area_pred, 0)
+    area_pred = np.expand_dims(area_pred,  0)
 
     # Compute union
     union = area_true + area_pred - intersection
@@ -30,50 +56,13 @@ def iou_metric(y_true_in, y_pred_in, print_table=False):
     # Compute the intersection over union
     iou = intersection / union
 
-    # Precision helper function
-    def precision_at(threshold, iou):
-        matches = iou > threshold
-        true_positives = np.sum(matches, axis=1) == 1   # Correct objects
-        false_positives = np.sum(matches, axis=0) == 0  # Missed objects
-        false_negatives = np.sum(matches, axis=1) == 0  # Extra objects
-        tp, fp, fn = np.sum(true_positives), np.sum(false_positives), np.sum(false_negatives)
-        return tp, fp, fn
-
-    # Loop over IoU thresholds
-    prec = []
-    if print_table:
-        print("Thresh\tTP\tFP\tFN\tPrec.")
+    precision = []
+    average_precision = 0
     for t in np.arange(0.5, 1.0, 0.05):
-        tp, fp, fn = precision_at(t, iou)
-        if (tp + fp + fn) > 0:
-            p = tp / (tp + fp + fn)
-        else:
-            p = 0
-        if print_table:
-            print("{:1.3f}\t{}\t{}\t{}\t{:1.3f}".format(t, tp, fp, fn, p))
-        prec.append(p)
-    
-    if print_table:
-        print("AP\t-\t-\t-\t{:1.3f}".format(np.mean(prec)))
-    return np.mean(prec)
+        tp, fp, fn = compute_precision(t, iou)
+        p = tp / (tp + fp + fn)
+        precision.append((t, p, tp, fp, fn))
+        average_precision += p
 
-def iou_metric_batch(y_true_in, y_pred_in):
-    batch_size = y_true_in.shape[0]
-    metric = []
-    for batch in range(batch_size):
-        value = iou_metric(y_true_in[batch], y_pred_in[batch])
-        metric.append(value)
-    return np.array(np.mean(metric), dtype=np.float32)
-
-def my_iou_metric(label, pred):
-    metric_value = tf.py_func(iou_metric_batch, [label, pred], tf.float32)
-    return metric_value
-
-def dice_coef(y_true, y_pred):
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    intersection = K.sum(y_true_f * y_pred_f)
-    return (2. * intersection + 1.) / (K.sum(y_true_f) + K.sum(y_pred_f) + 1.)
-
-def dice_coef_loss(y_true, y_pred):
-    return -dice_coef(y_true, y_pred)
+    average_precision /= len(precision)
+    return average_precision, precision
