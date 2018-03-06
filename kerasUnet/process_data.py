@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 import skimage
 import skimage.io
+import skimage.morphology
 
 test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
