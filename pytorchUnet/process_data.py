@@ -49,7 +49,7 @@ def encode(preds_test_upsampled, test_ids):
     new_test_ids = []
     rles = []
     for n, id_ in enumerate(test_ids):
-    rle = list(prob_to_rles(preds_test_upsampled[n]))
+        rle = list(prob_to_rles(preds_test_upsampled[n]))
         rles.extend(rle)
         new_test_ids.extend([id_] * len(rle))
 
