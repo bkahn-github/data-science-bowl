@@ -4,8 +4,6 @@ import numpy as np
 from tqdm import tqdm
 
 import skimage
-from skimage.transform import resize
-from skimage.morphology import label
 
 test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
 test_ids = next(os.walk(test_path))[1]
@@ -21,7 +19,7 @@ def rle_encoding(x):
     return run_lengths
 
 def prob_to_rles(x, cutoff=0.5):
-    lab_img = label(x > cutoff)
+    lab_img = skimage.morphology.label(x > cutoff)
     for i in range(1, lab_img.max() + 1):
         yield rle_encoding(lab_img == i)
 
