@@ -85,8 +85,8 @@ class TrainDataset():
   def __getitem__(self, index):
     data = self.data[index]
 
-    img = data['img'].numpy()
-    mask = data['mask'][:,:,None].byte().numpy()
+    img = data['img'].squeeze(0)
+    mask = data['mask'].squeeze(0)
     
     img = self.x_transform(img)
     mask = self.y_transform(mask)
@@ -104,7 +104,7 @@ class TestDataset():
   def __getitem__(self, index):
     data = self.data[index]
 
-    img = data['img'].numpy()
+    img = data['img'].squeeze(0)
     img = self.x_transform(img)
     
     return img
