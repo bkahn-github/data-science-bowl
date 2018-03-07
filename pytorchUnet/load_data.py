@@ -8,14 +8,12 @@ import torchvision.transforms as transforms
 
 from sklearn.model_selection import train_test_split
 
-from skimage.transform import resize
-
 if os.environ.get('platform') == 'surface':
-  train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
-  test_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/test/'
+    train_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/train/'
+    test_path = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/test/'
 else:    
-  train_path = '../../.kaggle/competitions/data-science-bowl-2018/train/'
-  test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
+    train_path = '../../.kaggle/competitions/data-science-bowl-2018/train/'
+    test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'
 
 train_ids = next(os.walk(train_path))[1]
 test_ids = next(os.walk(test_path))[1]
@@ -28,53 +26,46 @@ def load_train_data(train_ids=train_ids, train_path=train_path):
 
     img = imageio.imread(train_path + '/' + index + '/images/' + index + ".png")
     img = img[:,:,:3]
-    img = resize(img, (128, 128), mode='constant', preserve_range=True)
 
-    masks = np.zeros((128, 128, 1), dtype=np.bool)
+    masks = np.zeros((img.shape[0], img.shape[1]))
     mask_files = next(os.walk(train_path + index + '/masks/'))[2]
 
     for mask in mask_files:
       mask = imageio.imread(train_path + '/' + index + '/masks/' + mask)
-      mask = np.expand_dims(resize(mask, (128, 128), mode='constant', preserve_range=True), axis=-1)
       masks = np.maximum(masks, mask)
         
-    img = img.astype(np.uint8)
-    masks = masks.astype(np.uint8)
+    item['img'] = torch.from_numpy(img)
+    item['mask'] = torch.from_numpy(masks)
+    
+    items.append(item)
+   
+  return items
 
-    item['img'] = torch.from_numpy(img.reshape(3, 128, 128)).unsqueeze(0).float()
-    item['mask'] = torch.from_numpy(masks.reshape(1, 128, 128)).unsqueeze(0).float()
+def load_test_data(test_ids=test_ids, test_path=test_path):
+  items = []    
+  for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
+    item = {}
+    
+    img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
+    img = img[:,:,:3]
+    
+    item['img'] = torch.from_numpy(img)
     
     items.append(item)
 
   return items
 
-def load_test_data(test_ids=test_ids, test_path=test_path):
-  items = []    
-  
-  for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
-    item = {}
-
-    img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
-    img = img[:,:,:3]
-    img = resize(img, (128, 128, 3), mode='constant')
-    
-    item['img'] = torch.from_numpy(img)
-
-  items.append(item)
-
-  return items
-
 def load_test_image_sizes(test_ids=test_ids, test_path=test_path):
-  x_test_sizes = []
+    x_test_sizes = []
 
-  for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
-    img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
-    x = img.shape[0]
-    y = img.shape[1]
-    
-    x_test_sizes.append([x, y])
+    for i, index in tqdm(enumerate(test_ids), total=len(test_ids)):
+        img = imageio.imread(test_path + '/' + index + '/images/' + index + ".png")
+        x = img.shape[0]
+        y = img.shape[1]
+        
+        x_test_sizes.append([x, y])
 
-  return x_test_sizes
+    return x_test_sizes
 
 class TrainDataset():
   def __init__(self, data, x_transform, y_transform):
@@ -85,8 +76,8 @@ class TrainDataset():
   def __getitem__(self, index):
     data = self.data[index]
 
-    img = data['img'].squeeze(0)
-    mask = data['mask'].squeeze(0)
+    img = data['img'].numpy()
+    mask = data['mask'][:,:,None].byte().numpy()
     
     img = self.x_transform(img)
     mask = self.y_transform(mask)
@@ -104,7 +95,7 @@ class TestDataset():
   def __getitem__(self, index):
     data = self.data[index]
 
-    img = data['img'].squeeze(0)
+    img = data['img'].numpy()
     img = self.x_transform(img)
     
     return img
@@ -113,16 +104,16 @@ class TestDataset():
     return(len(self.data))
   
 x_transform = transforms.Compose([
-  transforms.ToPILImage(),
-  transforms.Resize((128,128)),
-  transforms.ToTensor(),
-  transforms.Normalize(mean=[0.5,0.5,0.5] ,std=[0.5,0.5,0.5])
+    transforms.ToPILImage(),
+    transforms.Resize((128,128)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5,0.5,0.5] ,std=[0.5,0.5,0.5])
 ])
 
 y_transform = transforms.Compose([
-  transforms.ToPILImage(),
-  transforms.Resize((128,128),interpolation=PIL.Image.NEAREST),
-  transforms.ToTensor()
+    transforms.ToPILImage(),
+    transforms.Resize((128,128),interpolation=PIL.Image.NEAREST),
+    transforms.ToTensor()
 ])
 
 def load_data(train_val_split=0.2, batch_size=4):
