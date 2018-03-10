@@ -97,4 +97,4 @@ def load_data(train_val_split=0.2, batch_size=4, seed=seed):
 
   train_datagen = zip(x_train_augmented, y_train_augmented)
 
-  return x_train, y_train, x_val, y_val
+  return x_train, y_train, x_val, y_val, train_datagen
