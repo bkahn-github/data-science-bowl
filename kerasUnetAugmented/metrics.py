@@ -2,6 +2,8 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
+import skimage
+
 def dice_loss(inputs, targets):
     num = targets.size(0)
     m1  = inputs.view(num,-1)
@@ -66,3 +68,19 @@ def iou(predict, label):
 
     average_precision /= len(precision)
     return average_precision, precision
+
+def iou_metric(x_train, y_train, x_val, y_val, unet):
+    train_preds = unet.predict(x_train)
+    val_preds = unet.predict(x_val)
+    
+    train_ious = []
+    for i in range(0, train_preds.shape[0]):
+        temp = iou(skimage.morphology.label(train_preds[i] > 0.5), skimage.morphology.label(y_train[i]))[0]
+        train_ious.append(temp)
+
+    val_ious = []
+    for i in range(0, val_preds.shape[0]):
+        temp = iou(skimage.morphology.label(val_preds[i] > 0.5), skimage.morphology.label(y_val[i]))[0]
+        val_ious.append(temp)
+
+    return np.asarray(train_ious).mean(), np.asarray(val_ious).mean()
