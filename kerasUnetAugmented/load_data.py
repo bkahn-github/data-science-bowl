@@ -80,14 +80,24 @@ def load_data(train_val_split=0.2, batch_size=4, seed=seed):
   x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=train_val_split, random_state=0)
 
   x_datagen = ImageDataGenerator(
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.2)
+    rotation_range=45.,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True,
+    fill_mode='reflect')
 
   y_datagen = ImageDataGenerator(
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.2)
+    rotation_range=45.,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True,
+    fill_mode='reflect')
 
   x_datagen.fit(x_train, augment=True, seed=seed)
   y_datagen.fit(y_train, augment=True, seed=seed)
