@@ -81,23 +81,13 @@ def load_data(train_val_split=0.2, batch_size=4, seed=seed):
 
   x_datagen = ImageDataGenerator(
     rotation_range=45.,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    shear_range=0.2,
-    zoom_range=0.2,
     horizontal_flip=True,
-    vertical_flip=True,
-    fill_mode='reflect')
+    vertical_flip=True)
 
   y_datagen = ImageDataGenerator(
     rotation_range=45.,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    shear_range=0.2,
-    zoom_range=0.2,
     horizontal_flip=True,
-    vertical_flip=True,
-    fill_mode='reflect')
+    vertical_flip=True)
 
   x_datagen.fit(x_train, augment=True, seed=seed)
   y_datagen.fit(y_train, augment=True, seed=seed)
