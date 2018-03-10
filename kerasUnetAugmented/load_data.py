@@ -80,12 +80,12 @@ def load_data(train_val_split=0.2, batch_size=4, seed=seed):
   x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=train_val_split, random_state=0)
 
   x_datagen = ImageDataGenerator(
-    rotation_range=45.,
+    rotation_range=20,
     horizontal_flip=True,
     vertical_flip=True)
 
   y_datagen = ImageDataGenerator(
-    rotation_range=45.,
+    rotation_range=20,
     horizontal_flip=True,
     vertical_flip=True)
 
