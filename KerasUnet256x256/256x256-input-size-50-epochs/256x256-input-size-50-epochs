@@ -1,0 +1,839 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "keras-unet",
+      "version": "0.3.2",
+      "views": {},
+      "default_view": {},
+      "provenance": [],
+      "collapsed_sections": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "metadata": {
+        "id": "B7BwO8YbAB3z",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "!rm -rf *\n",
+        "!rm -rf .kaggle/\n",
+        "!git clone https://github.com/bkahn-github/data-science-bowl.git\n",
+        "!pip install -r data-science-bowl/requirements.txt\n",
+        "!pip3 install http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp36-cp36m-linux_x86_64.whl \n",
+        "!pip3 install torchvision\n",
+        "!pip3 install Pillow\n",
+        "!mkdir ~/.kaggle\n",
+        "f = open(\".kaggle/kaggle.json\", \"w\")\n",
+        "f.write('{\"username\":\"bkkaggle\",\"key\":\"bf4e62680116284087ace0484990f87a\"}')\n",
+        "f.close()\n",
+        "!kaggle competitions download -c data-science-bowl-2018\n",
+        "!unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train.zip -d ~/.kaggle/competitions/data-science-bowl-2018/train\n",
+        "!unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_test.zip -d ~/.kaggle/competitions/data-science-bowl-2018/test\n",
+        "!unzip ~/.kaggle/competitions/data-science-bowl-2018/stage1_train_labels.csv.zip -d ~/.kaggle/competitions/data-science-bowl-2018/labels\n",
+        "os.chdir('data-science-bowl')\n",
+        "!git checkout keras-unet-256x256\n",
+        "os.chdir('KerasUnet256x256/')"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "ZsFLD05DAqVD",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "outputId": "c3956a20-2c1f-4853-b745-bbe346c33a4a",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520795481171,
+          "user_tz": 300,
+          "elapsed": 10875,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "import sys\n",
+        "import random\n",
+        "import warnings\n",
+        "\n",
+        "import PIL\n",
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "\n",
+        "from keras.preprocessing.image import ImageDataGenerator\n",
+        "\n",
+        "import skimage\n",
+        "from skimage.transform import resize\n",
+        "\n",
+        "import imageio\n",
+        "import matplotlib.pyplot as plt\n",
+        "from tqdm import tqdm, tqdm_notebook\n",
+        "\n",
+        "from load_data import load_data, load_test_data, load_test_image_sizes\n",
+        "from metrics import dice_loss, iou, iou_metric\n",
+        "from model import model\n",
+        "from process_data import encode, upsample\n",
+        "from submit import submit\n",
+        "\n",
+        "%matplotlib inline\n",
+        "\n",
+        "warnings.filterwarnings('ignore', category=UserWarning, module='skimage')\n",
+        "seed = 42\n",
+        "random.seed = seed\n",
+        "np.random.seed(seed=seed)"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Using TensorFlow backend.\n"
+          ],
+          "name": "stderr"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "xbxPFwprArVV",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 104
+        },
+        "outputId": "93819220-5959-455e-8306-ce74925a9bf3",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520795669613,
+          "user_tz": 300,
+          "elapsed": 187417,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "x_train, y_train, x_val, y_val, train_datagen = load_data(train_val_split=0.1, batch_size=4)\n",
+        "x_test = load_test_data()\n",
+        "x_test_sizes = load_test_image_sizes()"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "100%|██████████| 670/670 [02:51<00:00,  3.91it/s]\n",
+            "100%|██████████| 65/65 [00:01<00:00, 48.52it/s]\n",
+            "100%|██████████| 65/65 [00:00<00:00, 146.31it/s]\n",
+            "100%|██████████| 65/65 [00:01<00:00, 48.25it/s]\n",
+            "100%|██████████| 65/65 [00:00<00:00, 147.34it/s]\n"
+          ],
+          "name": "stderr"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "PPauacPHAzmv",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 1993
+        },
+        "outputId": "fa231795-bceb-4408-e543-de63dedac082",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520795670687,
+          "user_tz": 300,
+          "elapsed": 1017,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "unet = model()"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "__________________________________________________________________________________________________\n",
+            "Layer (type)                    Output Shape         Param #     Connected to                     \n",
+            "==================================================================================================\n",
+            "input_1 (InputLayer)            (None, 256, 256, 3)  0                                            \n",
+            "__________________________________________________________________________________________________\n",
+            "lambda_1 (Lambda)               (None, 256, 256, 3)  0           input_1[0][0]                    \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_1 (Conv2D)               (None, 256, 256, 16) 448         lambda_1[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_1 (Dropout)             (None, 256, 256, 16) 0           conv2d_1[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_2 (Conv2D)               (None, 256, 256, 16) 2320        dropout_1[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "max_pooling2d_1 (MaxPooling2D)  (None, 128, 128, 16) 0           conv2d_2[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_3 (Conv2D)               (None, 128, 128, 32) 4640        max_pooling2d_1[0][0]            \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_2 (Dropout)             (None, 128, 128, 32) 0           conv2d_3[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_4 (Conv2D)               (None, 128, 128, 32) 9248        dropout_2[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "max_pooling2d_2 (MaxPooling2D)  (None, 64, 64, 32)   0           conv2d_4[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_5 (Conv2D)               (None, 64, 64, 64)   18496       max_pooling2d_2[0][0]            \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_3 (Dropout)             (None, 64, 64, 64)   0           conv2d_5[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_6 (Conv2D)               (None, 64, 64, 64)   36928       dropout_3[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "max_pooling2d_3 (MaxPooling2D)  (None, 32, 32, 64)   0           conv2d_6[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_7 (Conv2D)               (None, 32, 32, 128)  73856       max_pooling2d_3[0][0]            \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_4 (Dropout)             (None, 32, 32, 128)  0           conv2d_7[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_8 (Conv2D)               (None, 32, 32, 128)  147584      dropout_4[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "max_pooling2d_4 (MaxPooling2D)  (None, 16, 16, 128)  0           conv2d_8[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_9 (Conv2D)               (None, 16, 16, 256)  295168      max_pooling2d_4[0][0]            \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_5 (Dropout)             (None, 16, 16, 256)  0           conv2d_9[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_10 (Conv2D)              (None, 16, 16, 256)  590080      dropout_5[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "max_pooling2d_5 (MaxPooling2D)  (None, 8, 8, 256)    0           conv2d_10[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_11 (Conv2D)              (None, 8, 8, 512)    1180160     max_pooling2d_5[0][0]            \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_6 (Dropout)             (None, 8, 8, 512)    0           conv2d_11[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_12 (Conv2D)              (None, 8, 8, 512)    2359808     dropout_6[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_transpose_1 (Conv2DTrans (None, 16, 16, 256)  524544      conv2d_12[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "concatenate_1 (Concatenate)     (None, 16, 16, 512)  0           conv2d_transpose_1[0][0]         \n",
+            "                                                                 conv2d_10[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_13 (Conv2D)              (None, 16, 16, 256)  1179904     concatenate_1[0][0]              \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_7 (Dropout)             (None, 16, 16, 256)  0           conv2d_13[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_14 (Conv2D)              (None, 16, 16, 256)  590080      dropout_7[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_transpose_2 (Conv2DTrans (None, 32, 32, 128)  131200      conv2d_14[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "concatenate_2 (Concatenate)     (None, 32, 32, 256)  0           conv2d_transpose_2[0][0]         \n",
+            "                                                                 conv2d_8[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_15 (Conv2D)              (None, 32, 32, 128)  295040      concatenate_2[0][0]              \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_8 (Dropout)             (None, 32, 32, 128)  0           conv2d_15[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_16 (Conv2D)              (None, 32, 32, 128)  147584      dropout_8[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_transpose_3 (Conv2DTrans (None, 64, 64, 64)   32832       conv2d_16[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "concatenate_3 (Concatenate)     (None, 64, 64, 128)  0           conv2d_transpose_3[0][0]         \n",
+            "                                                                 conv2d_6[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_17 (Conv2D)              (None, 64, 64, 64)   73792       concatenate_3[0][0]              \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_9 (Dropout)             (None, 64, 64, 64)   0           conv2d_17[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_18 (Conv2D)              (None, 64, 64, 64)   36928       dropout_9[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_transpose_4 (Conv2DTrans (None, 128, 128, 32) 8224        conv2d_18[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "concatenate_4 (Concatenate)     (None, 128, 128, 64) 0           conv2d_transpose_4[0][0]         \n",
+            "                                                                 conv2d_4[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_19 (Conv2D)              (None, 128, 128, 32) 18464       concatenate_4[0][0]              \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_10 (Dropout)            (None, 128, 128, 32) 0           conv2d_19[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_20 (Conv2D)              (None, 128, 128, 32) 9248        dropout_10[0][0]                 \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_transpose_5 (Conv2DTrans (None, 256, 256, 16) 2064        conv2d_20[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "concatenate_5 (Concatenate)     (None, 256, 256, 32) 0           conv2d_transpose_5[0][0]         \n",
+            "                                                                 conv2d_2[0][0]                   \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_21 (Conv2D)              (None, 256, 256, 16) 4624        concatenate_5[0][0]              \n",
+            "__________________________________________________________________________________________________\n",
+            "dropout_11 (Dropout)            (None, 256, 256, 16) 0           conv2d_21[0][0]                  \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_22 (Conv2D)              (None, 256, 256, 16) 2320        dropout_11[0][0]                 \n",
+            "__________________________________________________________________________________________________\n",
+            "conv2d_23 (Conv2D)              (None, 256, 256, 1)  17          conv2d_22[0][0]                  \n",
+            "==================================================================================================\n",
+            "Total params: 7,775,601\n",
+            "Trainable params: 7,775,601\n",
+            "Non-trainable params: 0\n",
+            "__________________________________________________________________________________________________\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "D7b20zweA28R",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 1768
+        },
+        "outputId": "8a8c75a6-7151-40d4-df3a-4b53683925ed",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520797336296,
+          "user_tz": 300,
+          "elapsed": 1665308,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "unet.fit_generator(train_datagen, steps_per_epoch=len(x_train)/4, validation_data=(x_val, y_val), epochs=50)"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Epoch 1/50\n",
+            "151/150 [==============================] - 38s 253ms/step - loss: 0.3858 - val_loss: 0.2056\n",
+            "Epoch 2/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.1494 - val_loss: 0.1124\n",
+            "Epoch 3/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.1061 - val_loss: 0.0979\n",
+            "Epoch 4/50\n",
+            " 46/150 [========>.....................] - ETA: 22s - loss: 0.0910"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.1014 - val_loss: 0.1126\n",
+            "Epoch 5/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0968 - val_loss: 0.0921\n",
+            "Epoch 6/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0935 - val_loss: 0.0953\n",
+            "Epoch 7/50\n",
+            " 68/150 [============>.................] - ETA: 17s - loss: 0.0884"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0923 - val_loss: 0.0947\n",
+            "Epoch 8/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0922 - val_loss: 0.0888\n",
+            "Epoch 9/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0896 - val_loss: 0.1024\n",
+            "Epoch 10/50\n",
+            " 72/150 [=============>................] - ETA: 16s - loss: 0.0891"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0867 - val_loss: 0.0831\n",
+            "Epoch 11/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0872 - val_loss: 0.0872\n",
+            "Epoch 12/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0852 - val_loss: 0.0900\n",
+            "Epoch 13/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0848"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0872 - val_loss: 0.0830\n",
+            "Epoch 14/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0842 - val_loss: 0.0792\n",
+            "Epoch 15/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0820 - val_loss: 0.0810\n",
+            "Epoch 16/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0772"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0801 - val_loss: 0.0803\n",
+            "Epoch 17/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0801 - val_loss: 0.0772\n",
+            "Epoch 18/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0814 - val_loss: 0.0745\n",
+            "Epoch 19/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0750"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0771 - val_loss: 0.0740\n",
+            "Epoch 20/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0777 - val_loss: 0.0731\n",
+            "Epoch 21/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0777 - val_loss: 0.0742\n",
+            "Epoch 22/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0769"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0753 - val_loss: 0.0761\n",
+            "Epoch 23/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0744 - val_loss: 0.0741\n",
+            "Epoch 24/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0748 - val_loss: 0.0770\n",
+            "Epoch 25/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0768"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0758 - val_loss: 0.0866\n",
+            "Epoch 26/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0935 - val_loss: 0.0784\n",
+            "Epoch 27/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0772 - val_loss: 0.0751\n",
+            "Epoch 28/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0798"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0783 - val_loss: 0.0758\n",
+            "Epoch 29/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0744 - val_loss: 0.0735\n",
+            "Epoch 30/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0751 - val_loss: 0.0749\n",
+            "Epoch 31/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0707"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0749 - val_loss: 0.0733\n",
+            "Epoch 32/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0735 - val_loss: 0.0745\n",
+            "Epoch 33/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0721 - val_loss: 0.0729\n",
+            "Epoch 34/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0705"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0730 - val_loss: 0.0741\n",
+            "Epoch 35/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0714 - val_loss: 0.0840\n",
+            "Epoch 36/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0791 - val_loss: 0.0717\n",
+            "Epoch 37/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0724"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0747 - val_loss: 0.0743\n",
+            "Epoch 38/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0720 - val_loss: 0.0714\n",
+            "Epoch 39/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0723 - val_loss: 0.0758\n",
+            "Epoch 40/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0757"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0710 - val_loss: 0.0710\n",
+            "Epoch 41/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0716 - val_loss: 0.0753\n",
+            "Epoch 42/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0714 - val_loss: 0.0740\n",
+            "Epoch 43/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0710"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0720 - val_loss: 0.0690\n",
+            "Epoch 44/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0716 - val_loss: 0.0738\n",
+            "Epoch 45/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0716 - val_loss: 0.0804\n",
+            "Epoch 46/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0764"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0703 - val_loss: 0.0726\n",
+            "Epoch 47/50\n",
+            "151/150 [==============================] - 33s 219ms/step - loss: 0.0702 - val_loss: 0.0709\n",
+            "Epoch 48/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0696 - val_loss: 0.0781\n",
+            "Epoch 49/50\n",
+            " 71/150 [=============>................] - ETA: 17s - loss: 0.0748"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0709 - val_loss: 0.0696\n",
+            "Epoch 50/50\n",
+            "151/150 [==============================] - 33s 220ms/step - loss: 0.0690 - val_loss: 0.0694\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<keras.callbacks.History at 0x7f4018334c50>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 5
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "Mf4-tU3AUMcJ",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "outputId": "887f7ca9-fb90-4ca0-f6d4-fc1f3adce103",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520797351447,
+          "user_tz": 300,
+          "elapsed": 15116,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "iou_metric(x_train, y_train, x_val, y_val, unet)"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(0.5498567869945784, 0.5413303307085601)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 6
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "uZhuE19U1Ax0",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "preds = unet.predict(x_test)"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "-sddHitGDa5n",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "test_path = '../../.kaggle/competitions/data-science-bowl-2018/test/'\n",
+        "test_ids = next(os.walk(test_path))[1]\n",
+        "\n",
+        "preds_upsampled = upsample(preds)"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "Va8PoP6P3Bd-",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "output_extras": [
+            {},
+            {}
+          ],
+          "base_uri": "https://localhost:8080/",
+          "height": 286
+        },
+        "outputId": "fea2897d-1971-4774-c612-7b9d4f60ba51",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1520798186442,
+          "user_tz": 300,
+          "elapsed": 418,
+          "user": {
+            "displayName": "Imran Khan",
+            "photoUrl": "https://lh3.googleusercontent.com/a/default-user=s128",
+            "userId": "116974156090080387307"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "plt.imshow(preds[2].reshape(256, 256))"
+      ],
+      "execution_count": 0,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<matplotlib.image.AxesImage at 0x7f401190df98>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 9
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "image/png": "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\n",
+            "text/plain": [
+              "<matplotlib.figure.Figure at 0x7f4011875780>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "-aOie88ytsWx",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "rles, new_test_ids = encode(preds_upsampled, test_ids)"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "Ca0jpJRltt-s",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "submit(new_test_ids, rles)"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "3f6tVZe6txM8",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "pd.read_csv('./submission.csv')"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "IpIe9M91tyFq",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "from google.colab import files\n",
+        "\n",
+        "files.download('submission.csv')"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    }
+  ]
+}
