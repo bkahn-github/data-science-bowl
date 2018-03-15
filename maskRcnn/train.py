@@ -42,8 +42,9 @@ elif init_with == "coco":
                                 "mrcnn_bbox", "mrcnn_mask"])
 elif init_with == "last":
     # Load the last model you trained and continue training
-    model.load_weights(model.find_last()[1], by_name=True)
-    
+#     model.load_weights(model.find_last()[1], by_name=True)
+    model.load_weights('./model.h5')
+
 # Training dataset
 dataset_train = BowlDataset()
 dataset_train.load_bowl('stage1_train')
