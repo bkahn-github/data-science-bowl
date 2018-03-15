@@ -2036,7 +2036,6 @@ class MaskRCNN():
             f.close()
 
         # Update the log directory
-        print(filepath)
         self.set_log_dir(filepath)
 
     def get_imagenet_weights(self):
