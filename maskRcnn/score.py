@@ -33,7 +33,7 @@ train_ids = next(os.walk(train_path))[1]
 test_ids = next(os.walk(test_path))[1]
 
 train_masks = []
-for image_id in tqdm(train_ids[:20]):  
+for image_id in tqdm(train_ids):  
   masks = np.zeros((256, 256, 1), dtype=np.bool)
   mask_files = next(os.walk(train_path + image_id + '/masks/'))[2]
   
