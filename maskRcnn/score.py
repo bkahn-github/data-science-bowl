@@ -63,7 +63,7 @@ for i, train_pred in enumerate(train_preds):
 
   for j in range(train_preds[i]['masks'].shape[-1]):
     mask = train_preds[i]['masks'][:,:,j]
-    mask = np.expand_dims(resize(mask, (256, 256)), axis=-1)
+    mask = np.expand_dims(resize(mask, (256, 256), mode='constant', preserve_range=True), axis=-1)
 
     img = np.maximum(img, mask)    
 
