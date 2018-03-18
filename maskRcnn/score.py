@@ -54,7 +54,10 @@ for image_id in tqdm(train_ids):
   results = model.detect([original_image], verbose=0)
   r = results[0]
 
-  masks = r['masks']
+  if r['masks'].shape[0] != 0:
+    masks = r['masks']
+  else:
+    masks = np.zeros((256, 256, 1))
   train_preds.append(masks)
                 
 predicted_masks = []
