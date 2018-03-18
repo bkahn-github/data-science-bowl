@@ -29,8 +29,8 @@ model.load_weights(model_path, by_name=True)
 train_path = './stage1_train/'
 test_path = './stage1_test/'
 
-train_ids = next(os.walk(train_path))[1]
-test_ids = next(os.walk(test_path))[1]
+train_ids = next(os.walk(train_path))[1][:10]
+test_ids = next(os.walk(test_path))[1][:10]
 
 train_masks = []
 for image_id in tqdm(train_ids):  
