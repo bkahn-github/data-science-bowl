@@ -80,6 +80,6 @@ for i, mask in enumerate(train_masks):
                          
 ious = []
 for i in range(len(predicted_masks)):
-  ious.append(iou(label(preds[0]), label(masks[0]))[0])
+  ious.append(iou(label(preds[i] > 0.5), label(masks[i] > 0.5))[0])
   
 print(np.asarray(ious).mean())
