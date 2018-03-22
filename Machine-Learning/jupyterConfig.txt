@@ -1,0 +1,19 @@
+curl -O https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+
+bash Anaconda3-4.3.1-Linux-x86_64.sh 
+
+pip install tensorflow
+pip install keras
+
+conda update --all
+
+jupyter notebook --generate-config
+
+vim /home/Bilal/.jupyter/jupyter_notebook_config.py
+
+c = get_config()
+c.NotebookApp.ip = '*'
+c.NotebookApp.open_browser = False
+c.NotebookApp.port = 5000
+
+jupyter-notebook --no-browser --port=5000
