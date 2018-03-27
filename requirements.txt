@@ -1,4 +1,5 @@
 numpy
+scipy
 pandas
 tensorflow
 keras
@@ -7,3 +8,4 @@ sklearn
 scikit-image
 imageio
 kaggle
+pillow
