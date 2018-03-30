@@ -7,8 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def create_masks(root_folder, stage_number, stage_section, output_folder, subset=False):
-    stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section)
-    os.makedirs(stage_folder + '_masks'), exist_ok=True)
+    stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section) 
+    os.makedirs(stage_folder + '_masks', exist_ok=True)
 
     if subset:
         masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:10]
