@@ -6,11 +6,16 @@ from imageio import imwrite
 import numpy as np
 import matplotlib.pyplot as plt
 
-def create_masks(root_folder, stage_number, stage_section, output_folder):
-    masks_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section)
-    os.makedirs(os.path.join(root_folder, 'stage' + stage_number +'_' + stage_section + '_masks'), exist_ok=True)
+def create_masks(root_folder, stage_number, stage_section, output_folder, subset=False):
+    stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section)
+    os.makedirs(stage_folder + '_masks'), exist_ok=True)
 
-    for mask_folder in tqdm(glob.glob(os.path.join(masks_folder, '*'))):
+    if subset:
+        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:10]
+    else:
+        masks_folder = glob.glob(os.path.join(stage_folder, '*'))        
+
+    for mask_folder in tqdm(masks_folder):
         mask_id = mask_folder.split('/')[-1]
         masks = []
         for mask in glob.glob(os.path.join(mask_folder, 'masks/*')):
