@@ -19,9 +19,11 @@ def action():
 def preprocess():
     logging.info('Starting Preprocessing')
     create_masks(root_folder, '1', 'train', masks_output_folder, subset)
+    logging.info('Created masks')
     create_contours(root_folder, '1', 'train', contours_output_folder, subset)
+    logging.info('Created contours')    
     create_centers(root_folder, '1', 'train', centers_output_folder, subset)
-
+    logging.info('Created centers')
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
