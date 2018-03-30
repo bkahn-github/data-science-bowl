@@ -16,10 +16,6 @@ class BowlConfig(Config):
     LEARNING_RATE = 0.001 
     USE_MINI_MASK = True 
     MAX_GT_INSTANCES = 500
-    
-    RESNET_ARCHITECTURE = "resnet50"
-
-
 
 # from config import Config
 
