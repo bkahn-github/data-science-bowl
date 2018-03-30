@@ -2,7 +2,7 @@ import os
 import click
 import logging
 
-from create_masks import create_masks, create_contours, create_centers
+from create_masks import create_masks
 
 root_folder = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
 masks_output_folder = 'stage1_masks'
@@ -18,12 +18,12 @@ def action():
 @action.command()
 def preprocess():
     logging.info('Starting Preprocessing')
-    create_masks(root_folder, '1', 'train', masks_output_folder, subset)
-    logging.info('Created masks')
-    create_contours(root_folder, '1', 'train', contours_output_folder, subset)
-    logging.info('Created contours')    
-    create_centers(root_folder, '1', 'train', centers_output_folder, subset)
-    logging.info('Created centers')
+    logging.info('Creating masks')
+    create_masks(root_folder, '1', 'train', masks_output_folder, 'masks', subset)
+    logging.info('Creating contours')    
+    create_masks(root_folder, '1', 'train', contours_output_folder, 'contours', subset)
+    logging.info('Creating centers')
+    create_masks(root_folder, '1', 'train', centers_output_folder, 'centers', subset)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
