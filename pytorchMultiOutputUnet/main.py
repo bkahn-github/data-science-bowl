@@ -2,7 +2,7 @@ import os
 import click
 import logging
 
-from create_masks import create_masks, create_contours#, create_centers
+from create_masks import create_masks, create_contours, create_centers
 
 root_folder = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
 masks_output_folder = 'stage1_masks'
@@ -19,8 +19,8 @@ def action():
 def preprocess():
     logging.info('Starting Preprocessing')
     create_masks(root_folder, '1', 'train', masks_output_folder, subset)
-    create_contours(root_folder, '1', 'train', masks_output_folder, subset)
-    # create_centers(root_folder, train_folder, centers_output_folder)
+    create_contours(root_folder, '1', 'train', contours_output_folder, subset)
+    create_centers(root_folder, '1', 'train', centers_output_folder, subset)
 
 
 if __name__ == "__main__":
