@@ -76,7 +76,7 @@ def create_centers(root_folder, stage_number, stage_section, output_folder, subs
 
             img_center = np.zeros_like(img).astype(np.uint8)
             x, y = ndimage.measurements.center_of_mass(img)
-            cv2.Circle(img_center, (x, y), 4, (255, 255, 255), -1)
+            cv2.circle(img_center, (int(x), int(y)), 4, (255, 255, 255), -1)
 
             masks.append(img_center)
         total_mask = np.where(np.sum(masks, axis=0) > 128., 255., 0.).astype(np.uint8)        
