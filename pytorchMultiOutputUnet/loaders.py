@@ -9,7 +9,6 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
 from skimage import io, transform
-import matplotlib.pyplot as plt
 
 class TrainDataset(Dataset):
     def __init__(self, stage, root_folder, imgs_folder, mask_folder, contours_folder, centers_folder, subset=False, transform=None):
@@ -66,12 +65,9 @@ class TrainDataset(Dataset):
         print(contour.shape)
         print(center.shape)
 
-        plt.imshow(img)
-        plt.show()
-
 train_transforms = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize(256),
+    transforms.Resize((256, 256)),
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.225, 0.225, 0.225])
 ])

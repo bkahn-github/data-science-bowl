@@ -5,8 +5,7 @@ import logging
 from create_masks import create_masks
 from loaders import TrainDataset, train_transforms
 
-# root_folder = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
-root_folder = '/content/.kaggle/competitions/data-science-bowl-2018/'
+root_folder = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
 
 imgs_folder = 'stage1_train'
 
