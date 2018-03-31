@@ -13,7 +13,8 @@ class BowlConfig(Config):
     VALIDATION_STEPS = 70 // (IMAGES_PER_GPU * GPU_COUNT)
     MEAN_PIXEL = [0, 0, 0] 
 #     LEARNING_RATE = 0.01 
-    LEARNING_RATE = 0.001 
+#     LEARNING_RATE = 0.001 
+    LEARNING_RATE = 0.0001 
     USE_MINI_MASK = True 
     MAX_GT_INSTANCES = 500
 
