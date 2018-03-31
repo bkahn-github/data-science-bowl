@@ -33,7 +33,6 @@ def preprocess():
 def train():
     logging.info('Starting Training')
     train = TrainDataset('1', root_folder, imgs_folder, masks_output_folder, contours_output_folder, centers_output_folder, subset=True, transform=train_transforms)
-    train[0]
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')

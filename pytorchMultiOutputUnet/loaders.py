@@ -59,11 +59,8 @@ class TrainDataset(Dataset):
         mask = self.transform(mask)
         contour = self.transform(contour)
         center = self.transform(center)
-
-        print(img.shape)
-        print(mask.shape)
-        print(contour.shape)
-        print(center.shape)
+        
+        return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
 
 train_transforms = transforms.Compose([
     transforms.ToPILImage(),
