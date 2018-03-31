@@ -5,6 +5,8 @@ import numpy as np
 import torch
 import torchvision
 
+from utils import get_ids, get_path
+
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
@@ -12,40 +14,18 @@ from skimage import io, transform
 from PIL import Image
 
 class TrainDataset(Dataset):
-    def __init__(self, stage, root_folder, imgs_folder, mask_folder, contours_folder, centers_folder, subset=False, transform=None):
-        self.stage = stage
+    def __init__(self, ids, transform=None):
         
-        self.root_folder = root_folder
-
-        self.imgs_folder = imgs_folder
-        self.mask_folder = mask_folder
-        self.contours_folder = contours_folder
-        self.centers_folder = centers_folder
-
-        self.subset = subset
+        self.ids = ids
         self.transform = transform
 
-        if self.subset:
-            ids = glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train', '*'))[:10]
-        else:
-            ids = glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train', '*'))
-
-        self.ids = [id.split('/')[-1] for id in ids]
-
     def __len__(self):
-        if self.subset:
-            return len(glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', '*'))[:10])
-        else:
-            return len(glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', '*')))
+        return len(self.ids)
 
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        img_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train', id, 'images', id + '.png')
-
-        mask_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', id + '.png')
-        contour_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_contours', id + '.png')
-        center_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_centers', id + '.png')
+        img_path, mask_path, contour_path, center_path = get_path(id)
         
         img = Image.open(img_path)
         img.load()
