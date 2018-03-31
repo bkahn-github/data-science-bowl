@@ -8,6 +8,8 @@ import torchvision
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
+from skimage import io, transform
+
 class TrainDataset(Dataset):
     def __init__(self, stage, root_folder, imgs_folder, mask_folder, contours_folder, centers_folder, subset=False, transform=None):
         self.stage = stage
@@ -22,11 +24,50 @@ class TrainDataset(Dataset):
         self.subset = subset
         self.transform = transform
 
+        if self.subset:
+            ids = glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train', '*'))[:10]
+        else:
+            ids = glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train', '*'))
+
+        self.ids = [id.split('/')[-1] for id in ids]
+
     def __len__(self):
         if self.subset:
-            return 10
+            return len(glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', '*'))[:10])
         else:
             return len(glob.glob(os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', '*')))
 
     def __getitem__(self, idx):
-        return None
+        id = self.ids[idx]
+
+        img_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train', id, 'images', id + '.png')
+
+        mask_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_masks', id + '.png')
+        contour_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_contours', id + '.png')
+        center_path = os.path.join(self.root_folder, 'stage' + self.stage + '_train_centers', id + '.png')
+        
+        img = io.imread(img_path)
+        mask = io.imread(mask_path)
+        contour = io.imread(contour_path)
+        center = io.imread(center_path)
+
+        mask = mask.reshape(mask.shape[0], mask.shape[1], 1)
+        contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
+        center = center.reshape(center.shape[0], center.shape[1], 1)
+
+        img = self.transform(img)
+        mask = self.transform(mask)
+        contour = self.transform(contour)
+        center = self.transform(center)
+
+        print(img.shape)
+        print(mask.shape)
+        print(contour.shape)
+        print(center.shape)
+
+train_transforms = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.ToTensor(),
+    transforms.Normalize([0.5, 0.5, 0.5], [0.225, 0.225, 0.225])
+])
