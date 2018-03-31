@@ -2,6 +2,11 @@ import os
 import click
 import logging
 
+import torch
+import torchvision
+
+from torch.utils.data import DataLoader
+
 from create_masks import create_masks
 from loaders import TrainDataset, train_transforms
 
@@ -33,6 +38,7 @@ def preprocess():
 def train():
     logging.info('Starting Training')
     train = TrainDataset('1', root_folder, imgs_folder, masks_output_folder, contours_output_folder, centers_output_folder, subset=True, transform=train_transforms)
+    trainDataloader = DataLoader(train, batch_size=4, shuffle=True, num_workers=4)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
