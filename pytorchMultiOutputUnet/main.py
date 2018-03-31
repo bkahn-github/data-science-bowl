@@ -7,7 +7,7 @@ import torchvision
 
 from torch.utils.data import DataLoader
 
-from config import root_folder, imgs_folder, masks_output_folder, contours_output_folder, centers_output_folder, subset
+from config import root_folder, stage, imgs_folder, masks_output_folder, contours_output_folder, centers_output_folder, subset
 from create_masks import create_masks
 from loaders import TrainDataset, train_transforms
 from utils import get_ids
@@ -20,11 +20,11 @@ def action():
 def preprocess():
     logging.info('Starting Preprocessing')
     logging.info('Creating masks')
-    create_masks(root_folder, '1', 'train', masks_output_folder, 'masks', subset)
+    create_masks(root_folder, stage, 'train', masks_output_folder, 'masks', subset)
     logging.info('Creating contours')    
-    create_masks(root_folder, '1', 'train', contours_output_folder, 'contours', subset)
+    create_masks(root_folder, stage, 'train', contours_output_folder, 'contours', subset)
     logging.info('Creating centers')
-    create_masks(root_folder, '1', 'train', centers_output_folder, 'centers', subset)
+    create_masks(root_folder, stage, 'train', centers_output_folder, 'centers', subset)
 
 @action.command()
 def train():
