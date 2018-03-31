@@ -1,11 +1,18 @@
-root_folder = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
+class Config():
+    ROOT_FOLDER = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
 
-stage='1'
+    STAGE='1'
 
-imgs_folder = 'stage1_train'
+    IMGS_FOLDER = 'stage1_train'
 
-masks_output_folder = 'stage1_masks'
-contours_output_folder = 'stage1_contours'
-centers_output_folder = 'stage1_centers'
+    MASKS_OUTPUT_FOLDER = 'stage1_masks'
+    CONTOURS_OUTPUT_FOLDER = 'stage1_contours'
+    CENTERS_OUTPUT_FOLDER = 'stage1_centers'
 
-subset = True
+    SUBSET = True
+
+    BATCH_SIZE = 4
+    SHUFFLE = True
+    NUM_WORKERS = 4
+
+config = Config()

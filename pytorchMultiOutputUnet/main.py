@@ -7,7 +7,7 @@ import torchvision
 
 from torch.utils.data import DataLoader
 
-from config import root_folder, stage, imgs_folder, masks_output_folder, contours_output_folder, centers_output_folder, subset
+from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, train_transforms
 from utils import get_ids
@@ -20,11 +20,11 @@ def action():
 def preprocess():
     logging.info('Starting Preprocessing')
     logging.info('Creating masks')
-    create_masks(root_folder, stage, 'train', masks_output_folder, 'masks', subset)
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.MASKS_OUTPUT_FOLDER, 'masks', config.SUBSET)
     logging.info('Creating contours')    
-    create_masks(root_folder, stage, 'train', contours_output_folder, 'contours', subset)
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CONTOURS_OUTPUT_FOLDER, 'contours', config.SUBSET)
     logging.info('Creating centers')
-    create_masks(root_folder, stage, 'train', centers_output_folder, 'centers', subset)
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CENTERS_OUTPUT_FOLDER, 'centers', config.SUBSET)
 
 @action.command()
 def train():
@@ -35,7 +35,7 @@ def train():
 
     logging.info('Creating Training Dataset')
     train = TrainDataset(ids, transform=train_transforms)
-    trainDataloader = DataLoader(train, batch_size=4, shuffle=True, num_workers=4)
+    trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
     print(train[0])
 
