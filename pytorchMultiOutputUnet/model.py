@@ -61,6 +61,7 @@ class OutConv(nn.Module):
 
     def forward(self, x):
         x = self.conv(x)
+        x = F.sigmoid(x)
 
         return x
 
@@ -97,20 +98,8 @@ class Unet(nn.Module):
         x9 = self.up_3(x8, x2)
         x10 = self.up_4(x9, x1)
 
-        out_conv = self.out_conv(x10)
+        mask_out = self.out_conv(x10)
+        contour_out = self.out_conv(x10)
+        center_out = self.out_conv(x10)
 
-        out = F.sigmoid(out_conv)
-
-        # print(x1.shape)
-        # print(x2.shape)
-        # print(x3.shape)
-        # print(x4.shape)
-        # print(x5.shape)
-        # print(x6.shape)
-        # print(x7.shape)
-        # print(x8.shape)
-        # print(x9.shape)
-        # print(x10.shape)
-        print(out.shape)
-
-        return out
+        return [mask_out, contour_out, center_out]

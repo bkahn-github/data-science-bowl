@@ -1,6 +1,7 @@
 import os
 import click
 import logging
+from tqdm import tqdm
 
 import torch
 import torchvision
@@ -47,19 +48,23 @@ def train():
     criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-    for i, data in enumerate(trainDataloader):
+    for data in tqdm(trainDataloader):
         img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
 
         x = Variable(img)
-        y = Variable(mask)
+        y = [Variable(mask), Variable(contour), Variable(center)]
 
         optimizer.zero_grad()
 
-        out = model(x)
+        outs = model(x)
 
-        loss = criterion(out, y)
-        print(loss.data[0])
-        loss.backward()
+        losses = []
+        for i, out in enumerate(outs):
+            loss = criterion(out, y[i])
+            losses.append(loss)
+
+        total_loss = sum(losses)
+        total_loss.backward()
         optimizer.step()
         
 if __name__ == "__main__":
