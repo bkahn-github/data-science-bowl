@@ -1,5 +1,11 @@
+import torch
+
 class Config():
-    ROOT_FOLDER = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
+
+    if torch.cuda.is_available():
+        ROOT_FOLDER = '/content/.kaggle/competitions/data-science-bowl-2018/'
+    else:
+        ROOT_FOLDER = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'
 
     STAGE='1'
 
