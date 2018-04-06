@@ -45,14 +45,22 @@ def train():
 
     model = Unet()
 
+    if torch.cuda.is_available():
+        model.cuda()
+
     criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
     for data in tqdm(trainDataloader):
         img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
 
-        x = Variable(img)
-        y = [Variable(mask), Variable(contour), Variable(center)]
+        if torch.cuda.is_available():         
+            x = Variable(img).cuda()
+            y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
+        else:
+            x = Variable(img)
+            y = [Variable(mask), Variable(contour), Variable(center)]
+
 
         optimizer.zero_grad()
 
