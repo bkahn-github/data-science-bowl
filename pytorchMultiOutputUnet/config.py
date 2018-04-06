@@ -15,7 +15,7 @@ class Config():
     CONTOURS_OUTPUT_FOLDER = 'stage1_contours'
     CENTERS_OUTPUT_FOLDER = 'stage1_centers'
 
-    SUBSET = True
+    SUBSET = False
 
     BATCH_SIZE = 4
     SHUFFLE = True
