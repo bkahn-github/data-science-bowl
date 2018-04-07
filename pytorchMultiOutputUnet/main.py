@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from config import config
 from create_masks import create_masks
-from loaders import TrainDataset, train_transforms
+from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from utils import get_ids
 
@@ -40,7 +40,7 @@ def train():
     ids = get_ids()
 
     logging.info('Creating Training Dataset')
-    train = TrainDataset(ids, transform=train_transforms)
+    train = TrainDataset(ids, x_transform=x_transforms, y_transform=y_transforms)
     trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
     model = Unet()
@@ -61,7 +61,6 @@ def train():
             else:
                 x = Variable(img)
                 y = [Variable(mask), Variable(contour), Variable(center)]
-
 
             optimizer.zero_grad()
 

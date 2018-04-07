@@ -14,7 +14,7 @@ from skimage import io, transform
 from PIL import Image
 
 class TrainDataset(Dataset):
-    def __init__(self, ids, transform=None):
+    def __init__(self, ids, x_transform=None, y_transform=None):
         
         self.ids = ids
         self.transform = transform
@@ -50,9 +50,15 @@ class TrainDataset(Dataset):
         
         return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
 
-train_transforms = transforms.Compose([
+x_transforms = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize((256, 256)),
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.225, 0.225, 0.225])
+])
+
+y_transforms = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((256, 256)),
+    transforms.ToTensor()
 ])
