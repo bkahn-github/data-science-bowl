@@ -51,7 +51,7 @@ def train():
     criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-    for epoch in range(10):
+    for epoch in range(30):
         for data in tqdm(trainDataloader):
             img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
 
