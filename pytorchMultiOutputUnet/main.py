@@ -52,6 +52,7 @@ def train():
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(100):
+        logging.info('Epoch # ' + str(epoch))
         for data in tqdm(trainDataloader):
             img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
 
