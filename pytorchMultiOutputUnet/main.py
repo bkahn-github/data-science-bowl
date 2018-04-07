@@ -76,7 +76,7 @@ def train():
             total_loss.backward()
             optimizer.step()
 
-        torch.save(model.state_dict(), './model-' + epoch + '.pt')
+        torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
