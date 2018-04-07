@@ -51,31 +51,32 @@ def train():
     criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-    for data in tqdm(trainDataloader):
-        img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
+    for epoch in range(10):
+        for data in tqdm(trainDataloader):
+            img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
 
-        if torch.cuda.is_available():         
-            x = Variable(img).cuda()
-            y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
-        else:
-            x = Variable(img)
-            y = [Variable(mask), Variable(contour), Variable(center)]
+            if torch.cuda.is_available():         
+                x = Variable(img).cuda()
+                y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
+            else:
+                x = Variable(img)
+                y = [Variable(mask), Variable(contour), Variable(center)]
 
 
-        optimizer.zero_grad()
+            optimizer.zero_grad()
 
-        outs = model(x)
+            outs = model(x)
 
-        losses = []
-        for i, out in enumerate(outs):
-            loss = criterion(out, y[i])
-            losses.append(loss)
+            losses = []
+            for i, out in enumerate(outs):
+                loss = criterion(out, y[i])
+                losses.append(loss)
 
-        total_loss = sum(losses)
-        total_loss.backward()
-        optimizer.step()
+            total_loss = sum(losses)
+            total_loss.backward()
+            optimizer.step()
 
-    torch.save(model.state_dict(), './model.pt')
+        torch.save(model.state_dict(), './model-' + epoch + '.pt')
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
