@@ -43,10 +43,10 @@ class TrainDataset(Dataset):
         contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
         center = center.reshape(center.shape[0], center.shape[1], 1)
 
-        img = self.transform(img)
-        mask = self.transform(mask)
-        contour = self.transform(contour)
-        center = self.transform(center)
+        img = self.x_transform(img)
+        mask = self.y_transform(mask)
+        contour = self.y_transform(contour)
+        center = self.y_transform(center)
         
         return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
 
