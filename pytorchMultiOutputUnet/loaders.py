@@ -17,7 +17,9 @@ class TrainDataset(Dataset):
     def __init__(self, ids, x_transform=None, y_transform=None):
         
         self.ids = ids
-        self.transform = transform
+
+        self.x_transform = x_transform
+        self.y_transform = y_transform
 
     def __len__(self):
         return len(self.ids)
