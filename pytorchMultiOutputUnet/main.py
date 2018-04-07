@@ -49,7 +49,7 @@ def train():
         model.cuda()
 
     criterion = nn.BCELoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(30):
         for data in tqdm(trainDataloader):
