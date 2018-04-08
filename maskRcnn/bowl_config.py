@@ -1,34 +1,71 @@
 from config import Config
 
 class BowlConfig(Config): 
-    NAME = "bowl" 
-    GPU_COUNT = 1 
-    IMAGES_PER_GPU = 1 
-    NUM_CLASSES = 1 + 1 
-    IMAGE_MIN_DIM = 512 
-    IMAGE_MAX_DIM = 512 
-    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
-    TRAIN_ROIS_PER_IMAGE = 512
-    STEPS_PER_EPOCH = 600 // (IMAGES_PER_GPU * GPU_COUNT) 
-    VALIDATION_STEPS = 70 // (IMAGES_PER_GPU * GPU_COUNT)
-    MEAN_PIXEL = [0, 0, 0] 
-    LEARNING_RATE = 0.001 
-#     LEARNING_RATE = 0.0001 
-    USE_MINI_MASK = True 
-    MAX_GT_INSTANCES = 256
-    RESNET_ARCHITECTURE = "resnet101"
+    NAME = "bowl"
+      
+    LEARNING_RATE = 1e-2
+    
+    USE_MINI_MASK = True
+    MINI_MASK_SHAPE = (56, 56)  # (height, width) of the mini-mask
+    
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 2
+    STEPS_PER_EPOCH = 300
+    VALIDATION_STEPS = 70
+
+    NUM_CLASSES = 1 + 1  # background + nucleis
+    IMAGE_MIN_DIM = 512
+    IMAGE_MAX_DIM = 512
+    IMAGE_PADDING = True  # currently, the False option is not supported
+    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)  # anchor side in pixels, maybe add a 256?
     BACKBONE_STRIDES = [4, 8, 16, 32, 64]
+    RPN_TRAIN_ANCHORS_PER_IMAGE = 320 #300
+    
     POST_NMS_ROIS_TRAINING = 2000
     POST_NMS_ROIS_INFERENCE = 2000
     POOL_SIZE = 7
     MASK_POOL_SIZE = 14
     MASK_SHAPE = [28, 28]
+    TRAIN_ROIS_PER_IMAGE = 512
     RPN_NMS_THRESHOLD = 0.7
-    DETECTION_MAX_INSTANCES = 500
-    DETECTION_MIN_CONFIDENCE = 0.7
-    DETECTION_NMS_THRESHOLD = 0.3
-    MEAN_PIXEL = [0, 0, 0] 
+    MAX_GT_INSTANCES = 256
+    DETECTION_MAX_INSTANCES = 400 
+
+    DETECTION_MIN_CONFIDENCE = 0.7 # may be smaller?
+    DETECTION_NMS_THRESHOLD = 0.3 # 0.3
+   
+    MEAN_PIXEL = np.array([0.,0.,0.])
+    
     WEIGHT_DECAY = 0.0001
+    
+#     NAME = "bowl" 
+#     GPU_COUNT = 1 
+#     IMAGES_PER_GPU = 1 
+#     NUM_CLASSES = 1 + 1 
+#     IMAGE_MIN_DIM = 512 
+#     IMAGE_MAX_DIM = 512 
+#     RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)
+#     TRAIN_ROIS_PER_IMAGE = 512
+#     STEPS_PER_EPOCH = 600 // (IMAGES_PER_GPU * GPU_COUNT) 
+#     VALIDATION_STEPS = 70 // (IMAGES_PER_GPU * GPU_COUNT)
+#     MEAN_PIXEL = [0, 0, 0] 
+#     LEARNING_RATE = 0.001 
+# #     LEARNING_RATE = 0.0001 
+#     USE_MINI_MASK = True 
+#     MAX_GT_INSTANCES = 256
+#     RESNET_ARCHITECTURE = "resnet101"
+#     BACKBONE_STRIDES = [4, 8, 16, 32, 64]
+#     POST_NMS_ROIS_TRAINING = 2000
+#     POST_NMS_ROIS_INFERENCE = 2000
+#     POOL_SIZE = 7
+#     MASK_POOL_SIZE = 14
+#     MASK_SHAPE = [28, 28]
+#     RPN_NMS_THRESHOLD = 0.7
+#     DETECTION_MAX_INSTANCES = 500
+#     DETECTION_MIN_CONFIDENCE = 0.7
+#     DETECTION_NMS_THRESHOLD = 0.3
+#     MEAN_PIXEL = [0, 0, 0] 
+#     WEIGHT_DECAY = 0.0001
     
 # class BowlConfig(Config): 
 #     NAME = "bowl" 
