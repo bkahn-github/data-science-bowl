@@ -1,4 +1,5 @@
 from config import Config
+import numpy as np
 
 class BowlConfig(Config): 
     NAME = "bowl"
