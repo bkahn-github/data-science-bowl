@@ -1205,8 +1205,8 @@ def load_image_gt(dataset, config, image_id, augment=False,
     if augment:
         seq_det = augmentation.to_deterministic() 
         
-        image = seq_det.augment_images(image)
-        mask = seq_det.augment_images(mask)
+        image = seq_det.augment_image(image)
+        mask = seq_det.augment_image(mask)
         
 #         if random.randint(0, 1):
 #             image = np.fliplr(image)
