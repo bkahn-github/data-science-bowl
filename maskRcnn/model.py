@@ -28,6 +28,8 @@ import keras.initializers as KI
 import keras.engine as KE
 import keras.models as KM
 
+import imgaug
+
 import utils
 
 # Requires TensorFlow 1.3+ and Keras 2.0.8+.
@@ -1197,11 +1199,18 @@ def load_image_gt(dataset, config, image_id, augment=False,
         padding=config.IMAGE_PADDING)
     mask = utils.resize_mask(mask, scale, padding)
 
+    augmentation = imgaug.augmenters.OneOf([ imgaug.augmenters.Fliplr(1.0), imgaug.augmenters.Flipud(1.0)])
+
     # Random horizontal flips.
     if augment:
-        if random.randint(0, 1):
-            image = np.fliplr(image)
-            mask = np.fliplr(mask)
+        seq_det = augmentation.to_deterministic() 
+        
+        image = seq_det.augment_image(image)
+        mask = seq_det.augment_image(mask)
+        
+#         if random.randint(0, 1):
+#             image = np.fliplr(image)
+#             mask = np.fliplr(mask)
 
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
