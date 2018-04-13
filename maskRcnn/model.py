@@ -1196,7 +1196,9 @@ def load_image_gt(dataset, config, image_id, augment=False,
         max_dim=config.IMAGE_MAX_DIM,
         padding=config.IMAGE_PADDING)
     mask = utils.resize_mask(mask, scale, padding)
-
+    
+    image = (image - image.mean()) / image.std() 
+    
     # Random horizontal flips.
     if augment:
         if random.randint(0, 1):
