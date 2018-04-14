@@ -27,10 +27,10 @@ def action():
 def subset(subset):
     if subset == True:
         logging.info('Using a subset')
+        config.SUBSET = True
     else:
         logging.info('Using the full dataset')
-
-    config.SUBSET = subset
+        config.SUBSET = False
 
 @action.command()
 def preprocess():
