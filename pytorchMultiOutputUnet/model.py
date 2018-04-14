@@ -82,7 +82,10 @@ class Unet(nn.Module):
         self.up_3 = Upsample(64, 32)
         self.up_4 = Upsample(32, 16)
 
-        self.out_convs = nn.ModuleList([OutConv(16, 1), OutConv(16, 1), OutConv(16, 1)])
+        # self.out_convs = nn.ModuleList([OutConv(16, 1), OutConv(16, 1), OutConv(16, 1)])
+        self.out_conv_1 = OutConv(16, 1)
+        self.out_conv_2 = OutConv(16, 1)
+        self.out_conv_3 = OutConv(16, 1)
 
     def forward(self, x):
         x1 = self.in_conv(x)
@@ -98,6 +101,7 @@ class Unet(nn.Module):
         x9 = self.up_3(x8, x2)
         x10 = self.up_4(x9, x1)
 
-        outputs = [output(x10) for output in self.out_convs]
+        # outputs = [output(x10) for output in self.out_convs]
+        outputs = [self.out_conv_1(x), self.out_conv_2(x), self.out_conv_3(x)]
 
         return outputs
