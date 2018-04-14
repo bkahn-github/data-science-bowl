@@ -25,6 +25,11 @@ def action():
 @action.command()
 @click.option('--subset', default=False, help='Use a subset of the data')
 def subset(subset):
+    if subset == True:
+        logging.info('Using a subset')
+    else:
+        logging.info('Using the full dataset')
+
     config.SUBSET = subset
 
 @action.command()
