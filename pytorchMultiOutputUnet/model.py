@@ -102,6 +102,6 @@ class Unet(nn.Module):
         x10 = self.up_4(x9, x1)
 
         # outputs = [output(x10) for output in self.out_convs]
-        outputs = [self.out_conv_1(x), self.out_conv_2(x), self.out_conv_3(x)]
+        outputs = [self.out_conv_1(x10), self.out_conv_2(x10), self.out_conv_3(x10)]
 
         return outputs
