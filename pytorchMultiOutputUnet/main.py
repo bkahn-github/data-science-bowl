@@ -18,9 +18,14 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
     
-@click.group()
+@click.group(chain=True)
 def action():
     pass
+
+@action.command()
+@click.option('--subset', default=False, help='Use a subset of the data')
+def subset(subset):
+    config.SUBSET = subset
 
 @action.command()
 def preprocess():
