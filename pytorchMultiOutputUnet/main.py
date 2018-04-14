@@ -79,12 +79,15 @@ def train(epochs):
 
             outs = model(x)
 
-            losses = []
-            for i, out in enumerate(outs):
-                loss = criterion(out, y[i])
-                losses.append(loss)
+            losses = [
+                ('mask_loss', criterion(outs[0], y[0]) * 0.3),
+                ('contour_loss', criterion(outs[1], y[1]) * 0.6),
+                ('center_loss', criterion(outs[2], y[2]) * 0.1)]
 
-            total_loss = sum(losses)
+            total_loss = 0
+            for loss in losses:
+                total_loss += loss[1]
+
             total_loss.backward()
             optimizer.step()
 
