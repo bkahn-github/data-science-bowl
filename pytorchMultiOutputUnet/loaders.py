@@ -56,7 +56,7 @@ x_transforms = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize((256, 256)),
     transforms.ToTensor(),
-    transforms.Normalize([0.5, 0.5, 0.5], [0.225, 0.225, 0.225])
+    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
 y_transforms = transforms.Compose([
