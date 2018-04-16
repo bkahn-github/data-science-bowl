@@ -71,9 +71,6 @@ def numpy2encoding_no_overlap2(predicts, img_name, scores):
         if len(rle)>0:
             ImageId.append(img_name)
             EncodedPixels.append(rle)
-        else:
-            ImageId.append(img_name)
-            EncodedPixels.append('1 1')
             
     return ImageId, EncodedPixels
 
