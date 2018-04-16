@@ -42,12 +42,14 @@ for image_id in tqdm(sample_submission.ImageId):
     r = results[0]
     
     masks = r['masks']
-    
-    print(masks.shape)
-    
-    ImageId_batch, EncodedPixels_batch = f.numpy2encoding_no_overlap2(masks, image_id, r['scores'])
-    ImageId += ImageId_batch
-    EncodedPixels += EncodedPixels_batch
+        
+    if masks.shape[0] == 0:
+      ImageId += image_id
+      EncodedPixels += ' '
+    else:
+      ImageId_batch, EncodedPixels_batch = f.numpy2encoding_no_overlap2(masks, image_id, r['scores'])
+      ImageId += ImageId_batch
+      EncodedPixels += EncodedPixels_batch
 
 
 
