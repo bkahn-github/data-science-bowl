@@ -70,7 +70,8 @@ def numpy2encoding_no_overlap2(predicts, img_name, scores):
         rle = run_length_encoding(predicts[:,:,i])
         if len(rle)>0:
             ImageId.append(img_name)
-            EncodedPixels.append(rle)    
+            EncodedPixels.append(rle)
+            
     return ImageId, EncodedPixels
 
 def refineMasks(mask):
