@@ -21,6 +21,8 @@ Modified mask rcnn forked from https://github.com/neptune-ml/open-solution-data-
 #### Config 5
 A fork of the official matterport implementation from https://github.com/matterport/Mask_RCNN. Trained from 20 to 60 epochs. Results around 0.4-0.42
 
+## Stage 2
+
 ## Installation
 
 ### Install packages
