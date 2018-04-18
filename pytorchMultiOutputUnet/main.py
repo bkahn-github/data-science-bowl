@@ -12,6 +12,7 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
+from metrics import dice_loss
 from utils import get_ids
 
 import torch.nn as nn
@@ -70,23 +71,26 @@ def train(epochs):
 
             if torch.cuda.is_available():         
                 x = Variable(img).cuda()
-                y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
+                # y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
+                y = Variable(mask).cuda()
             else:
                 x = Variable(img)
-                y = [Variable(mask), Variable(contour), Variable(center)]
+                # y = [Variable(mask), Variable(contour), Variable(center)]
+                y = Variable(mask)                
 
             optimizer.zero_grad()
 
             outs = model(x)
 
-            losses = [
-                ('mask_loss', criterion(outs[0], y[0]) * 0.3),
-                ('contour_loss', criterion(outs[1], y[1]) * 0.6),
-                ('center_loss', criterion(outs[2], y[2]) * 0.1)]
+            total_loss = dice_loss(outs, y)
+            # losses = [
+            #     ('mask_loss', criterion(outs[0], y[0]) * 0.3),
+            #     ('contour_loss', criterion(outs[1], y[1]) * 0.6),
+            #     ('center_loss', criterion(outs[2], y[2]) * 0.1)]
 
-            total_loss = 0
-            for loss in losses:
-                total_loss += loss[1]
+            # total_loss = 0
+            # for loss in losses:
+            #     total_loss += loss[1]
 
             total_loss.backward()
             optimizer.step()
