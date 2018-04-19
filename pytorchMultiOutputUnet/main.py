@@ -92,9 +92,9 @@ def train(epochs):
 
             # total_loss = dice_loss(outs, y)
             losses = [
-                ('mask_loss', dice_loss(outs[:,0].contiguous().view(4, 1, 256, 256), y[0]) * 0.3),
-                ('contour_loss', dice_loss(outs[:,1].contiguous().view(4, 1, 256, 256), y[1]) * 0.6),
-                ('center_loss', dice_loss(outs[:,2].contiguous().view(4, 1, 256, 256), y[2]) * 0.1)]
+                ('mask_loss', dice_loss(outs[:,0].contiguous().view(-1, 1, 256, 256), y[0]) * 0.3),
+                ('contour_loss', dice_loss(outs[:,1].contiguous().view(-1, 1, 256, 256), y[1]) * 0.6),
+                ('center_loss', dice_loss(outs[:,2].contiguous().view(-1, 1, 256, 256), y[2]) * 0.1)]
 
             total_loss = 0
             for loss in losses:
