@@ -73,9 +73,7 @@ class Unet(nn.Module):
         self.up_3 = Upsample(256, 128)
         self.up_4 = Upsample(128, 64)
         
-        self.out_conv_1 = OutConv(64, 1)
-        self.out_conv_2 = OutConv(64, 1)
-        self.out_conv_3 = OutConv(64, 1)
+        self.out_conv = OutConv(64, 3)
 
     def forward(self, x):
         x = x / 255
@@ -90,6 +88,6 @@ class Unet(nn.Module):
         x = self.up_3(x, x2)
         x = self.up_4(x, x1)
         
-        outputs = [self.out_conv_1(x), self.out_conv_2(x), self.out_conv_3(x)]
+        outputs = self.out_conv(x)
 
         return outputs
