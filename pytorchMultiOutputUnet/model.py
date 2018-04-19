@@ -44,7 +44,7 @@ class Upsample(nn.Module):
         
         cat = torch.cat([x2, upsample], dim=1)
         conv = self.conv(cat)
-        
+
         return conv
 
 class OutConv(nn.Module):
@@ -59,9 +59,9 @@ class OutConv(nn.Module):
 
         return x
 
-class Unet2(nn.Module):
+class Unet(nn.Module):
     def __init__(self):
-        super(Unet2, self).__init__()
+        super(Unet, self).__init__()
 
         self.in_conv = ConvBlock(3, 64, pooling=False)
         self.down_1 = ConvBlock(64, 128)
