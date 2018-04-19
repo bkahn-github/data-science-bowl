@@ -90,7 +90,7 @@ def train(epochs):
             # print(outs[:,0].shape)
             # print(y[0].shape)
 
-            total_loss = dice_loss(outs, y)
+            # total_loss = dice_loss(outs, y)
             losses = [
                 ('mask_loss', dice_loss(outs[:,0].contiguous().view(4, 1, 256, 256), y[0]) * 0.3),
                 ('contour_loss', dice_loss(outs[:,1].contiguous().view(4, 1, 256, 256), y[1]) * 0.6),
