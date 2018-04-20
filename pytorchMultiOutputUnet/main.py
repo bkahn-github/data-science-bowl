@@ -61,7 +61,6 @@ def train(epochs):
     if torch.cuda.is_available():
         model.cuda()
 
-    criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(epochs):
