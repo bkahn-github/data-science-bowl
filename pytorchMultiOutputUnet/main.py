@@ -47,7 +47,8 @@ def preprocess():
 @action.command()
 @click.option('--epochs', default=10, help='Number of epochs')
 @click.option('--weights', default='', help='Path to weights')
-def train(epochs, weights):
+@click.option('--epochsDone', default=0, help='Number of epochs done')
+def train(epochs, weights, epochsDone):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
@@ -69,7 +70,7 @@ def train(epochs, weights):
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(epochs):
-        logging.info('Epoch # ' + str(epoch))
+        logging.info('Epoch # ' + str(epoch + epochsDone + 1))
         for data in tqdm(trainDataloader):
             # img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
             img, target = data['img'], data['target']
