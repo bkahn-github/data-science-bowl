@@ -47,8 +47,7 @@ def preprocess():
 @action.command()
 @click.option('--epochs', default=10, help='Number of epochs')
 @click.option('--weights', default='', help='Path to weights')
-@click.option('--epochsdone', default=0, help='Number of epochs done')
-def train(epochs, weights, epochsdone):
+def train(epochs, weights):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
@@ -64,13 +63,15 @@ def train(epochs, weights, epochsdone):
     if torch.cuda.is_available():
         model.cuda()
 
+    startingEpoch = 0
     if weights != '':
+        startingEpoch = weights.split('-')[-1].split('.')[0]
         model.load_state_dict(torch.load(weights))
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(epochs):
-        epoch = epoch + epochsdone + 1
+        epoch = epoch + startingEpoch + 1
 
         logging.info('Epoch # ' + str(epoch))
         for data in tqdm(trainDataloader):
