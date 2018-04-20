@@ -66,6 +66,7 @@ def train(epochs, weights):
     startingEpoch = 0
     if weights != '':
         startingEpoch = weights.split('-')[-1].split('.')[0]
+        logging.info('Starting from epoch ' + startingEpoch)
         model.load_state_dict(torch.load(weights))
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
