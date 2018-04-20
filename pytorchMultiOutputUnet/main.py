@@ -71,7 +71,7 @@ def train(epochs, weights):
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
     for epoch in range(epochs):
-        epoch = epoch + startingEpoch + 1
+        epoch = epoch + int(startingEpoch) + 1
 
         logging.info('Epoch # ' + str(epoch))
         for data in tqdm(trainDataloader):
