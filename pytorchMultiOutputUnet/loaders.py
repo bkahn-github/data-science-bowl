@@ -45,12 +45,16 @@ class TrainDataset(Dataset):
         contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
         center = center.reshape(center.shape[0], center.shape[1], 1)
 
+        target = np.concatenate((mask, contour, target), axis=-1)
+
         img = self.x_transform(img)
-        mask = self.y_transform(mask)
-        contour = self.y_transform(contour)
-        center = self.y_transform(center)
+        target = self.y_transform(target)
+        # mask = self.y_transform(mask)
+        # contour = self.y_transform(contour)
+        # center = self.y_transform(center)
         
-        return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
+        # return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
+        return {'img': img, 'target': target}
 
 x_transforms = transforms.Compose([
     transforms.ToPILImage(),
