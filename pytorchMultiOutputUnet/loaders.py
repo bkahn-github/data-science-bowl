@@ -45,7 +45,7 @@ class TrainDataset(Dataset):
         contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
         center = center.reshape(center.shape[0], center.shape[1], 1)
 
-        target = np.concatenate((mask, contour, target), axis=-1)
+        target = np.concatenate((mask, contour, center), axis=-1)
 
         img = self.x_transform(img)
         target = self.y_transform(target)
