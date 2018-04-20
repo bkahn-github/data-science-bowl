@@ -2,6 +2,7 @@ import os
 import click
 import logging
 from tqdm import tqdm
+from glob import glob
 
 import torch
 import torchvision
@@ -45,7 +46,8 @@ def preprocess():
 
 @action.command()
 @click.option('--epochs', default=10, help='Number of epochs')
-def train(epochs):
+@click.option('--weights', default='', help='Path to weights')
+def train(epochs, weights):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
@@ -60,6 +62,9 @@ def train(epochs):
 
     if torch.cuda.is_available():
         model.cuda()
+
+    if weights != '':
+        model.load_state_dict(torch.load(weights))
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
