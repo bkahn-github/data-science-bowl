@@ -49,9 +49,9 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
             masks.append(img)
         
         if mode == 'masks':
-            total_mask = np.sum(masks, axis=0)
+            total_mask = np.sum(masks, axis=0) * -1
         else:
-            total_mask = np.where(np.sum(masks, axis=0) > 128., 255., 0.).astype(np.uint8)        
+            total_mask = np.where(np.sum(masks, axis=0) > 128., 255., 0.).astype(np.uint8) * -1 
 
         center_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
         imwrite(center_path, total_mask)
