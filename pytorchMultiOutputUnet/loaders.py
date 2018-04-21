@@ -49,11 +49,6 @@ class TrainDataset(Dataset):
 
         img = self.x_transform(img)
         target = self.y_transform(target)
-        # mask = self.y_transform(mask)
-        # contour = self.y_transform(contour)
-        # center = self.y_transform(center)
-        
-        # return {'img': img, 'mask': mask, 'contour': contour, 'center': center}
         return {'img': img, 'target': target}
 
 x_transforms = transforms.Compose([

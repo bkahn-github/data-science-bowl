@@ -76,43 +76,22 @@ def train(epochs, weights):
 
         logging.info('Epoch # ' + str(epoch))
         for data in tqdm(trainDataloader):
-            # img, mask, contour, center = data['img'], data['mask'], data['contour'], data['center']
             img, target = data['img'], data['target']
 
             if torch.cuda.is_available():         
                 x = Variable(img).cuda()
                 y = Variable(target).cuda()
-                # y = Variable(torch.cat([mask, contour, center], dim=1)).cuda()
-                # y = [Variable(mask).cuda(), Variable(contour).cuda(), Variable(center).cuda()]
-                # y = Variable(mask).cuda()
             else:
                 x = Variable(img)
                 y = Variable(target)                
-                # y = [Variable(mask), Variable(contour), Variable(center)]
-                # y = Variable(torch.cat([mask, contour, center], dim=1))                
-                # y = Variable(mask)                
 
             optimizer.zero_grad()
 
             outs = model(x)
 
-            # total_loss = dice_loss(outs, y)
-
-            # print(outs.shape)
-            # print(outs[:,0].shape)
-            # print(y[0].shape)
-
             total_loss = segmentation_loss(outs, y)
-            # losses = [
-            #     ('mask_loss', dice_loss(outs[:,0].contiguous().view(-1, 1, 256, 256), y[0]) * 0.0),
-            #     ('contour_loss', dice_loss(outs[:,1].contiguous().view(-1, 1, 256, 256), y[1]) * 1.0),
-            #     ('center_loss', dice_loss(outs[:,2].contiguous().view(-1, 1, 256, 256), y[2]) * 0.0)]
-
-            # total_loss = 0
-            # for loss in losses:
-            #     total_loss += loss[1]
-
             total_loss.backward()
+
             optimizer.step()
 
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
