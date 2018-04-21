@@ -13,7 +13,7 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
-from metrics import dice_loss
+from metrics import segmentation_loss
 from utils import get_ids
 
 import torch.nn as nn
@@ -102,7 +102,7 @@ def train(epochs, weights):
             # print(outs[:,0].shape)
             # print(y[0].shape)
 
-            total_loss = dice_loss(outs, y)
+            total_loss = segmentation_loss(outs, y)
             # losses = [
             #     ('mask_loss', dice_loss(outs[:,0].contiguous().view(-1, 1, 256, 256), y[0]) * 0.0),
             #     ('contour_loss', dice_loss(outs[:,1].contiguous().view(-1, 1, 256, 256), y[1]) * 1.0),
