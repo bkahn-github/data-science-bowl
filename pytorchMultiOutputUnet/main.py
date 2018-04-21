@@ -13,7 +13,7 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
-from metrics import segmentation_loss
+from metrics import dice_loss
 from utils import get_ids
 
 import torch.nn as nn
@@ -89,7 +89,7 @@ def train(epochs, weights):
 
             outs = model(x)
 
-            total_loss = segmentation_loss(outs, y)
+            total_loss = dice_loss(outs, y)
             total_loss.backward()
 
             optimizer.step()
