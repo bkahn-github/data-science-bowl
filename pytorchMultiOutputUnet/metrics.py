@@ -1,4 +1,9 @@
 import numpy as np
+import torch.nn as nn
+
+def segmentation_loss(output, target):
+  bce = nn.BCEWithLogitsLoss()
+  return bce(output, target) + dice_loss(output, target)
 
 def dice_loss(inputs, targets):
     num = targets.size(0)
