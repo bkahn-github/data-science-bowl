@@ -3,21 +3,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-class DiceLoss(nn.Module):
-  def __init__(self):
-    super(DiceLoss, self).__init__()
-
-    self.sigmoid = nn.Sigmoid()
-
-  def forward(self, output, target):
-    prediction = self.sigmoid(output)
-    return 1 - 2 * torch.sum(prediction * target) / (torch.sum(prediction) + torch.sum(target) + 1e-7)
-
-def segmentation_loss(output, target):
-  bce = nn.BCEWithLogitsLoss()
-  dice = DiceLoss()
-  return bce(output, target) + dice(output, target)
-
 def dice_loss(inputs, targets):
     num = targets.size(0)
     m1  = inputs.view(num,-1)
