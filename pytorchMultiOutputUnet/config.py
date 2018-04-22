@@ -21,4 +21,6 @@ class Config():
     SHUFFLE = True
     NUM_WORKERS = 4
 
+    TEST_SIZE = 0.1
+
 config = Config()
