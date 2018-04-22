@@ -93,12 +93,12 @@ def train(epochs, weights):
 
             outs = model(x)
 
-            total_loss = dice_loss(outs, y)
-            total_loss.backward()
+            train_loss = dice_loss(outs, y)
+            train_loss.backward()
 
             optimizer.step()
 
-        print('\nTraining Loss: ' + str(total_loss.data.cpu().numpy()[0]))
+        print('\nTraining Loss: ' + str(train_loss.data.cpu().numpy()[0]))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
