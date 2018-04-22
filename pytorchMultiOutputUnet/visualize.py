@@ -79,7 +79,3 @@ def show_images(weights):
     ax = plt.subplot(4,4, 9)
     ax.set_title('Predicted mask - contours with otsu thresholding')
     ax.imshow(((outs[1][0] - outs[1][1]) > threshold_otsu((outs[1][0]) - (outs[1][1])) ).reshape(256, 256))
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
-    logging.info('Started the program')
