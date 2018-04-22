@@ -1,5 +1,4 @@
 import os
-import click
 import logging
 
 import torch
@@ -16,24 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from utils import get_ids
 
-@click.group(chain=True)
-def action():
-    pass
-
-@action.command()
-@click.option('--subset', default=False, help='Use a subset of the data')
-def subset(subset):
-    if subset == 'True':
-        logging.info('Using a subset')
-        config.SUBSET = True
-    else:
-        logging.info('Using the full dataset')
-        config.SUBSET = False
-
-
-@action.command()
-@click.option('--weights', default='', help='Path to weights')
-def visualize(weights):
+def show_images(weights):
     logging.info('Visualizing model')
     model = Unet()
     model.load_state_dict(torch.load(weights))
@@ -101,4 +83,3 @@ def visualize(weights):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
     logging.info('Started the program')
-    action()
