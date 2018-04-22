@@ -13,6 +13,7 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
+from visualize import show_images
 from metrics import dice_loss
 from utils import get_ids
 
@@ -123,6 +124,16 @@ def train(epochs, weights):
 
         print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(avg_train_loss, 4)) + '\tValidation Loss:' + str(round(avg_val_loss, 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
+
+def visualize(weights, subset):
+    if subset == 'True':
+        logging.info('Using a subset')
+        config.SUBSET = True
+    else:
+        logging.info('Using the full dataset')
+        config.SUBSET = False
+
+    show_images(weights)
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
