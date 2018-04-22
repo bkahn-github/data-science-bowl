@@ -1,5 +1,6 @@
 import os
 import click
+import logging
 
 import torch
 import torchvision
@@ -20,8 +21,20 @@ def action():
     pass
 
 @action.command()
+@click.option('--subset', default=False, help='Use a subset of the data')
+def subset(subset):
+    if subset == 'True':
+        logging.info('Using a subset')
+        config.SUBSET = True
+    else:
+        logging.info('Using the full dataset')
+        config.SUBSET = False
+
+
+@action.command()
 @click.option('--weights', default='', help='Path to weights')
 def visualize(weights):
+    logging.info('Visualizing model')
     model = Unet()
     model.load_state_dict(torch.load(weights))
     model.eval()
@@ -86,4 +99,6 @@ def visualize(weights):
     ax.imshow(((outs[1][0] - outs[1][1]) > threshold_otsu((outs[1][0]) - (outs[1][1])) ).reshape(256, 256))
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
+    logging.info('Started the program')
     action()
