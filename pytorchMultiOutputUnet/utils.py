@@ -2,6 +2,7 @@ import os
 import glob
 
 from config import config
+from sklearn.model_selection import train_test_split
 
 def get_ids():
     if config.SUBSET:
@@ -10,7 +11,10 @@ def get_ids():
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))
 
     ids = [id.split('/')[-1] for id in ids]
-    return ids
+
+    train_ids, val_ids = train_test_split(ids, test_size=config.TEST_SIZE)
+
+    return train_ids, val_ids
 
 def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
