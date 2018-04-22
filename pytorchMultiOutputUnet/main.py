@@ -58,6 +58,10 @@ def train(epochs, weights):
     train = TrainDataset(train_ids, x_transform=x_transforms, y_transform=y_transforms)
     trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
+    logging.info('Creating Validation Dataset')
+    val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
+    valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
+
     model = Unet()
 
     if torch.cuda.is_available():
