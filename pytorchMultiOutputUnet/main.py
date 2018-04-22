@@ -79,6 +79,7 @@ def train(epochs, weights):
         epoch = epoch + int(startingEpoch) + 1
 
         logging.info('Epoch # ' + str(epoch))
+        total_train_loss = 0
         for data in tqdm(trainDataloader):
             img, target = data['img'], data['target']
 
@@ -94,11 +95,14 @@ def train(epochs, weights):
             outs = model(x)
 
             train_loss = dice_loss(outs, y)
+            total_train_loss += train_loss.data.cpu().numpy()[0]
             train_loss.backward()
 
             optimizer.step()
 
-        print('\nTraining Loss: ' + str(train_loss.data.cpu().numpy()[0]))
+        avg_train_loss = total_train_loss.data.cpu().numpy()[0] / len(train_ids)
+
+        print('\nTraining Loss: ' + str(avg_train_loss))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
