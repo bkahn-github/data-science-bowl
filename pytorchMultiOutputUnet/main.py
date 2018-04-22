@@ -52,10 +52,10 @@ def train(epochs, weights):
     logging.info('Training for ' + str(epochs) + ' epochs')
 
     logging.info('Getting Ids')
-    ids = get_ids()
+    train_ids, val_ids = get_ids()
 
     logging.info('Creating Training Dataset')
-    train = TrainDataset(ids, x_transform=x_transforms, y_transform=y_transforms)
+    train = TrainDataset(train_ids, x_transform=x_transforms, y_transform=y_transforms)
     trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
     model = Unet()
