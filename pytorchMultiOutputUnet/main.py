@@ -80,7 +80,7 @@ def train(epochs, weights):
         epoch = epoch + int(startingEpoch) + 1
 
         logging.info('Epoch # ' + str(epoch))
-        total_train_loss = 0
+        # total_train_loss = 0
         for data in tqdm(trainDataloader):
             img, target = data['img'], data['target']
 
@@ -97,11 +97,11 @@ def train(epochs, weights):
 
             train_loss = dice_loss(outs, y)
             train_loss.backward()
-            total_train_loss += train_loss.data.cpu().numpy()[0]
+            # total_train_loss += train_loss.data.cpu().numpy()[0]
 
             optimizer.step()
 
-        total_val_loss = 0
+        # total_val_loss = 0
         for data in valDataloader:
             img, target = data['img'], data['target']
 
@@ -117,12 +117,12 @@ def train(epochs, weights):
             outs = model(x)
 
             val_loss = dice_loss(outs, y)
-            total_val_loss += val_loss.data.cpu().numpy()[0]
+            # total_val_loss += val_loss.data.cpu().numpy()[0]
 
-        avg_train_loss = total_train_loss / len(train_ids)
-        avg_val_loss = total_val_loss / len(val_ids)
+        # avg_train_loss = total_train_loss / len(train_ids)
+        # avg_val_loss = total_val_loss / len(val_ids)
 
-        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(avg_train_loss, 4)) + '\tValidation Loss:' + str(round(avg_val_loss, 4)))
+        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy(), 4)) + '\tValidation Loss:' + str(round(val_loss.data.cpu().numpy(), 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
 def visualize(weights, subset):
