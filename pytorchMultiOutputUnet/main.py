@@ -118,8 +118,8 @@ def train(epochs, weights):
             val_loss = dice_loss(outs, y)
             total_val_loss += val_loss.data.cpu().numpy()[0]
 
-        avg_train_loss = total_train_loss.data.cpu().numpy()[0] / len(train_ids)
-        avg_val_loss = total_val_loss.data.cpu().numpy()[0] / len(val_ids)
+        avg_train_loss = total_train_loss / len(train_ids)
+        avg_val_loss = total_val_loss / len(val_ids)
 
         print('\nTraining Loss: ' + str(avg_train_loss) + '\tValidation Loss:' + str(avg_val_loss))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
