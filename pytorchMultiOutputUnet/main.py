@@ -122,7 +122,7 @@ def train(epochs, weights):
         # avg_train_loss = total_train_loss / len(train_ids)
         # avg_val_loss = total_val_loss / len(val_ids)
 
-        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy(), 4)) + '\tValidation Loss:' + str(round(val_loss.data.cpu().numpy(), 4)))
+        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + '\tValidation Loss:' + str(round(val_loss.data.cpu().numpy()[0], 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
 def visualize(weights, subset):
