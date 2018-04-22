@@ -94,6 +94,7 @@ def train(epochs, weights):
 
             optimizer.step()
 
+        print('\nTraining Loss: ' + str(total_loss.data.cpu().numpy()[0]))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
