@@ -100,9 +100,28 @@ def train(epochs, weights):
 
             optimizer.step()
 
-        avg_train_loss = total_train_loss.data.cpu().numpy()[0] / len(train_ids)
+        total_val_loss = 0
+        for data in tqdm(valDataloader):
+            img, target = data['img'], data['target']
 
-        print('\nTraining Loss: ' + str(avg_train_loss))
+            if torch.cuda.is_available():         
+                x = Variable(img).cuda()
+                y = Variable(target).cuda()
+            else:
+                x = Variable(img)
+                y = Variable(target)                
+
+            optimizer.zero_grad()
+
+            outs = model(x)
+
+            val_loss = dice_loss(outs, y)
+            total_val_loss += val_loss.data.cpu().numpy()[0]
+
+        avg_train_loss = total_train_loss.data.cpu().numpy()[0] / len(train_ids)
+        avg_val_loss = total_val_loss.data.cpu().numpy()[0] / len(val_ids)
+
+        print('\nTraining Loss: ' + str(avg_train_loss) + '\tValidation Loss:' + str(avg_val_loss))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
