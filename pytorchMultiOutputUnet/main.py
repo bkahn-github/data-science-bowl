@@ -96,8 +96,8 @@ def train(epochs, weights):
             outs = model(x)
 
             train_loss = dice_loss(outs, y)
-            total_train_loss += train_loss.data.cpu().numpy()[0]
             train_loss.backward()
+            total_train_loss += train_loss.data.cpu().numpy()[0]
 
             optimizer.step()
 
