@@ -127,10 +127,8 @@ def train(epochs, weights):
 
 def visualize(weights, subset):
     if subset == 'True':
-        logging.info('Using a subset')
         config.SUBSET = True
     else:
-        logging.info('Using the full dataset')
         config.SUBSET = False
 
     show_images(weights)
