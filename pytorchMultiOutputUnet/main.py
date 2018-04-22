@@ -102,7 +102,7 @@ def train(epochs, weights):
             optimizer.step()
 
         total_val_loss = 0
-        for data in tqdm(valDataloader):
+        for data in valDataloader:
             img, target = data['img'], data['target']
 
             if torch.cuda.is_available():         
