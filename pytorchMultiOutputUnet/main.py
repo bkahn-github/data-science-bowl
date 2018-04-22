@@ -121,7 +121,7 @@ def train(epochs, weights):
         avg_train_loss = total_train_loss / len(train_ids)
         avg_val_loss = total_val_loss / len(val_ids)
 
-        print('\nTraining Loss: ' + str(round(avg_train_loss, 4)) + '\tValidation Loss:' + str(round(avg_val_loss, 4)))
+        print('\nEpoch # ' + epoch + ' | Training Loss: ' + str(round(avg_train_loss, 4)) + '\tValidation Loss:' + str(round(avg_val_loss, 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
         
 if __name__ == "__main__":
