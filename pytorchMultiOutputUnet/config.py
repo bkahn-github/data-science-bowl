@@ -19,7 +19,7 @@ class Config():
 
     BATCH_SIZE = 4
     SHUFFLE = True
-    NUM_WORKERS = 4
+    NUM_WORKERS = 3
 
     TEST_SIZE = 0.1
 
