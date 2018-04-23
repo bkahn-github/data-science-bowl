@@ -61,7 +61,7 @@ def show_images(weights):
     ax.imshow((outs[1][0]).reshape(256, 256))
 
     ax = plt.subplot(4, 4, 5)
-    ax.set_title('Predicted mask with otsu thresholding')
+    ax.set_title('Predicted mask with Otsu thresholding')
     ax.imshow((outs[1][0] > threshold_otsu(outs[1][0])).reshape(256, 256))
 
     ax = plt.subplot(4, 4, 6)
@@ -69,7 +69,7 @@ def show_images(weights):
     ax.imshow((outs[1][1]).reshape(256, 256))
 
     ax = plt.subplot(4, 4, 7)
-    ax.set_title('Predicted contours with otsu thresholding')
+    ax.set_title('Predicted contours with Otsu thresholding')
     ax.imshow((outs[1][1] > threshold_otsu(outs[1][1])).reshape(256, 256))
 
     ax = plt.subplot(4, 4, 8)
@@ -77,5 +77,5 @@ def show_images(weights):
     ax.imshow((outs[1][0]) - (outs[1][1]).reshape(256, 256))  
 
     ax = plt.subplot(4,4, 9)
-    ax.set_title('Predicted mask - contours with otsu thresholding')
+    ax.set_title('Predicted mask - contours with Otsu thresholding')
     ax.imshow(((outs[1][0] - outs[1][1]) > threshold_otsu((outs[1][0]) - (outs[1][1])) ).reshape(256, 256))
