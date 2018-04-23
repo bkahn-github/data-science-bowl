@@ -12,10 +12,9 @@ def get_ids():
 
     ids = [id.split('/')[-1] for id in ids]
 
-    # train_ids, val_ids = train_test_split(ids, test_size=config.TEST_SIZE, )
+    train_ids, val_ids = train_test_split(ids, test_size=config.TEST_SIZE)
 
-    # return train_ids, val_ids
-    return ids
+    return train_ids, val_ids
 
 def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
