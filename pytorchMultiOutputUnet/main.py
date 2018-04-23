@@ -102,27 +102,28 @@ def train(epochs, weights):
             optimizer.step()
 
         # total_val_loss = 0
-        for data in valDataloader:
-            img, target = data['img'], data['target']
+        # for data in valDataloader:
+        #     img, target = data['img'], data['target']
 
-            if torch.cuda.is_available():         
-                x = Variable(img).cuda()
-                y = Variable(target).cuda()
-            else:
-                x = Variable(img)
-                y = Variable(target)                
+        #     if torch.cuda.is_available():         
+        #         x = Variable(img).cuda()
+        #         y = Variable(target).cuda()
+        #     else:
+        #         x = Variable(img)
+        #         y = Variable(target)                
 
-            optimizer.zero_grad()
+        #     optimizer.zero_grad()
 
-            outs = model(x)
+        #     outs = model(x)
 
-            val_loss = dice_loss(outs, y)
+        #     val_loss = dice_loss(outs, y)
             # total_val_loss += val_loss.data.cpu().numpy()[0]
 
         # avg_train_loss = total_train_loss / len(train_ids)
         # avg_val_loss = total_val_loss / len(val_ids)
 
-        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + '\tValidation Loss:' + str(round(val_loss.data.cpu().numpy()[0], 4)))
+        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)))
+        # print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + '\tValidation Loss:' + str(round(val_loss.data.cpu().numpy()[0], 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
 def visualize(weights, subset):
