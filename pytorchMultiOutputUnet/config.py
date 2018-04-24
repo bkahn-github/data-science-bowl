@@ -22,5 +22,6 @@ class Config():
     NUM_WORKERS = 3
 
     TEST_SIZE = 0.1
+    PATIENCE = 1
 
 config = Config()
