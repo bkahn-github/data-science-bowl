@@ -17,9 +17,9 @@ class EarlyStopping:
         if loss < self.best_score:
             self.best_score = loss
             self.best_epoch = epoch
-            print('OK')
+            print('Continue Training')
         elif epoch - self.best_epoch > 0:
-            print('Stopped')
+            print('Stop Training')
 
 def print_losses(train_loss, val_loss, epoch):
     train_loss = train_loss.data.cpu().numpy()[0]
