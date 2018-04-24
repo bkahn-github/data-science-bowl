@@ -28,7 +28,7 @@ class EarlyStopping:
             print('Stop Training')
 
 def print_losses(train_loss, val_loss, epoch):
-    
+
     if torch.cuda.is_available():         
         train_loss = train_loss.data.cpu().numpy()[0]
         val_loss = val_loss.data.cpu().numpy()[0]
@@ -39,6 +39,9 @@ def print_losses(train_loss, val_loss, epoch):
     message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     
     print(message)
+
+def save_model(model):
+    torch.save(model.state_dict(), './model-best.pt')
 
 def get_ids():
     if config.SUBSET:
