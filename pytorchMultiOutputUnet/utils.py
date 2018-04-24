@@ -19,6 +19,14 @@ class EarlyStopping:
         elif epoch - self.best_epoch > 0:
             print('Stopped')
 
+def print_losses(train_loss, val_loss, epoch):
+    train_loss = train_loss.data.cpu().numpy()[0]
+    val_loss = val_loss.data.cpu().numpy()[0]
+
+    message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
+    
+    return message
+
 def get_ids():
     if config.SUBSET:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:10]
