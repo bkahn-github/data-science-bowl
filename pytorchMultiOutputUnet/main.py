@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
 from metrics import dice_loss
-from utils import get_ids, EarlyStopping
+from utils import get_ids, print_losses, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -95,10 +95,9 @@ def train(epochs, weights):
             optimizer.zero_grad()
 
             outs = model(x)
-
             train_loss = dice_loss(outs, y)
             train_loss.backward()
-
+            
             optimizer.step()
 
         for data in valDataloader:
@@ -114,13 +113,12 @@ def train(epochs, weights):
             optimizer.zero_grad()
 
             outs = model(x)
-
             val_loss = dice_loss(outs, y)
 
-        print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + ' | Validation Loss: ' + str(round(val_loss.data.cpu().numpy()[0], 4)))
+        print(print_losses(train_loss, val_loss, epoch))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
-        early_stopping.check(val_loss.data.cpu().numpy()[0], epoch)
+        early_stopping.check(val_loss, epoch)
 
 def visualize(weights, subset):
     if subset == 'True':
