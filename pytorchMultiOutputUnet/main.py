@@ -120,7 +120,7 @@ def train(epochs, weights):
         print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + ' | Validation Loss: ' + str(round(val_loss.data.cpu().numpy()[0], 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
-        early_stopping.check(val_loss.data.cpu().numpy(), epoch)
+        early_stopping.check(val_loss.data.cpu().numpy()[0], epoch)
 
 def visualize(weights, subset):
     if subset == 'True':
