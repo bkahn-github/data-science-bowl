@@ -1,6 +1,8 @@
 import os
 import glob
 
+import torch
+
 from config import config
 from sklearn.model_selection import train_test_split
 
@@ -12,7 +14,11 @@ class EarlyStopping:
 
     # @classmethod
     def check(self, loss, epoch):
-        loss = loss.data.cpu().numpy()[0]
+
+        if torch.cuda.is_available():         
+            loss = loss.data.cpu().numpy()[0]
+        else:
+            loss = loss.data.numpy()[0]            
         
         if loss < self.best_score:
             self.best_score = loss
@@ -22,8 +28,13 @@ class EarlyStopping:
             print('Stop Training')
 
 def print_losses(train_loss, val_loss, epoch):
-    train_loss = train_loss.data.cpu().numpy()[0]
-    val_loss = val_loss.data.cpu().numpy()[0]
+    
+    if torch.cuda.is_available():         
+        train_loss = train_loss.data.cpu().numpy()[0]
+        val_loss = val_loss.data.cpu().numpy()[0]
+    else:
+        train_loss = train_loss.data.numpy()[0]
+        val_loss = val_loss.data.numpy()[0]
 
     message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     
