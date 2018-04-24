@@ -47,6 +47,13 @@ def print_losses(train_loss, val_loss, epoch):
 def save_model(model):
     torch.save(model.state_dict(), './model-best.pt')
 
+def load_model(model, path):
+    startingEpoch = path.split('-')[-1].split('.')[0]
+    logging.info('Starting from epoch ' + startingEpoch)
+    model.load_state_dict(torch.load(path))
+
+    return model, startingEpoch
+
 def get_ids():
     if config.SUBSET:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:10]
