@@ -4,13 +4,13 @@ import glob
 from config import config
 from sklearn.model_selection import train_test_split
 
-class EarlyStopping():
+class EarlyStopping:
     def __init__(self):
         
         self.best_score = 1
         self.best_epoch = 0 
 
-    @classmethod
+    # @classmethod
     def check(self, loss, epoch):
         if loss < self.best_score:
             self.best_score = loss
