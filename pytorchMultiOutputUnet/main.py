@@ -85,12 +85,7 @@ def train(epochs, weights):
         else:
             continue
 
-def visualize(weights, subset):
-    if subset == 'True':
-        config.SUBSET = True
-    else:
-        config.SUBSET = False
-
+def visualize(weights):
     show_images(weights)
         
 if __name__ == "__main__":
