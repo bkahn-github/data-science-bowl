@@ -55,8 +55,8 @@ def train(epochs, weights):
 
     model = Unet()
 
-    if torch.cuda.is_available():
-        model.cuda()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model.to(device)
 
     if weights != '':
         model, startingEpoch = load_model(model, weights)
@@ -74,12 +74,8 @@ def train(epochs, weights):
         for data in tqdm(trainDataloader):
             img, target = data['img'], data['target']
 
-            if torch.cuda.is_available():         
-                x = Variable(img).cuda()
-                y = Variable(target).cuda()
-            else:
-                x = Variable(img)
-                y = Variable(target)                
+            x = Variable(img).to(device)
+            y = Variable(target).to(device)
 
             optimizer.zero_grad()
 
@@ -92,12 +88,8 @@ def train(epochs, weights):
         for data in tqdm(valDataloader):
             img, target = data['img'], data['target']
 
-            if torch.cuda.is_available():         
-                x = Variable(img).cuda()
-                y = Variable(target).cuda()
-            else:
-                x = Variable(img)
-                y = Variable(target)                
+            x = Variable(img).to(device)
+            y = Variable(target).to(device)
 
             optimizer.zero_grad()
 
