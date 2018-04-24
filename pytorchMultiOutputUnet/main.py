@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
 from metrics import dice_loss
-from utils import get_ids, print_losses, save_model, EarlyStopping
+from utils import get_ids, print_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -68,11 +68,8 @@ def train(epochs, weights):
     if torch.cuda.is_available():
         model.cuda()
 
-    startingEpoch = 0
     if weights != '':
-        startingEpoch = weights.split('-')[-1].split('.')[0]
-        logging.info('Starting from epoch ' + startingEpoch)
-        model.load_state_dict(torch.load(weights))
+        model, startingEpoch = load_model(model, weights)
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
