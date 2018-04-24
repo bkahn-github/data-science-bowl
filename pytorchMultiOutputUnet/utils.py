@@ -16,10 +16,7 @@ class EarlyStopping:
 
     def evaluate(self, model, loss, epoch, patience=0):
 
-        if torch.cuda.is_available():         
-            loss = loss.data.cpu().numpy()[0]
-        else:
-            loss = loss.data.numpy()[0]            
+        loss = loss.item()
         
         if loss < self.best_score:
             logging.info('Val score has improved, saving model\n')
