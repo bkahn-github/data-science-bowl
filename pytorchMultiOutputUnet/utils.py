@@ -12,6 +12,8 @@ class EarlyStopping:
 
     # @classmethod
     def check(self, loss, epoch):
+        loss = loss.data.cpu().numpy()[0]
+        
         if loss < self.best_score:
             self.best_score = loss
             self.best_epoch = epoch
