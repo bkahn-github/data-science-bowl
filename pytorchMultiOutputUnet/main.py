@@ -115,7 +115,8 @@ def train(epochs, weights):
             outs = model(x)
             val_loss = dice_loss(outs, y)
 
-        print(print_losses(train_loss, val_loss, epoch))
+        print_losses(train_loss, val_loss, epoch)
+        
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
         early_stopping.check(val_loss, epoch)

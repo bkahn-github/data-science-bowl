@@ -25,7 +25,7 @@ def print_losses(train_loss, val_loss, epoch):
 
     message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     
-    return message
+    print(message)
 
 def get_ids():
     if config.SUBSET:
