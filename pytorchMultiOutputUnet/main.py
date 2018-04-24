@@ -70,6 +70,8 @@ def train(epochs, weights):
 
     if weights != '':
         model, startingEpoch = load_model(model, weights)
+    else:
+        startingEpoch = 0
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
