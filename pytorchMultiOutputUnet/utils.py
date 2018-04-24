@@ -27,9 +27,9 @@ class EarlyStopping:
             save_model(model)
 
         elif epoch - self.best_epoch > patience:
-            logging.info('Val score hasn\'t improved for more than ' + str(patience) + ' epochs, stopping training\n')
+            logging.info('Val score hasn\'t improved for ' + str(epoch - self.best_epoch) + ' epochs, stopping training\n')
         else:
-            logging.info('Val score hasn\'t improved for more than ' + str(epoch - self.best_epoch) + ' epochs, not saving model\n')
+            logging.info('Val score hasn\'t improved for ' + str(epoch - self.best_epoch) + ' epochs, not saving model\n')
 
 def print_losses(train_loss, val_loss, epoch):
 
