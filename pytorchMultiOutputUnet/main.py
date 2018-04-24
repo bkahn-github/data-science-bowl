@@ -116,8 +116,7 @@ def train(epochs, weights):
             val_loss = dice_loss(outs, y)
 
         print_losses(train_loss, val_loss, epoch)
-        early_stopping.check(val_loss, epoch)
-        save_model(model)
+        early_stopping.evaluate(model, val_loss, epoch, 0)
 
 def visualize(weights, subset):
     if subset == 'True':
