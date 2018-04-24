@@ -10,7 +10,8 @@ class EarlyStopping():
         self.best_score = 1
         self.best_epoch = 0 
 
-    def check(loss, epoch):
+    @classmethod
+    def check(self, loss, epoch):
         if loss < self.best_score:
             self.best_score = loss
             self.best_epoch = epoch
