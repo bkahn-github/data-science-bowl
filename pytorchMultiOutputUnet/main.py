@@ -80,8 +80,8 @@ def train(epochs, weights):
 
     for epoch in range(epochs):
         epoch = epoch + int(startingEpoch) + 1
-
         logging.info('Epoch # ' + str(epoch))
+        
         for data in tqdm(trainDataloader):
             img, target = data['img'], data['target']
 
@@ -116,7 +116,7 @@ def train(epochs, weights):
             val_loss = dice_loss(outs, y)
 
         print_losses(train_loss, val_loss, epoch)
-        
+
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
         early_stopping.check(val_loss, epoch)
