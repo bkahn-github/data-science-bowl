@@ -1,8 +1,8 @@
 import os
-import click
 import logging
 from tqdm import tqdm
 from glob import glob
+import argparse
 
 import torch
 import torchvision
@@ -22,12 +22,6 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
     
-@click.group(chain=True)
-def action():
-    pass
-
-@action.command()
-@click.option('--subset', default=False, help='Use a subset of the data')
 def subset(subset):
     if subset == 'True':
         logging.info('Using a subset')
@@ -36,7 +30,6 @@ def subset(subset):
         logging.info('Using the full dataset')
         config.SUBSET = False
 
-@action.command()
 def preprocess():
     logging.info('Starting Preprocessing')
     logging.info('Creating masks')
@@ -46,9 +39,6 @@ def preprocess():
     logging.info('Creating centers')
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CENTERS_OUTPUT_FOLDER, 'centers', config.SUBSET)
 
-@action.command()
-@click.option('--epochs', default=10, help='Number of epochs')
-@click.option('--weights', default='', help='Path to weights')
 def train(epochs, weights):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
@@ -106,4 +96,35 @@ def visualize(weights, subset):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
     logging.info('Started the program')
-    action()
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("mode")
+
+    parser.add_argument("--subset")
+
+    parser.add_argument('--epochs', type=int)
+    parser.add_argument("--weights")
+
+    args = parser.parse_args()
+
+    if args.subset:
+        subset(args.subset)
+
+    if args.mode == 'preprocess':
+        preprocess()
+    elif args.mode == 'train':
+        if args.epochs:
+            if args.weights:
+                train(args.epochs, args.weights)
+            else:
+                train(args.epochs, '')
+        else:
+            logging.info('You must give a number of epochs')
+    elif args.mode == 'visualize':
+        if args.weights:
+            visualize(args.weights)
+        else:
+            logging.info('You must give model file')
+    else:
+        logging.info('You must provide an argument')
