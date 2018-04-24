@@ -124,7 +124,7 @@ def train(epochs, weights):
         if val_loss.data.cpu().numpy()[0] < best_val_score:
             best_val_score = val_loss.data.cpu().numpy()[0]
             best_val_epoch = epoch
-        else if epoch - best_val_epoch > 1:
+        elif epoch - best_val_epoch > 1:
             print('Stopped')
 
 def visualize(weights, subset):
