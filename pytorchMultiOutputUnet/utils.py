@@ -11,7 +11,7 @@ class EarlyStopping():
         self.best_epoch = 0 
 
     def check(loss, epoch):
-        if < self.best_score:
+        if loss < self.best_score:
             self.best_score = loss
             self.best_epoch = epoch
             print('OK')
