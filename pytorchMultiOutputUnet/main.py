@@ -13,7 +13,6 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
-from train import model_loop
 from visualize import show_images
 from metrics import dice_loss
 from utils import get_ids, print_losses, save_model, load_model, EarlyStopping
@@ -72,8 +71,38 @@ def train(epochs, weights):
         epoch = epoch + int(startingEpoch) + 1
         logging.info('Epoch # ' + str(epoch))
         
-        model, train_loss = model_loop(trainDataloader, model, optimizer)
-        model, val_loss = model_loop(valDataloader, model, optimizer, is_training=False)
+        for data in tqdm(trainDataloader):
+            img, target = data['img'], data['target']
+
+            if torch.cuda.is_available():         
+                x = Variable(img).cuda()
+                y = Variable(target).cuda()
+            else:
+                x = Variable(img)
+                y = Variable(target)                
+
+            optimizer.zero_grad()
+
+            outs = model(x)
+            train_loss = dice_loss(outs, y)
+
+            train_loss.backward()
+            optimizer.step()
+
+        for data in tqdm(valDataloader):
+            img, target = data['img'], data['target']
+
+            if torch.cuda.is_available():         
+                x = Variable(img).cuda()
+                y = Variable(target).cuda()
+            else:
+                x = Variable(img)
+                y = Variable(target)                
+
+            optimizer.zero_grad()
+
+            outs = model(x)
+            val_loss = dice_loss(outs, y)
 
         print_losses(train_loss, val_loss, epoch)
         action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
