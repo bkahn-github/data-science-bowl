@@ -5,6 +5,7 @@ import logging
 import torch
 
 from config import config
+
 from sklearn.model_selection import train_test_split
 
 class EarlyStopping:
@@ -33,14 +34,9 @@ class EarlyStopping:
             logging.info('Val score hasn\'t improved for ' + str(epoch - self.best_epoch) + ' epochs, not saving model\n')
             return 'continue'
 
-def print_losses(train_loss, val_loss, epoch):
-
-    if torch.cuda.is_available():         
-        train_loss = train_loss.data.cpu().numpy()[0]
-        val_loss = val_loss.data.cpu().numpy()[0]
-    else:
-        train_loss = train_loss.data.numpy()[0]
-        val_loss = val_loss.data.numpy()[0]
+def print_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch):
+    train_loss = total_train_loss / (len(train_ids) / config.BATCH_SIZE)
+    val_loss = total_val_loss / (len(val_ids) / config.BATCH_SIZE)
 
     message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     

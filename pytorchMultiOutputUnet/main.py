@@ -71,6 +71,7 @@ def train(epochs, weights):
         epoch = epoch + int(startingEpoch) + 1
         logging.info('Epoch # ' + str(epoch))
         
+        total_train_loss = 0
         for data in tqdm(trainDataloader):
             img, target = data['img'], data['target']
 
@@ -81,22 +82,26 @@ def train(epochs, weights):
 
             outs = model(x)
             train_loss = dice_loss(outs, y)
+            total_train_loss += train_loss.item()
 
             train_loss.backward()
             optimizer.step()
 
-        for data in tqdm(valDataloader):
-            img, target = data['img'], data['target']
+        total_val_loss = 0
+        with torch.no_grad():
+            for data in tqdm(valDataloader):
+                img, target = data['img'], data['target']
 
-            x = Variable(img).to(device)
-            y = Variable(target).to(device)
+                x = Variable(img).to(device)
+                y = Variable(target).to(device)
 
-            optimizer.zero_grad()
+                optimizer.zero_grad()
 
-            outs = model(x)
-            val_loss = dice_loss(outs, y)
+                outs = model(x)
+                val_loss = dice_loss(outs, y)
+                total_val_loss += val_loss.item()
 
-        print_losses(train_loss, val_loss, epoch)
+        print_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
         action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
         if action == 'save':
