@@ -76,6 +76,9 @@ def train(epochs, weights):
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
+    best_val_score = 1
+    best_val_epoch = 0
+
     for epoch in range(epochs):
         epoch = epoch + int(startingEpoch) + 1
 
@@ -117,6 +120,12 @@ def train(epochs, weights):
 
         print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + ' | Validation Loss: ' + str(round(val_loss.data.cpu().numpy()[0], 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
+
+        if val_loss.data.cpu().numpy()[0] < best_val_score:
+            best_val_score = val_loss.data.cpu().numpy()[0]
+            best_val_epoch = epoch
+        else if epoch - best_val_epoch > 5:
+            print('Stopped')
 
 def visualize(weights, subset):
     if subset == 'True':
