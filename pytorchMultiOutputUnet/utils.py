@@ -1,5 +1,6 @@
 import os
 import glob
+import logging
 
 import torch
 
@@ -12,8 +13,7 @@ class EarlyStopping:
         self.best_score = 1
         self.best_epoch = 0 
 
-    # @classmethod
-    def check(self, loss, epoch):
+    def evaluate(self, model, loss, epoch, patience=0):
 
         if torch.cuda.is_available():         
             loss = loss.data.cpu().numpy()[0]
@@ -21,11 +21,15 @@ class EarlyStopping:
             loss = loss.data.numpy()[0]            
         
         if loss < self.best_score:
+            logging.info('Val score has improved, saving model\n')
             self.best_score = loss
             self.best_epoch = epoch
-            print('Continue Training')
-        elif epoch - self.best_epoch > 0:
-            print('Stop Training')
+            save_model(model)
+
+        elif epoch - self.best_epoch > patience:
+            logging.info('Val score hasn\'t improved for more than ' + str(patience) + 'epochs, stopping training\n')
+        else:
+            logging.info('Val score hasn\'t improved for more than ' + str(epoch - self.best_epoch) + 'epochs, not saving model\n')
 
 def print_losses(train_loss, val_loss, epoch):
 
