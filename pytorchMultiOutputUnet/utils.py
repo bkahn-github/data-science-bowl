@@ -4,6 +4,20 @@ import glob
 from config import config
 from sklearn.model_selection import train_test_split
 
+class EarlyStopping():
+    def __init__(self):
+        
+        self.best_score = 1
+        self.best_epoch = 0 
+
+    def check(loss, epoch):
+        if < self.best_score:
+            self.best_score = loss
+            self.best_epoch = epoch
+            print('OK')
+        elif epoch - self.best_epoch > 0:
+            print('Stopped')
+
 def get_ids():
     if config.SUBSET:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:10]

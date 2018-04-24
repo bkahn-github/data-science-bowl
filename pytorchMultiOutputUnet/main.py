@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
 from metrics import dice_loss
-from utils import get_ids
+from utils import get_ids, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -76,8 +76,7 @@ def train(epochs, weights):
 
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
-    best_val_score = 1
-    best_val_epoch = 0
+    early_stopping = EarlyStopping()
 
     for epoch in range(epochs):
         epoch = epoch + int(startingEpoch) + 1
@@ -121,11 +120,7 @@ def train(epochs, weights):
         print('\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss.data.cpu().numpy()[0], 4)) + ' | Validation Loss: ' + str(round(val_loss.data.cpu().numpy()[0], 4)))
         torch.save(model.state_dict(), './model-' + str(epoch) + '.pt')
 
-        if val_loss.data.cpu().numpy()[0] < best_val_score:
-            best_val_score = val_loss.data.cpu().numpy()[0]
-            best_val_epoch = epoch
-        elif epoch - best_val_epoch > 1:
-            print('Stopped')
+        early_stopping.check(val_loss.data.cpu().numpy(), epoch)
 
 def visualize(weights, subset):
     if subset == 'True':
