@@ -47,7 +47,8 @@ def train(epochs, weights):
     splits = get_ids()
 
     for i, split in enumerate(splits):
-        logging.info('Split #' + str(i))
+        logging.info('=' * 50)
+        logging.info('Split # ' + str(i + 1))
 
         train_ids, val_ids = split[0], split[1]
 
@@ -73,6 +74,7 @@ def train(epochs, weights):
 
         for epoch in range(epochs):
             epoch = epoch + int(startingEpoch) + 1
+            logging.info('-' * 50)
             logging.info('Epoch # ' + str(epoch))
             
             total_train_loss = 0
@@ -107,6 +109,7 @@ def train(epochs, weights):
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
+            print('=' * 50)
 
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
