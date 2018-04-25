@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
 from metrics import dice_loss
-from utils import get_ids, print_losses, save_model, load_model, EarlyStopping
+from utils import get_ids, calculate_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -101,7 +101,9 @@ def train(epochs, weights):
                 val_loss = dice_loss(outs, y)
                 total_val_loss += val_loss.item()
 
-        print_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
+        message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
+        print(message)
+        
         action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
         if action == 'save':
