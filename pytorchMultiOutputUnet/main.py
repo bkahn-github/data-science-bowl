@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     if args.batchSize:
         config.BATCH_SIZE = args.batchSize
-        logging.info('Batch size has been changed to ' + config.BATCH_SIZE)
+        logging.info('Batch size has been changed to ' + str(config.BATCH_SIZE))
 
     if args.shuffle:
         config.SHUFFLE = args.shuffle
@@ -179,15 +179,15 @@ if __name__ == "__main__":
 
     if args.numWorkers:
         config.NUM_WORKERS = args.numWorkers
-        logging.info('Num workers has been changed to ' + config.NUM_WORKERS)
+        logging.info('Num workers has been changed to ' + str(config.NUM_WORKERS))
 
     if args.testSize:
         config.TEST_SIZE = args.testSize
-        logging.info('Test size has been changed to ' + config.TEST_SIZE)
+        logging.info('Test size has been changed to ' + str(config.TEST_SIZE))
 
     if args.patience:
         config.PATIENCE = args.patience
-        logging.info('Patience has been changed to ' + config.PATIENCE)
+        logging.info('Patience has been changed to ' + str(config.PATIENCE))
 
     if args.mode == 'preprocess':
         preprocess()
