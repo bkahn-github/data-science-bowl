@@ -43,7 +43,7 @@ def save_model(model, split, epoch):
 def load_model(model, path):
     startingSplit = 0
     startingEpoch = path.split('-')[-1].split('.')[0]
-    logging.info('Starting from split ' + startingSplit + ' epoch ' + startingEpoch)
+    logging.info('Starting from split ' + str(startingSplit) + ' epoch ' + str(startingEpoch))
     model.load_state_dict(torch.load(path))
 
     return model, startingSplit, startingEpoch
