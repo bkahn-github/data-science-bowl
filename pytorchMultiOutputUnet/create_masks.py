@@ -27,7 +27,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
     os.makedirs(stage_folder + '_' + mode, exist_ok=True)
 
     if subset:
-        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:10]
+        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:20]
     else:
         masks_folder = glob.glob(os.path.join(stage_folder, '*'))        
     
