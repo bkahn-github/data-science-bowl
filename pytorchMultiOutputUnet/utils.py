@@ -30,14 +30,14 @@ class EarlyStopping:
         else:
             logging.info('Val score hasn\'t improved for ' + str(epoch - self.best_epoch) + ' epochs, not saving model\n')
             return 'continue'
-
-def print_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch):
+    
+def calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch):
     train_loss = total_train_loss / (len(train_ids) / config.BATCH_SIZE)
     val_loss = total_val_loss / (len(val_ids) / config.BATCH_SIZE)
 
     message = '\nEpoch # ' + str(epoch) + ' | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     
-    print(message)
+    return message, train_loss, val_loss
 
 def save_model(model):
     torch.save(model.state_dict(), './model-best.pt')
