@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torchvision
 
-from utils import get_ids, get_path
+from utils import get_path
 
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
