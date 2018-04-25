@@ -189,10 +189,6 @@ if __name__ == "__main__":
         config.NUM_WORKERS = args.numWorkers
         logging.info('Num workers has been changed to ' + str(config.NUM_WORKERS))
 
-    if args.testSize:
-        config.TEST_SIZE = args.testSize
-        logging.info('Test size has been changed to ' + str(config.TEST_SIZE))
-
     if args.patience:
         config.PATIENCE = args.patience
         logging.info('Patience has been changed to ' + str(config.PATIENCE))
