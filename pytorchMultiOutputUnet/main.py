@@ -47,7 +47,8 @@ def train(epochs, weights):
     splits = get_ids()
 
     for i, split in enumerate(splits):
-        logging.info('\n' + '=' * 50)
+        print('\n')
+        logging.info(=' * 50)
         logging.info('Split # ' + str(i + 1))
 
         train_ids, val_ids = split[0], split[1]
@@ -74,7 +75,8 @@ def train(epochs, weights):
 
         for epoch in range(epochs):
             epoch = epoch + int(startingEpoch) + 1
-            logging.info('\n' + '-' * 50)
+            print('\n')
+            logging.info('-' * 50)
             logging.info('Epoch # ' + str(epoch))
             
             total_train_loss = 0
