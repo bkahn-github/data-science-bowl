@@ -147,36 +147,47 @@ if __name__ == "__main__":
 
     if args.stage:
         config.STAGE = args.stage
+        logging.info('Stage has been changed to ' + config.STAGE)
 
     if args.rootFolder:
         config.ROOT_FOLDER = args.rootFolder
+        logging.info('Root folder has been changed to ' + config.ROOT_FOLDER)
 
     if args.imgsFolder:
         config.IMGS_FOLDER = args.imgsFolder
-        
+        logging.info('Imgs folder has been changed to ' + config.IMGS_FOLDER)
+
     if args.masksOutputFolder:
         config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+        logging.info('Masks output folder has been changed to ' + config.MASKS_OUTPUT_FOLDER)
 
     if args.contoursOutputFolder:
-        config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+        config.CONTOURS_OUTPUT_FOLDER = args.contoursOutputFolder
+        logging.info('Contours output folder has been changed to ' + config.CONTOURS_OUTPUT_FOLDER)        
     
     if args.centersOutputFolder:
-        config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+        config.CENTERS_OUTPUT_FOLDER = args.centersOutputFolder
+        logging.info('Centers output folder has been changed to ' + config.CENTERS_OUTPUT_FOLDER)
 
     if args.batchSize:
         config.BATCH_SIZE = args.batchSize
+        logging.info('Batch size has been changed to ' + config.BATCH_SIZE)
 
     if args.shuffle:
         config.SHUFFLE = args.shuffle
+        logging.info('Shuffle has been changed to ' + config.SHUFFLE)
 
     if args.numWorkers:
         config.NUM_WORKERS = args.numWorkers
+        logging.info('Num workers has been changed to ' + config.NUM_WORKERS)
 
     if args.testSize:
         config.TEST_SIZE = args.testSize
+        logging.info('Test size has been changed to ' + config.TEST_SIZE)
 
     if args.patience:
         config.PATIENCE = args.patience
+        logging.info('Patience has been changed to ' + config.PATIENCE)
 
     if args.mode == 'preprocess':
         preprocess()
