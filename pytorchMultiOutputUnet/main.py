@@ -114,7 +114,7 @@ def train(epochs, weights, splits):
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
             if action == 'save':
-                save_model(model)
+                save_model(model, split, epoch)
             elif action == 'stop':
                 break
             else:
