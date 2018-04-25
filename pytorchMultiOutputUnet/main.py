@@ -82,7 +82,6 @@ def train(epochs, weights):
 
             outs = model(x)
             train_loss = dice_loss(outs, y)
-            print(train_loss.item())
             total_train_loss += train_loss.item()
 
             train_loss.backward()
