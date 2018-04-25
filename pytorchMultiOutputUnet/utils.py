@@ -47,7 +47,7 @@ def load_model(model, path):
 
     return model, startingEpoch
 
-def get_splits():
+def get_splits(splits):
     if config.SUBSET:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:20]
     else:
@@ -55,7 +55,7 @@ def get_splits():
 
     ids = [id.split('/')[-1] for id in ids]
 
-    kf = KFold(n_splits=6)
+    kf = KFold(n_splits=splits)
 
     splits = []
     for x, y in kf.split(ids):

@@ -17,6 +17,7 @@ class Config():
 
     SUBSET = False
 
+    SPLITS = 6
     BATCH_SIZE = 4
     SHUFFLE = True
     NUM_WORKERS = 3
