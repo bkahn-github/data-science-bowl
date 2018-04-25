@@ -38,13 +38,12 @@ def preprocess():
     logging.info('Creating centers')
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CENTERS_OUTPUT_FOLDER, 'centers', config.SUBSET)
 
-def train(epochs, weights):
+def train(epochs, weights, splits):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
-    logging.info('Getting Ids')
-
-    splits = get_splits()
+    splits = get_splits(splits)
+    logging.info(str(splits) + ' splits in cross validation')
 
     for i, split in enumerate(splits):
         print('\n')
@@ -146,6 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("--patience", type=int)
 
     parser.add_argument('--epochs', type=int)
+    parser.add_argument('--splits', type=int)    
     parser.add_argument("--weights")
 
     args = parser.parse_args()
@@ -197,14 +197,18 @@ if __name__ == "__main__":
         config.PATIENCE = args.patience
         logging.info('Patience has been changed to ' + str(config.PATIENCE))
 
+    if args.splits:
+        config.SPLITS = args.splits
+        logging.info('Splits has been changed to ' + str(config.SPLITS))
+
     if args.mode == 'preprocess':
         preprocess()
     elif args.mode == 'train':
         if args.epochs:
             if args.weights:
-                train(args.epochs, args.weights)
+                train(args.epochs, args.weights, config.SPLITS)
             else:
-                train(args.epochs, '')
+                train(args.epochs, '', config.SPLITS)
         else:
             logging.info('You must give a number of epochs')
     elif args.mode == 'visualize':
