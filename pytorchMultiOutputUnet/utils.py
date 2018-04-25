@@ -41,11 +41,12 @@ def save_model(model, split, epoch):
     torch.save(model.state_dict(), './model-split-' + str(split) + '-epoch-' + str(epoch) + '.pt')
 
 def load_model(model, path):
+    startingSplit = 0
     startingEpoch = path.split('-')[-1].split('.')[0]
-    logging.info('Starting from epoch ' + startingEpoch)
+    logging.info('Starting from split ' + startingSplit + ' epoch ' + startingEpoch)
     model.load_state_dict(torch.load(path))
 
-    return model, startingEpoch
+    return model, startingSplit, startingEpoch
 
 def get_splits(splits):
     if config.SUBSET:
