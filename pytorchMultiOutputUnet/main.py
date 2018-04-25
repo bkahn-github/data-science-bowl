@@ -47,11 +47,9 @@ def train(epochs, weights, splits):
 
     if weights != '':
         model = Unet()
-        model, startingSplit, startingEpoch = load_model(model, weights)
-    else:
-        startingSplit, startingEpoch = 0, 0
+        model = load_model(model, weights)
 
-    for i, split in enumerate(splits[startingSplit:-1]):
+    for i, split in enumerate(splits):
         print('\n')
         logging.info('=' * 50)
         logging.info('Split # ' + str(i + 1))
@@ -64,11 +62,11 @@ def train(epochs, weights, splits):
         val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
         valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
-        # FIX
-        if weights == '':
+        if weights != '' && i = 0:
+            model = model
+            weights = ''
+        else:
             model = Unet()
-        elif i != 0:
-            model = Unet()            
 
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model.to(device)
@@ -78,7 +76,7 @@ def train(epochs, weights, splits):
         early_stopping = EarlyStopping()
 
         for epoch in range(epochs):
-            epoch = epoch + int(startingEpoch) + 1
+            epoch += 1
             print('\n')
             logging.info('-' * 50)
             logging.info('Epoch # ' + str(epoch))
@@ -113,22 +111,20 @@ def train(epochs, weights, splits):
                     val_loss = dice_loss(outs, y)
                     total_val_loss += val_loss.item()
 
-            startingEpoch = 0
-
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
 
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
             if action == 'save':
-                save_model(model, i, epoch)
+                save_model(model)
             elif action == 'stop':
                 break
             else:
                 continue
 
 def visualize(weights):
-    return 'hi'
+    return ''
     # show_images(weights)
         
 if __name__ == "__main__":

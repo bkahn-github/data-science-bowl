@@ -37,8 +37,8 @@ def calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch
     
     return message, train_loss, val_loss
 
-def save_model(model, split, epoch):
-    torch.save(model.state_dict(), './model-split-' + str(split) + '-epoch-' + str(epoch) + '.pt')
+def save_model(model):
+    torch.save(model.state_dict(), './model-best.pt')
 
 def load_model(model, path):
     startingSplit = 0
