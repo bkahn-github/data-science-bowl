@@ -6,7 +6,7 @@ import torch
 
 from config import config
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold
 
 class EarlyStopping:
     def __init__(self):
@@ -55,9 +55,16 @@ def get_ids():
 
     ids = [id.split('/')[-1] for id in ids]
 
-    train_ids, val_ids = train_test_split(ids, test_size=config.TEST_SIZE)
+    kf = KFold(n_splits=6)
 
-    return train_ids, val_ids
+    splits = []
+    for x, y in kf.split(ids):
+        x = ids[x[0]: x[-1]]
+        y = ids[y[0]: y[-1]]
+
+    splits.append([x, y])
+
+    return splits
 
 def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
