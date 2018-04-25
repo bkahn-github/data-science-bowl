@@ -109,7 +109,6 @@ def train(epochs, weights):
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
-            print('=' * 50)
 
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
