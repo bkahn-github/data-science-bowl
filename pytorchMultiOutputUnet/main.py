@@ -103,7 +103,7 @@ def train(epochs, weights):
 
         message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
         print(message)
-        
+
         action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
         if action == 'save':
@@ -125,6 +125,17 @@ if __name__ == "__main__":
     parser.add_argument("mode")
 
     parser.add_argument("--subset")
+    parser.add_argument("--root-folder")
+    parser.add_argument("--stage", type=int)
+    parser.add_argument("--imgs-folder")
+    parser.add_argument("--masks-output-folder")
+    parser.add_argument("--contours-output-folder")
+    parser.add_argument("--centers-output-folder")
+    parser.add_argument("--batch-size", type=int)
+    parser.add_argument("--shuffle")
+    parser.add_argument("--num-workers", type=int)
+    parser.add_argument("--test-size", type=float)
+    parser.add_argument("--patience", type=int)
 
     parser.add_argument('--epochs', type=int)
     parser.add_argument("--weights")
@@ -133,6 +144,15 @@ if __name__ == "__main__":
 
     if args.subset:
         subset(args.subset)
+
+    if args.root-folder:
+        config.ROOT_FOLDER = args.root-folder
+
+    if args.stage:
+        config.STAGE = args.stage
+
+    if args.imgs-folder:
+        config.IMGS_FOLDER = args.imgs-folder
 
     if args.mode == 'preprocess':
         preprocess()
