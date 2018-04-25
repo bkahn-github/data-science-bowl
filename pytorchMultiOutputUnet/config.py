@@ -23,5 +23,7 @@ class Config():
 
     SPLITS = 6
     PATIENCE = 0
+    EPOCHS = 10
+    WEIGHTS = ''
 
 config = Config()
