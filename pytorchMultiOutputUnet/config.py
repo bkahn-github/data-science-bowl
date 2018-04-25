@@ -17,12 +17,11 @@ class Config():
 
     SUBSET = False
 
-    SPLITS = 6
-    BATCH_SIZE = 4
     SHUFFLE = True
+    BATCH_SIZE = 4
     NUM_WORKERS = 3
 
-    TEST_SIZE = 0.1
+    SPLITS = 6
     PATIENCE = 0
 
 config = Config()
