@@ -45,7 +45,12 @@ def train(epochs, weights, splits):
     splits = get_splits(splits)
     logging.info(str(splits) + ' splits in cross validation')
 
-    for i, split in enumerate(splits):
+    if weights != '':
+        model, startingSplit, startingEpoch = load_model(model, weights)
+    else:
+        startingSplit, startingEpoch = 0, 0
+
+    for i, split in enumerate(splits[startingSplit:-1]):
         print('\n')
         logging.info('=' * 50)
         logging.info('Split # ' + str(i + 1))
@@ -58,15 +63,11 @@ def train(epochs, weights, splits):
         val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
         valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
-        model = Unet()
+        if i != 0:
+            model = Unet()
 
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model.to(device)
-
-        if weights != '':
-            model, startingEpoch = load_model(model, weights)
-        else:
-            startingEpoch = 0
 
         optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
@@ -107,6 +108,8 @@ def train(epochs, weights, splits):
                     outs = model(x)
                     val_loss = dice_loss(outs, y)
                     total_val_loss += val_loss.item()
+
+            startingEpoch = 0
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
