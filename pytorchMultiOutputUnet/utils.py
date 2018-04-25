@@ -62,7 +62,7 @@ def get_ids():
         x = ids[x[0]: x[-1]]
         y = ids[y[0]: y[-1]]
 
-    splits.append([x, y])
+        splits.append([x, y])
 
     return splits
 
