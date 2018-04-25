@@ -13,7 +13,7 @@ from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
-from visualize import show_images
+# from visualize import show_images
 from metrics import dice_loss
 from utils import get_splits, calculate_losses, save_model, load_model, EarlyStopping
 
@@ -124,7 +124,8 @@ def train(epochs, weights, splits):
                 continue
 
 def visualize(weights):
-    show_images(weights)
+    return 'hi'
+    # show_images(weights)
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s >>> %(message)s',datefmt='%Y-%m-%d %H-%M-%S')
