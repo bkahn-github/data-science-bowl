@@ -125,16 +125,16 @@ if __name__ == "__main__":
     parser.add_argument("mode")
 
     parser.add_argument("--subset")
-    parser.add_argument("--root-folder")
     parser.add_argument("--stage", type=int)
-    parser.add_argument("--imgs-folder")
-    parser.add_argument("--masks-output-folder")
-    parser.add_argument("--contours-output-folder")
-    parser.add_argument("--centers-output-folder")
-    parser.add_argument("--batch-size", type=int)
+    parser.add_argument("--rootFolder")
+    parser.add_argument("--imgsFolder")
+    parser.add_argument("--masksOutputFolder")
+    parser.add_argument("--contoursOutputFolder")
+    parser.add_argument("--centersOutputFolder")
+    parser.add_argument("--batchSize", type=int)
     parser.add_argument("--shuffle")
-    parser.add_argument("--num-workers", type=int)
-    parser.add_argument("--test-size", type=float)
+    parser.add_argument("--numWorkers", type=int)
+    parser.add_argument("--testSize", type=float)
     parser.add_argument("--patience", type=int)
 
     parser.add_argument('--epochs', type=int)
@@ -145,14 +145,38 @@ if __name__ == "__main__":
     if args.subset:
         subset(args.subset)
 
-    if args.root-folder:
-        config.ROOT_FOLDER = args.root-folder
-
     if args.stage:
         config.STAGE = args.stage
 
-    if args.imgs-folder:
-        config.IMGS_FOLDER = args.imgs-folder
+    if args.rootFolder:
+        config.ROOT_FOLDER = args.rootFolder
+
+    if args.imgsFolder:
+        config.IMGS_FOLDER = args.imgsFolder
+        
+    if args.masksOutputFolder:
+        config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+
+    if args.contoursOutputFolder:
+        config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+    
+    if args.centersOutputFolder:
+        config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
+
+    if args.batchSize:
+        config.BATCH_SIZE = args.batchSize
+
+    if args.shuffle:
+        config.SHUFFLE = args.shuffle
+
+    if args.numWorkers:
+        config.NUM_WORKERS = args.numWorkers
+
+    if args.testSize:
+        config.TEST_SIZE = args.testSize
+
+    if args.patience:
+        config.PATIENCE = args.patience
 
     if args.mode == 'preprocess':
         preprocess()
