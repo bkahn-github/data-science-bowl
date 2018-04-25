@@ -46,6 +46,7 @@ def train(epochs, weights, splits):
     logging.info(str(len(splits)) + ' splits in cross validation')
 
     if weights != '':
+        model = Unet()
         model, startingSplit, startingEpoch = load_model(model, weights)
     else:
         startingSplit, startingEpoch = 0, 0
