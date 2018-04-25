@@ -62,7 +62,7 @@ def train(epochs, weights, splits):
         val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
         valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
-        if weights != '' and i = 0:
+        if weights != '' and i == 0:
             model = model
             weights = ''
         else:
