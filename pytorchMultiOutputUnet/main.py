@@ -131,35 +131,31 @@ if __name__ == "__main__":
 
     parser.add_argument("mode")
 
-    parser.add_argument("--subset")
-    parser.add_argument("--stage", type=int)
     parser.add_argument("--rootFolder")
+    parser.add_argument("--stage", type=int)
     parser.add_argument("--imgsFolder")
     parser.add_argument("--masksOutputFolder")
     parser.add_argument("--contoursOutputFolder")
     parser.add_argument("--centersOutputFolder")
-    parser.add_argument("--batchSize", type=int)
+    parser.add_argument("--subset")
     parser.add_argument("--shuffle")
+    parser.add_argument("--batchSize", type=int)
     parser.add_argument("--numWorkers", type=int)
-    parser.add_argument("--testSize", type=float)
-    parser.add_argument("--patience", type=int)
 
-    parser.add_argument('--epochs', type=int)
     parser.add_argument('--splits', type=int)    
+    parser.add_argument("--patience", type=int)
+    parser.add_argument('--epochs', type=int)
     parser.add_argument("--weights")
 
     args = parser.parse_args()
 
-    if args.subset:
-        subset(args.subset)
+    if args.rootFolder:
+        config.ROOT_FOLDER = args.rootFolder
+        logging.info('Root folder has been changed to ' + config.ROOT_FOLDER)
 
     if args.stage:
         config.STAGE = args.stage
         logging.info('Stage has been changed to ' + config.STAGE)
-
-    if args.rootFolder:
-        config.ROOT_FOLDER = args.rootFolder
-        logging.info('Root folder has been changed to ' + config.ROOT_FOLDER)
 
     if args.imgsFolder:
         config.IMGS_FOLDER = args.imgsFolder
@@ -172,45 +168,48 @@ if __name__ == "__main__":
     if args.contoursOutputFolder:
         config.CONTOURS_OUTPUT_FOLDER = args.contoursOutputFolder
         logging.info('Contours output folder has been changed to ' + config.CONTOURS_OUTPUT_FOLDER)        
-    
+
     if args.centersOutputFolder:
         config.CENTERS_OUTPUT_FOLDER = args.centersOutputFolder
         logging.info('Centers output folder has been changed to ' + config.CENTERS_OUTPUT_FOLDER)
+
+    if args.subset:
+        subset(args.subset)
+    
+    if args.shuffle:
+        config.SHUFFLE = args.shuffle
+        logging.info('Shuffle has been changed to ' + config.SHUFFLE)
 
     if args.batchSize:
         config.BATCH_SIZE = args.batchSize
         logging.info('Batch size has been changed to ' + str(config.BATCH_SIZE))
 
-    if args.shuffle:
-        config.SHUFFLE = args.shuffle
-        logging.info('Shuffle has been changed to ' + config.SHUFFLE)
-
     if args.numWorkers:
         config.NUM_WORKERS = args.numWorkers
         logging.info('Num workers has been changed to ' + str(config.NUM_WORKERS))
-
-    if args.patience:
-        config.PATIENCE = args.patience
-        logging.info('Patience has been changed to ' + str(config.PATIENCE))
 
     if args.splits:
         config.SPLITS = args.splits
         logging.info('Splits has been changed to ' + str(config.SPLITS))
 
+    if args.patience:
+        config.PATIENCE = args.patience
+        logging.info('Patience has been changed to ' + str(config.PATIENCE))
+
+    if args.epochs:
+        config.EPOCHS = args.epochs
+        logging.info('Epochs has been changed to ' + str(config.EPOCHS))
+
+    if args.weights:
+        config.WEIGHTS = args.weights
+        logging.info('Weights has been changed to ' + config.WEIGHTS)
+
+
     if args.mode == 'preprocess':
         preprocess()
     elif args.mode == 'train':
-        if args.epochs:
-            if args.weights:
-                train(args.epochs, args.weights, config.SPLITS)
-            else:
-                train(args.epochs, '', config.SPLITS)
-        else:
-            logging.info('You must give a number of epochs')
+        train(config.EPOCHS, config.WEIGHTS, config.SPLITS)
     elif args.mode == 'visualize':
-        if args.weights:
-            visualize(args.weights)
-        else:
-            logging.info('You must give model file')
+        visualize(config.WEIGHTS)
     else:
         logging.info('You must provide an argument')
