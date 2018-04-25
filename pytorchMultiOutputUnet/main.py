@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
 from metrics import dice_loss
-from utils import get_ids, calculate_losses, save_model, load_model, EarlyStopping
+from utils import get_splits, calculate_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -44,7 +44,7 @@ def train(epochs, weights):
 
     logging.info('Getting Ids')
 
-    splits = get_ids()
+    splits = get_splits()
 
     for i, split in enumerate(splits):
         print('\n')
