@@ -43,7 +43,7 @@ def train(epochs, weights, splits):
     logging.info('Training for ' + str(epochs) + ' epochs')
 
     splits = get_splits(splits)
-    logging.info(len(splits) + ' splits in cross validation')
+    logging.info(str(len(splits)) + ' splits in cross validation')
 
     if weights != '':
         model, startingSplit, startingEpoch = load_model(model, weights)
