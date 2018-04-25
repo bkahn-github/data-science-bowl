@@ -63,8 +63,11 @@ def train(epochs, weights, splits):
         val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
         valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
-        if i != 0:
+        # FIX
+        if weights == '':
             model = Unet()
+        elif i != 0:
+            model = Unet()            
 
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model.to(device)
