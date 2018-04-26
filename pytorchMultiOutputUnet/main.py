@@ -55,7 +55,7 @@ def train(epochs, weights, kfolds):
     for i, kfold in enumerate(kfolds):
         print('\n')
         logging.info('=' * 50)
-        logging.info('Split # ' + str(i + 1))
+        logging.info('Kfold # ' + str(i + 1))
 
         train_ids, val_ids = kfold[0], kfold[1]
 
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     if args.kfolds:
         config.KFOLDS = args.kfolds
-        logging.info('Splits has been changed to ' + str(config.KFOLDS))
+        logging.info('Kfolds has been changed to ' + str(config.KFOLDS))
 
     if args.patience:
         config.PATIENCE = args.patience
