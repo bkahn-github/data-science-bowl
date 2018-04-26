@@ -49,6 +49,9 @@ def train(epochs, weights, splits):
         model = Unet()
         model = load_model(model, weights)
 
+    splits_train_losses = 0
+    splits_val_losses = 0
+
     for i, split in enumerate(splits):
         print('\n')
         logging.info('=' * 50)
@@ -112,6 +115,9 @@ def train(epochs, weights, splits):
                     total_val_loss += val_loss.item()
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
+            splits_train_losses += train_loss
+            splits_val_losses += val_loss
+
             print(message)
 
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
@@ -122,6 +128,9 @@ def train(epochs, weights, splits):
                 break
             else:
                 continue
+    
+    message, train_loss, val_loss = calculate_losses(splits_train_losses, splits_val_losses, train_ids, val_ids, epoch)
+    print(message)
 
 def visualize(weights):
     return ''
