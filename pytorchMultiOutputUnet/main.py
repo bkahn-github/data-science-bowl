@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 # from visualize import show_images
 from metrics import dice_loss
-from utils import get_splits, calculate_losses, save_model, load_model, EarlyStopping
+from utils import get_splits, calculate_losses, calculate save_model, load_model, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -49,8 +49,8 @@ def train(epochs, weights, splits):
         model = Unet()
         model = load_model(model, weights)
 
-    splits_train_losses = 0
-    splits_val_losses = 0
+    total_kfolds_train_loss = 0
+    total_kfolds_val_loss = 0
 
     for i, split in enumerate(splits):
         print('\n')
@@ -115,10 +115,10 @@ def train(epochs, weights, splits):
                     total_val_loss += val_loss.item()
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
-            splits_train_losses += train_loss
-            splits_val_losses += val_loss
-
             print(message)
+
+            total_kfolds_train_loss += train_loss
+            total_kfolds_val_loss += val_loss
 
             action = early_stopping.evaluate(model, val_loss, epoch, config.PATIENCE)
 
@@ -129,7 +129,7 @@ def train(epochs, weights, splits):
             else:
                 continue
     
-    message, train_loss, val_loss = calculate_losses(splits_train_losses, splits_val_losses, train_ids, val_ids, epoch)
+    message = calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, config.SPLITS, config.EPOCHS)
     print(message)
 
 def visualize(weights):
