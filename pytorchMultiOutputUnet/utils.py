@@ -37,6 +37,13 @@ def calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch
     
     return message, train_loss, val_loss
 
+def calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, splits, epochs):
+    train_loss = total_kfolds_train_loss / (splits * epochs)
+    val_loss = total_kfolds_val_loss / (splits * epochs)
+
+    message = 'Total loss over ' + str(splits) + ' splits and ' + str(epochs) + 'epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
+    return message
+
 def save_model(model, split):
     torch.save(model.state_dict(), './model-split-' + str(split) + '-best.pt')
 
