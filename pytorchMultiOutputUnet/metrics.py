@@ -3,6 +3,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+def loss(inputs, targets):
+    bceloss = nn.BCELoss()
+    
+    loss = bceloss(inputs, targets) + dice_loss(inputs[:,0], targets[:,0]) + dice_loss(inputs[:,1], targets[:,1])
+    return loss
+
 def dice_loss(inputs, targets):
     num = targets.size(0)
     m1  = inputs.view(num,-1)

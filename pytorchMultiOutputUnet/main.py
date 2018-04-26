@@ -14,7 +14,7 @@ from create_masks import create_masks
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 from visualize import show_images
-from metrics import dice_loss
+from metrics import loss
 from utils import get_kfolds, calculate_losses, calculate_kfolds_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
@@ -94,7 +94,7 @@ def train(epochs, weights, kfolds):
                 optimizer.zero_grad()
 
                 outs = model(x)
-                train_loss = dice_loss(outs, y)
+                train_loss = loss(outs, y)
                 total_train_loss += train_loss.item()
 
                 train_loss.backward()
@@ -111,7 +111,7 @@ def train(epochs, weights, kfolds):
                     optimizer.zero_grad()
 
                     outs = model(x)
-                    val_loss = dice_loss(outs, y)
+                    val_loss = loss(outs, y)
                     total_val_loss += val_loss.item()
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
