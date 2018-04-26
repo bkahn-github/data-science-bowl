@@ -44,8 +44,8 @@ def calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, kfol
     message = '\nTotal loss over ' + str(kfolds) + ' kfolds and ' + str(epochs) + ' epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     return message
 
-def save_model(model, split):
-    torch.save(model.state_dict(), './model-split-' + str(split) + '-best.pt')
+def save_model(model, kfold):
+    torch.save(model.state_dict(), './model-kfold-' + str(kfold) + '-best.pt')
 
 def load_model(model, path):
     logging.info('Loading saved model')

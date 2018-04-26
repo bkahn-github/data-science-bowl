@@ -52,12 +52,12 @@ def train(epochs, weights, kfolds):
     total_kfolds_train_loss = 0
     total_kfolds_val_loss = 0
 
-    for i, split in enumerate(kfolds):
+    for i, kfold in enumerate(kfolds):
         print('\n')
         logging.info('=' * 50)
         logging.info('Split # ' + str(i + 1))
 
-        train_ids, val_ids = split[0], split[1]
+        train_ids, val_ids = kfold[0], kfold[1]
 
         logging.info('Creating Dataset')
         train = TrainDataset(train_ids, x_transform=x_transforms, y_transform=y_transforms)
