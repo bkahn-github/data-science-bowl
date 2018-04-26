@@ -39,8 +39,8 @@ def show_images(weights):
             outs = model(x)
             break
 
-    y = y.detach().numpy()
-    outs = outs.detach().numpy()
+    y = y.detach().cpu().numpy()
+    outs = outs.detach().cpu().numpy()
 
     fig = plt.figure(figsize=(30, 20))
 
