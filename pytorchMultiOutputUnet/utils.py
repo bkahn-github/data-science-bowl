@@ -41,7 +41,7 @@ def calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, kfol
     train_loss = total_kfolds_train_loss / (kfolds * epochs)
     val_loss = total_kfolds_val_loss / (kfolds * epochs)
 
-    message = 'Total loss over ' + str(kfolds) + ' kfolds and ' + str(epochs) + 'epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
+    message = '\nTotal loss over ' + str(kfolds) + ' kfolds and ' + str(epochs) + ' epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     return message
 
 def save_model(model, split):
