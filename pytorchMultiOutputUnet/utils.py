@@ -11,7 +11,7 @@ from sklearn.model_selection import KFold, train_test_split
 class EarlyStopping:
     def __init__(self):
         
-        self.best_score = 1
+        self.best_score = 1e10
         self.best_epoch = 0 
 
     def evaluate(self, model, loss, epoch, patience=0):
