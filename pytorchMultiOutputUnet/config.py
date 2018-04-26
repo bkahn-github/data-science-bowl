@@ -21,7 +21,7 @@ class Config():
     BATCH_SIZE = 4
     NUM_WORKERS = 3
 
-    SPLITS = 6
+    KFOLDS = 6
     PATIENCE = 0
     EPOCHS = 10
     WEIGHTS = ''

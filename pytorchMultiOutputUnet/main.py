@@ -15,7 +15,7 @@ from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
 # from visualize import show_images
 from metrics import dice_loss
-from utils import get_splits, calculate_losses, calculate save_model, load_model, EarlyStopping
+from utils import get_kfolds, calculate_losses, calculate_kfolds_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
 from torch.autograd import Variable
@@ -38,12 +38,12 @@ def preprocess():
     logging.info('Creating centers')
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CENTERS_OUTPUT_FOLDER, 'centers', config.SUBSET)
 
-def train(epochs, weights, splits):
+def train(epochs, weights, kfolds):
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
-    splits = get_splits(splits)
-    logging.info(str(len(splits)) + ' splits in cross validation')
+    kfolds = get_kfolds(kfolds)
+    logging.info(str(len(kfolds)) + ' kfolds in cross validation')
 
     if weights != '':
         model = Unet()
@@ -52,7 +52,7 @@ def train(epochs, weights, splits):
     total_kfolds_train_loss = 0
     total_kfolds_val_loss = 0
 
-    for i, split in enumerate(splits):
+    for i, split in enumerate(kfolds):
         print('\n')
         logging.info('=' * 50)
         logging.info('Split # ' + str(i + 1))
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     parser.add_argument("--batchSize", type=int)
     parser.add_argument("--numWorkers", type=int)
 
-    parser.add_argument('--splits', type=int)    
+    parser.add_argument('--kfolds', type=int)    
     parser.add_argument("--patience", type=int)
     parser.add_argument('--epochs', type=int)
     parser.add_argument("--weights")
@@ -201,8 +201,8 @@ if __name__ == "__main__":
         config.NUM_WORKERS = args.numWorkers
         logging.info('Num workers has been changed to ' + str(config.NUM_WORKERS))
 
-    if args.splits:
-        config.SPLITS = args.splits
+    if args.kfolds:
+        config.KFOLDS = args.kfolds
         logging.info('Splits has been changed to ' + str(config.SPLITS))
 
     if args.patience:
