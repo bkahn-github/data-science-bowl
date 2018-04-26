@@ -129,7 +129,7 @@ def train(epochs, weights, kfolds):
             else:
                 continue
     
-    message = calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, config.SPLITS, config.EPOCHS)
+    message = calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, config.KFOLDS, config.EPOCHS)
     print(message)
 
 def visualize(weights):
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     if args.kfolds:
         config.KFOLDS = args.kfolds
-        logging.info('Splits has been changed to ' + str(config.SPLITS))
+        logging.info('Splits has been changed to ' + str(config.KFOLDS))
 
     if args.patience:
         config.PATIENCE = args.patience
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     if args.mode == 'preprocess':
         preprocess()
     elif args.mode == 'train':
-        train(config.EPOCHS, config.WEIGHTS, config.SPLITS)
+        train(config.EPOCHS, config.WEIGHTS, config.KFOLDS)
     elif args.mode == 'visualize':
         visualize(config.WEIGHTS)
     else:
