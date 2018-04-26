@@ -37,11 +37,11 @@ def calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch
     
     return message, train_loss, val_loss
 
-def calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, splits, epochs):
-    train_loss = total_kfolds_train_loss / (splits * epochs)
-    val_loss = total_kfolds_val_loss / (splits * epochs)
+def calculate_kfolds_losses(total_kfolds_train_loss, total_kfolds_val_loss, kfolds, epochs):
+    train_loss = total_kfolds_train_loss / (kfolds * epochs)
+    val_loss = total_kfolds_val_loss / (kfolds * epochs)
 
-    message = 'Total loss over ' + str(splits) + ' splits and ' + str(epochs) + 'epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
+    message = 'Total loss over ' + str(kfolds) + ' kfolds and ' + str(epochs) + 'epochs | Training Loss: ' + str(round(train_loss, 4)) + ' | Validation Loss: ' + str(round(val_loss, 4))
     return message
 
 def save_model(model, split):
@@ -53,7 +53,7 @@ def load_model(model, path):
 
     return model
 
-def get_splits(splits):
+def get_kfolds(kfolds):
     if config.SUBSET:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:20]
     else:
@@ -61,16 +61,16 @@ def get_splits(splits):
 
     ids = [id.split('/')[-1] for id in ids]
 
-    kf = KFold(n_splits=splits)
+    kf = KFold(n_splits=kfolds)
 
-    splits = []
+    kfolds = []
     for x, y in kf.split(ids):
         x = ids[x[0]: x[-1]]
         y = ids[y[0]: y[-1]]
 
-        splits.append([x, y])
+        kfolds.append([x, y])
 
-    return splits
+    return kfolds
 
 def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
