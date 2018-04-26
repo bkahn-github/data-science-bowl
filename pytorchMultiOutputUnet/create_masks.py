@@ -11,7 +11,7 @@ from scipy import ndimage
 def get_contours(img):
     img_contour = np.zeros_like(img).astype(np.uint8)
     _, contours, _ = cv2.findContours(img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(img_contour, contours, -1, (255, 255, 255), 2)
+    cv2.drawContours(img_contour, contours, -1, (255, 255, 255), 1)
 
     return img_contour
 
