@@ -13,7 +13,7 @@ from skimage.filters import threshold_otsu
 from config import config
 from loaders import TrainDataset, x_transforms, y_transforms
 from model import Unet
-from utils import get_ids
+from utils import get_kfolds
 
 def show_images(weights):
     logging.info('Visualizing model')
@@ -21,26 +21,26 @@ def show_images(weights):
     model.load_state_dict(torch.load(weights))
     model.eval()
 
-    if torch.cuda.is_available():
-        model.cuda()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model.to(device)
   
-    train_ids, _ = get_ids()
+    kfolds = get_kfolds(2)
   
-    train = TrainDataset(train_ids, x_transform=x_transforms, y_transform=y_transforms)
-    trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
+    dataset = TrainDataset(kfolds[0][0], x_transform=x_transforms, y_transform=y_transforms)
+    dataLoader = DataLoader(dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
-    for data in trainDataloader:
-        img, target = data['img'], data['target']
+    with torch.no_grad():
+        for data in dataLoader:
+            img, target = data['img'], data['target']
 
-        x = Variable(img).cuda()
-        y = Variable(target).cuda()
+            x = Variable(img).to(device)
+            y = Variable(target).to(device)
 
-        outs = model(x)
-        break
-    
-    x = x.data.cpu().numpy()
-    y = y.data.cpu().numpy()
-    outs = outs.data.cpu().numpy()
+            outs = model(x)
+            break
+
+    y = y.detach().numpy()
+    outs = outs.detach().numpy()
 
     fig = plt.figure(figsize=(30, 20))
 
