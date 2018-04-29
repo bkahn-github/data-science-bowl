@@ -4,9 +4,8 @@ import torch
 import torch.nn as nn
 
 def loss(inputs, targets):
-    bceloss = nn.BCELoss()
-    
-    loss = bceloss(inputs, targets) + dice_loss(inputs[:,0], targets[:,0]) + dice_loss(inputs[:,1], targets[:,1])
+    loss = dice_loss(inputs[:,0], targets[:,0]) * 5 + dice_loss(inputs[:,1], targets[:,1]) * 20
+ 
     return loss
 
 def dice_loss(inputs, targets):
