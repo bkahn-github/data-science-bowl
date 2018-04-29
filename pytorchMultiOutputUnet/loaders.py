@@ -51,7 +51,7 @@ class TrainDataset(Dataset):
         mask = self.target_transforms(mask)
         contour = self.target_transforms(contour)
 
-        target = torch.cat((mask, contour), dim=-1)
+        target = torch.cat((mask, contour), dim=1)
 
         return {'img': img, 'target': target}
 
