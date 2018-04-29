@@ -27,7 +27,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        img_path, mask_path, contour_path, center_path = get_path(id)
+        img_path, mask_path, contour_path = get_path(id)
         
         img = Image.open(img_path)
         img.load()
@@ -39,13 +39,11 @@ class TrainDataset(Dataset):
         
         mask = io.imread(mask_path)
         contour = io.imread(contour_path)
-        center = io.imread(center_path)
 
         mask = mask.reshape(mask.shape[0], mask.shape[1], 1)
         contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
-        center = center.reshape(center.shape[0], center.shape[1], 1)
 
-        target = np.concatenate((mask, contour, center), axis=-1)
+        target = np.concatenate((mask, contour), axis=-1)
 
         img = self.x_transform(img)
         target = self.y_transform(target)
