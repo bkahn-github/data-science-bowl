@@ -14,12 +14,14 @@ from skimage import io, transform
 from PIL import Image
 
 class TrainDataset(Dataset):
-    def __init__(self, ids, x_transform=None, y_transform=None):
+    def __init__(self, ids, x_transform=None, target_transforms=None):
         
         self.ids = ids
 
         self.x_transform = x_transform
-        self.y_transform = y_transform
+
+        self.mask_transform = target_transforms
+        self.contour_transform  = target_transforms
 
     def __len__(self):
         return len(self.ids)
@@ -43,10 +45,15 @@ class TrainDataset(Dataset):
         mask = mask.reshape(mask.shape[0], mask.shape[1], 1)
         contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
 
-        target = np.concatenate((mask, contour), axis=-1)
+        # target = np.concatenate((mask, contour), axis=-1)
 
         img = self.x_transform(img)
-        target = self.y_transform(target)
+        # target = self.y_transform(target)
+        mask = self.target_transforms(mask)
+        contour = self.target_transforms(contour)
+
+        target = torch.cat((mask, contour), dim=-1)
+
         return {'img': img, 'target': target}
 
 x_transforms = transforms.Compose([
@@ -56,8 +63,8 @@ x_transforms = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
-y_transforms = transforms.Compose([
-    transforms.ToTensor(),
+target_transforms = transforms.Compose([
+    transforms.ToPILImage(),
     transforms.Resize((256, 256)),
     transforms.ToTensor()
 ])
