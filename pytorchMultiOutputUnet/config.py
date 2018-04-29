@@ -13,7 +13,6 @@ class Config():
 
     MASKS_OUTPUT_FOLDER = 'stage1_masks'
     CONTOURS_OUTPUT_FOLDER = 'stage1_contours'
-    CENTERS_OUTPUT_FOLDER = 'stage1_centers'
 
     SUBSET = False
 

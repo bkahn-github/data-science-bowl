@@ -35,8 +35,6 @@ def preprocess():
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.MASKS_OUTPUT_FOLDER, 'masks', config.SUBSET)
     logging.info('Creating contours')    
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CONTOURS_OUTPUT_FOLDER, 'contours', config.SUBSET)
-    logging.info('Creating centers')
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CENTERS_OUTPUT_FOLDER, 'centers', config.SUBSET)
 
 def train(epochs, weights, kfolds):
     logging.info('Starting Training')

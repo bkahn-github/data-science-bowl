@@ -15,13 +15,6 @@ def get_contours(img):
 
     return img_contour
 
-def get_centers(img):
-    img_center = np.zeros_like(img).astype(np.uint8)
-    x, y = ndimage.measurements.center_of_mass(img)
-    cv2.circle(img_center, (int(x), int(y)), 4, (255, 255, 255), -1)
-
-    return img_center
-
 def create_masks(root_folder, stage_number, stage_section, output_folder, mode, subset=False):
     stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section) 
     os.makedirs(stage_folder + '_' + mode, exist_ok=True)
@@ -39,9 +32,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
             img = np.asarray(img)
             img = img / 255.0
 
-            if mode == 'centers':
-                img = get_centers(img)
-            elif mode == 'contours':
+            if mode == 'contours':
                 img = get_contours(img)
             elif mode == 'masks':
                 img = img
