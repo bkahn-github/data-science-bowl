@@ -20,8 +20,7 @@ class TrainDataset(Dataset):
 
         self.x_transform = x_transform
 
-        self.mask_transform = target_transforms
-        self.contour_transform  = target_transforms
+        self.target_transforms = target_transforms
 
     def __len__(self):
         return len(self.ids)
