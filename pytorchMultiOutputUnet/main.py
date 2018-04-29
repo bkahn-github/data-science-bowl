@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 from config import config
 from create_masks import create_masks
-from loaders import TrainDataset, x_transforms, y_transforms
+from loaders import TrainDataset, x_transforms, target_transforms
 from model import Unet
 from visualize import show_images
 from metrics import loss
@@ -58,9 +58,9 @@ def train(epochs, weights, kfolds):
         train_ids, val_ids = kfold[0], kfold[1]
 
         logging.info('Creating Dataset')
-        train = TrainDataset(train_ids, x_transform=x_transforms, y_transform=y_transforms)
+        train = TrainDataset(train_ids, x_transform=x_transforms, target_transforms=target_transforms)
         trainDataloader = DataLoader(train, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
-        val = TrainDataset(val_ids, x_transform=x_transforms, y_transform=y_transforms)
+        val = TrainDataset(val_ids, x_transform=x_transforms, target_transforms=target_transforms)
         valDataloader = DataLoader(val, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
         if weights != '' and i == 0:
