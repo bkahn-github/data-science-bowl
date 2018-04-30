@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 def loss(inputs, targets):
-    loss = dice_loss(inputs[:,0], targets[:,0]) * 5 + dice_loss(inputs[:,1], targets[:,1]) * 20
+    loss = dice_loss(inputs[:,0], targets[:,0]) * 1 + dice_loss(inputs[:,1], targets[:,1]) * 10
  
     return loss
 
