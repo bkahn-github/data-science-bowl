@@ -174,7 +174,7 @@ if __name__ == "__main__":
         config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
         logging.info('Masks output folder has been changed to ' + config.MASKS_OUTPUT_FOLDER)
 
-    if args.ed:
+    if args.edgesOutputFolder:
         config.EDGES_OUTPUT_FOLDER = args.edgesOutputFolder
         logging.info('Edges output folder has been changed to ' + config.EDGES_OUTPUT_FOLDER)        
 
