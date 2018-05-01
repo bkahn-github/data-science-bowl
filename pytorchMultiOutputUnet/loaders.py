@@ -28,7 +28,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        img_path, mask_path, contour_path = get_path(id)
+        img_path, mask_path, edge_path = get_path(id)
         
         img = Image.open(img_path)
         img.load()
@@ -39,19 +39,16 @@ class TrainDataset(Dataset):
         img = np.array(RGBimg)
         
         mask = io.imread(mask_path)
-        contour = io.imread(contour_path)
+        edge = io.imread(edge_path)
 
         mask = mask.reshape(mask.shape[0], mask.shape[1], 1)
-        contour = contour.reshape(contour.shape[0], contour.shape[1], 1)
-
-        # target = np.concatenate((mask, contour), axis=-1)
+        edge = edge.reshape(edge.shape[0], edge.shape[1], 1)
 
         img = self.x_transform(img)
-        # target = self.y_transform(target)
         mask = self.target_transforms(mask)
-        contour = self.target_transforms(contour)
+        edge = self.target_transforms(edge)
 
-        target = torch.cat((mask, contour), dim=0)
+        target = torch.cat((mask, edge), dim=0)
 
         return {'img': img, 'target': target}
 

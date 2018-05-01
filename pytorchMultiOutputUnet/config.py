@@ -12,7 +12,7 @@ class Config():
     IMGS_FOLDER = 'stage1_train'
 
     MASKS_OUTPUT_FOLDER = 'stage1_masks'
-    CONTOURS_OUTPUT_FOLDER = 'stage1_contours'
+    EDGES_OUTPUT_FOLDER = 'stage1_edges'
 
     SUBSET = False
 

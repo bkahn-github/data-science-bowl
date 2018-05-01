@@ -33,8 +33,8 @@ def preprocess():
     logging.info('Starting Preprocessing')
     logging.info('Creating masks')
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.MASKS_OUTPUT_FOLDER, 'masks', config.SUBSET)
-    logging.info('Creating contours')    
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.CONTOURS_OUTPUT_FOLDER, 'contours', config.SUBSET)
+    logging.info('Creating edges')    
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.EDGES_OUTPUT_FOLDER, 'edges', config.SUBSET)
 
 def train(epochs, weights, kfolds):
     logging.info('Starting Training')
@@ -145,8 +145,7 @@ if __name__ == "__main__":
     parser.add_argument("--stage", type=int)
     parser.add_argument("--imgsFolder")
     parser.add_argument("--masksOutputFolder")
-    parser.add_argument("--contoursOutputFolder")
-    parser.add_argument("--centersOutputFolder")
+    parser.add_argument("--edgesOutputFolder")
     parser.add_argument("--subset")
     parser.add_argument("--shuffle")
     parser.add_argument("--batchSize", type=int)
@@ -175,13 +174,9 @@ if __name__ == "__main__":
         config.MASKS_OUTPUT_FOLDER = args.masksOutputFolder
         logging.info('Masks output folder has been changed to ' + config.MASKS_OUTPUT_FOLDER)
 
-    if args.contoursOutputFolder:
-        config.CONTOURS_OUTPUT_FOLDER = args.contoursOutputFolder
-        logging.info('Contours output folder has been changed to ' + config.CONTOURS_OUTPUT_FOLDER)        
-
-    if args.centersOutputFolder:
-        config.CENTERS_OUTPUT_FOLDER = args.centersOutputFolder
-        logging.info('Centers output folder has been changed to ' + config.CENTERS_OUTPUT_FOLDER)
+    if args.ed:
+        config.EDGES_OUTPUT_FOLDER = args.edgesOutputFolder
+        logging.info('Edges output folder has been changed to ' + config.EDGES_OUTPUT_FOLDER)        
 
     if args.subset:
         subset(args.subset)

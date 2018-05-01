@@ -80,6 +80,6 @@ def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
 
     mask_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_masks', id + '.png')
-    contour_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_contours', id + '.png')
+    edge_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_edges', id + '.png')
 
-    return img_path, mask_path, contour_path
+    return img_path, mask_path, edge_path
