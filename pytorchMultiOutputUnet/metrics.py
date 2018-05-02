@@ -6,7 +6,7 @@ import torch.nn as nn
 def loss(inputs, targets):
     bceloss = nn.BCELoss()
 
-    loss = bceloss(inputs, targets)  + dice_loss(inputs, targets[:,1])
+    loss = bceloss(inputs, targets)  + dice_loss(inputs, targets)
     
 
     # loss = bceloss(inputs, targets) + dice_loss(inputs[:,0], targets[:,0]) + dice_loss(inputs[:,1], targets[:,1])
