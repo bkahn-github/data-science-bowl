@@ -48,9 +48,10 @@ class TrainDataset(Dataset):
         mask = self.target_transforms(mask)
         edge = self.target_transforms(edge)
 
-        target = torch.cat((mask, edge), dim=0)
+        # target = torch.cat((mask, edge), dim=0)
 
-        return {'img': img, 'target': target}
+        # return {'img': img, 'target': target}
+        return edge
 
 x_transforms = transforms.Compose([
     transforms.ToPILImage(),
