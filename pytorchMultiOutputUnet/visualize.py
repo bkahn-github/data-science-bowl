@@ -48,9 +48,9 @@ def show_images(weights):
     ax.set_title('Ground truth mask')
     ax.imshow(y[1][0].reshape(256, 256))
 
-    # ax = plt.subplot(4, 4, 2)
-    # ax.set_title('Ground truth edges')
-    # ax.imshow(y[1][1].reshape(256, 256))
+    ax = plt.subplot(4, 4, 2)
+    ax.set_title('Ground truth edges')
+    ax.imshow(y[1][1].reshape(256, 256))
 
     ax = plt.subplot(4, 4, 3)
     ax.set_title('Ground truth mask - edges')
