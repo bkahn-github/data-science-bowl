@@ -2,13 +2,64 @@ import numpy as np
 
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
+
+class WeightedBCELoss2d(nn.Module):
+    def __init__(self):
+        super(WeightedBCELoss2d, self).__init__()
+
+    def forward(self, logits, labels, weights):
+        w = weights.view(-1)
+        z = logits.contiguous().view (-1)
+        t = labels.contiguous().view (-1)
+
+        loss = w*z.clamp(min=0) - w*z*t + w*torch.log(1 + torch.exp(-z.abs()))
+        loss = loss.sum()/(w.sum()+ 1e-12)
+        return loss
+
+def make_weight(labels_truth):
+    B,C,H,W = labels_truth.size()
+    weight = Variable(torch.FloatTensor(B*C*H*W)).cuda()
+
+    pos = labels_truth.detach().sum()
+    neg = B*C*H*W - pos
+    if pos>0:
+        pos_weight = 0.5/pos
+        neg_weight = 0.5/neg
+    else:
+        pos_weight = 0
+        neg_weight = 0
+
+    weight[labels_truth.contiguous().view(-1)> 0.5] = pos_weight
+    weight[labels_truth.contiguous().view(-1)<=0.5] = neg_weight
+
+    weight = weight.view(B,C,H,W)
+    return weight
 
 def loss(inputs, targets):
-    bceloss = nn.BCELoss()
+    mask_weights = make_weight(targets[:,0:1])
+    edges_weights = make_weight(targets[:,0:1])
 
-    loss = bceloss(inputs, targets) + dice_loss(inputs[:,0], targets[:,0]) + 10 * dice_loss(inputs[:,1], targets[:,1])
- 
+    mask_loss = WeightedBCELoss2d()(inputs[:,0:1], targets[:,0:1], mask_weights)
+    edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
+
+    loss = mask_loss + edges_loss
     return loss
+
+#     mask_weights = make_weight(targets[:,0])
+#     edges_weights = make_weight(targets[:,0])
+
+#     mask_loss = WeightedBCELoss2d()(inputs[:,0], targets[:,0], mask_weights)
+#     edges_loss = WeightedBCELoss2d()(inputs[:,1], targets[:,1], edges_weights)
+
+#     loss = mask_loss + edges_loss
+#     return loss
+
+#     # bceloss = nn.BCELoss()
+
+#     # loss = bceloss(inputs, targets) + dice_loss(inputs[:,0], targets[:,0]) + 10 * dice_loss(inputs[:,1], targets[:,1])
+ 
+#     # return loss
 
 def dice_loss(inputs, targets):
     num = targets.size(0)
