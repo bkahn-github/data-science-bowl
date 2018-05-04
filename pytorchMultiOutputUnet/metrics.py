@@ -22,7 +22,7 @@ class WeightedBCELoss2d(nn.Module):
 
 def make_weight(labels_truth):
     B,C,H,W = labels_truth.size()
-    weight = Variable(torch.FloatTensor(B*C*H*W)).to(device)
+    weight = torch.FloatTensor(B*C*H*W).requires_grad_().to(device)
 
     pos = labels_truth.detach().sum()
     neg = B*C*H*W - pos

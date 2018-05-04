@@ -86,8 +86,8 @@ def train(epochs, weights, kfolds):
             for data in tqdm(trainDataloader):
                 img, target = data['img'], data['target']
 
-                x = Variable(img).to(device)            
-                y = Variable(target).to(device)
+                x = img.requires_grad_().to(device)
+                y = target.requires_grad_().to(device)
 
                 optimizer.zero_grad()
 
@@ -103,8 +103,8 @@ def train(epochs, weights, kfolds):
                 for data in tqdm(valDataloader):
                     img, target = data['img'], data['target']
 
-                    x = Variable(img).to(device)
-                    y = Variable(target).to(device)
+                    x = img.to(device)
+                    y = target.to(device)
 
                     optimizer.zero_grad()
 
