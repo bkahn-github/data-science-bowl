@@ -52,7 +52,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
         
         if mode == 'masks':
             # masks = np.sum(masks, axis=0)
-            masks = [masks != 1] = 0
+            masks[masks != 1] = 0
         elif mode == 'edges':
             masks[masks == 1] = 0
             masks[masks > 1] = 1
