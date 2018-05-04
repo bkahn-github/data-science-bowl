@@ -72,7 +72,7 @@ def train(epochs, weights, kfolds):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model.to(device)
 
-        optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
+        optimizer = optim.SGD(model.parameters(), lr=config.LR, momentum=0.9)
 
         early_stopping = EarlyStopping()
 
@@ -154,6 +154,7 @@ if __name__ == "__main__":
     parser.add_argument('--kfolds', type=int)    
     parser.add_argument("--patience", type=int)
     parser.add_argument('--epochs', type=int)
+    parser.add_argument('--lr', type=float)
     parser.add_argument("--weights")
 
     args = parser.parse_args()
@@ -204,6 +205,10 @@ if __name__ == "__main__":
     if args.epochs:
         config.EPOCHS = args.epochs
         logging.info('Epochs has been changed to ' + str(config.EPOCHS))
+
+    if args.lr:
+        config.LR = args.lr
+        logging.info('lr has been changed to ' + str(config.LR))
 
     if args.weights:
         config.WEIGHTS = args.weights
