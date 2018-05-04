@@ -23,6 +23,7 @@ class Config():
     KFOLDS = 6
     PATIENCE = 0
     EPOCHS = 10
+    LR = 0.0001
     WEIGHTS = ''
 
 config = Config()
