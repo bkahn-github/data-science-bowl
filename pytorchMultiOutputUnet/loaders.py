@@ -28,7 +28,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        img_path, mask_path, edge_path = get_path(id)
+        img_path, mask_path, edge_path, backgrounds_path = get_path(id)
         
         img = Image.open(img_path)
         img.load()
@@ -40,15 +40,18 @@ class TrainDataset(Dataset):
         
         mask = io.imread(mask_path)
         edge = io.imread(edge_path)
+        background = io.imread(backgrounds_path)
 
         mask = mask.reshape(mask.shape[0], mask.shape[1], 1)
         edge = edge.reshape(edge.shape[0], edge.shape[1], 1)
+        background = background.reshape(background.shape[0], background.shape[1], 1)
 
         img = self.x_transform(img)
         mask = self.target_transforms(mask)
         edge = self.target_transforms(edge)
+        background = self.target_transforms(background)
 
-        target = torch.cat((mask, edge), dim=0)
+        target = torch.cat((mask, edge, background), dim=0)
 
         return {'img': img, 'target': target}
 

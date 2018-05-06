@@ -13,6 +13,7 @@ class Config():
 
     MASKS_OUTPUT_FOLDER = 'stage1_masks'
     EDGES_OUTPUT_FOLDER = 'stage1_edges'
+    BACKGROUNDS_OUTPUT_FOLDER = 'stage1_backgrounds'
 
     SUBSET = False
 
