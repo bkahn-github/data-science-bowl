@@ -49,7 +49,7 @@ def loss(inputs, targets):
     edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
     backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], targets[:,2:3], backgrounds_weights)
 
-    loss = mask_loss + edges_loss _ backgrounds_loss
+    loss = mask_loss + edges_loss + backgrounds_loss
 
     return loss
 
