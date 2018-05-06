@@ -32,26 +32,18 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
     for mask_folder in tqdm(masks_folder):
         mask_id = mask_folder.split('/')[-1]
 
-        # if mode == 'edges':
         size = get_sizes(mask_folder)
         masks = np.zeros(size)
-        # else:
-            # masks = []
 
         for mask in glob.glob(os.path.join(mask_folder, 'masks/*')):
             img = Image.open(mask)
             img = np.asarray(img)
             img = img / 255.0
 
-            # if mode == 'edges':
             img = get_edges(img)
             masks = np.add(masks, img)
-            # elif mode == 'masks':
-                # img = img
-                # masks.append(img)
         
         if mode == 'masks':
-            # masks = np.sum(masks, axis=0)
             masks[masks != 1] = 0
         elif mode == 'edges':
             masks[masks == 1] = 0
