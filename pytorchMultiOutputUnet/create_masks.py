@@ -50,7 +50,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
             masks[masks > 1] = 1
         elif mode == 'backgrounds':
             masks[masks != 1] = 0
-            masks = masks == 0
+            masks = (masks == 0).astype(np.uint8)
 
         output_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
         imwrite(output_path, masks)
