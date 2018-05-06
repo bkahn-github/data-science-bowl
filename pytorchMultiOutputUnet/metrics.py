@@ -42,12 +42,14 @@ def make_weight(labels_truth):
 
 def loss(inputs, targets):
     mask_weights = make_weight(targets[:,0:1])
-    edges_weights = make_weight(targets[:,0:1])
+    edges_weights = make_weight(targets[:,1:2])
+    backgrounds_weights = make_weight(targets[:,2:3])
 
     mask_loss = WeightedBCELoss2d()(inputs[:,0:1], targets[:,0:1], mask_weights)
     edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
+    backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], targets[:,2:3], backgrounds_weights)
 
-    loss = mask_loss + edges_loss
+    loss = mask_loss + edges_loss _ backgrounds_loss
 
     return loss
 
