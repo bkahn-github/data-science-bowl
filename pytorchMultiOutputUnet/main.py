@@ -74,7 +74,7 @@ def train(epochs, weights, kfolds):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model.to(device)
 
-        optimizer = optim.SGD(model.parameters(), lr=config.LR, momentum=0.9)
+        optimizer = optim.Adam(model.parameters(), lr=config.LR)
 
         early_stopping = EarlyStopping()
 
