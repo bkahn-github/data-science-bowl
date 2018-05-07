@@ -78,9 +78,6 @@ def get_kfolds(kfolds):
 
 def get_path(id):
     img_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', id, 'images', id + '.png')
+    target_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_targets', id + '.png')
 
-    mask_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_masks', id + '.png')
-    edge_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_edges', id + '.png')
-    backgrounds_path = os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train_backgrounds', id + '.png')
-
-    return img_path, mask_path, edge_path, backgrounds_path
+    return img_path, target_path
