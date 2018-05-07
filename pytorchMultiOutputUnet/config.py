@@ -10,7 +10,7 @@ class Config():
     STAGE='1'
 
     IMGS_FOLDER = 'stage1_train'
-    TARGETS_FOLDER = 'stage1_targets'
+    TARGETS_FOLDER = 'stage1_train_targets'
 
     SUBSET = False
 
