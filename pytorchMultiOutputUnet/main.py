@@ -32,7 +32,7 @@ def subset(subset):
 def preprocess():
     logging.info('Starting Preprocessing')
     logging.info('Creating targets')
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'masks', config.SUBSET)
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'targets', config.SUBSET)
 
 def train(epochs, weights, kfolds):
     logging.info('Starting Training')
