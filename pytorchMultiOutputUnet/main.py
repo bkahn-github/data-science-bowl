@@ -31,12 +31,8 @@ def subset(subset):
 
 def preprocess():
     logging.info('Starting Preprocessing')
-    logging.info('Creating masks')
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.MASKS_OUTPUT_FOLDER, 'masks', config.SUBSET)
-    logging.info('Creating edges')    
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.EDGES_OUTPUT_FOLDER, 'edges', config.SUBSET)
-    logging.info('Creating backgrounds')    
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.BACKGROUNDS_OUTPUT_FOLDER, 'backgrounds', config.SUBSET)
+    logging.info('Creating targets')
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'masks', config.SUBSET)
 
 def train(epochs, weights, kfolds):
     logging.info('Starting Training')

@@ -10,10 +10,7 @@ class Config():
     STAGE='1'
 
     IMGS_FOLDER = 'stage1_train'
-
-    MASKS_OUTPUT_FOLDER = 'stage1_masks'
-    EDGES_OUTPUT_FOLDER = 'stage1_edges'
-    BACKGROUNDS_OUTPUT_FOLDER = 'stage1_backgrounds'
+    TARGETS_FOLDER = 'stage1_targets'
 
     SUBSET = False
 

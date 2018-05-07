@@ -43,14 +43,16 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
             img = get_edges(img)
             masks = np.add(masks, img)
         
-        if mode == 'masks':
-            masks[masks != 1] = 0
-        elif mode == 'edges':
-            masks[masks == 1] = 0
-            masks[masks > 1] = 1
-        elif mode == 'backgrounds':
-            masks[masks != 1] = 0
-            masks = (masks == 0).astype(np.uint8)
+        masks[masks == 0] = 3
+
+        target = np.zeros((size[0], size[1], 3))
+        
+        target[:,:,0] = masks == 1
+        target[:,:,1] = masks == 2
+        target[:,:,2] = masks == 3
+        
+        target *= 255
+        target = target.astype(np.uint8)
 
         output_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
-        imwrite(output_path, masks)
+        imwrite(output_path, target)
