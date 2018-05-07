@@ -38,7 +38,7 @@ class TrainDataset(Dataset):
         img = np.array(RGBimg)
 
         target = io.imread(targets_path)
-        target = target.reshape(target.shape[0], target.shape[1], 1)
+        target = target.reshape(target.shape[0], target.shape[1], 3)
 
         img = self.x_transform(img)
         target = self.target_transforms(target)
