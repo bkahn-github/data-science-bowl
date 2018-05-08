@@ -44,58 +44,62 @@ def show_images(weights):
 
     fig = plt.figure(figsize=(30, 20))
 
-    ax = plt.subplot(4,4, 1)
+    ax = plt.subplot(4, 4, 1)
+    ax.set_title('Ground truth')
+    ax.imshow(y[1].reshape(256, 256, 3))
+
+    ax = plt.subplot(4, 4, 2)
     ax.set_title('Ground truth mask')
     ax.imshow(y[1][0].reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 2)
+    ax = plt.subplot(4, 4, 3)
     ax.set_title('Ground truth edges')
     ax.imshow(y[1][1].reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 3)
+    ax = plt.subplot(4, 4, 4)
     ax.set_title('Ground truth background')
     ax.imshow(y[1][2].reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 4)
+    ax = plt.subplot(4, 4, 5)
     ax.set_title('Ground truth mask - edges')
     ax.imshow((y[1][0] - y[1][1]).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 5)
+    ax = plt.subplot(4, 4, 6)
     ax.set_title('Ground truth background - mask')
     ax.imshow((y[1][2] - y[1][0]).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 6)
+    ax = plt.subplot(4, 4, 7)
     ax.set_title('Predicted mask')
     ax.imshow((outs[1][0]).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 7)
+    ax = plt.subplot(4, 4, 8)
     ax.set_title('Predicted mask with Otsu thresholding')
     ax.imshow((outs[1][0] > threshold_otsu(outs[1][0])).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 8)
+    ax = plt.subplot(4, 4, 9)
     ax.set_title('Predicted edges')
     ax.imshow((outs[1][1]).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 9)
+    ax = plt.subplot(4, 4, 10)
     ax.set_title('Predicted edges with Otsu thresholding')
     ax.imshow((outs[1][1] > threshold_otsu(outs[1][1])).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 10)
+    ax = plt.subplot(4, 4, 11)
     ax.set_title('Predicted background')
     ax.imshow((outs[1][2]).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 11)
+    ax = plt.subplot(4, 4, 12)
     ax.set_title('Predicted background with Otsu thresholding')
     ax.imshow((outs[1][2] > threshold_otsu(outs[1][2])).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 12)
+    ax = plt.subplot(4, 4, 13)
     ax.set_title('Predicted mask - edges')
     ax.imshow((outs[1][0]) - (outs[1][1]).reshape(256, 256))  
 
-    ax = plt.subplot(4, 4, 13)
+    ax = plt.subplot(4, 4, 14)
     ax.set_title('Predicted mask - edges with Otsu thresholding')
     ax.imshow(((outs[1][0] - outs[1][1]) > threshold_otsu((outs[1][0]) - (outs[1][1]))).reshape(256, 256))
 
-    ax = plt.subplot(4, 4, 14)
+    ax = plt.subplot(4, 4, 15)
     ax.set_title('Predicted background - mask with Otsu thresholding')
     ax.imshow(((outs[1][2] - outs[1][0]) > threshold_otsu((outs[1][2]) - (outs[1][0]))).reshape(256, 256))
