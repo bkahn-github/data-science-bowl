@@ -41,13 +41,13 @@ def make_weight(labels_truth):
     return weight
 
 def loss(inputs, targets):
-  epsilon = 1e-8
-  inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
-  weight = 30 * targets[:,0:1].cpu() + 3 * targets[:,1:2].cpu() + 1 * targets[:,2:3].cpu()
+    epsilon = 1e-8
+    inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
+    weight = 30 * targets[:,0:1].cpu() + 3 * targets[:,1:2].cpu() + 1 * targets[:,2:3].cpu()
+    
+    loss = - torch.sum(target.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - targets.cpu()) * torch.log(1 - inputs.cpu()), 1)
   
-  loss = - torch.sum(target.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - targets.cpu()) * torch.log(1 - inputs.cpu()), 1)
-  
-  return loss
+    return loss
 
     # mask_weights = make_weight(targets[:,0:1])
     # edges_weights = make_weight(targets[:,1:2])
