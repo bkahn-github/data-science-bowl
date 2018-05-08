@@ -41,15 +41,23 @@ def make_weight(labels_truth):
     return weight
 
 def loss(inputs, targets):
-    mask_weights = make_weight(targets[:,0:1])
-    edges_weights = make_weight(targets[:,1:2])
-    backgrounds_weights = make_weight(targets[:,2:3])
+  epsilon = 1e-8
+  inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
+  weight = 30 * targets[:,0:1].cpu() + 3 * targets[:,1:2].cpu() + 1 * targets[:,2:3].cpu()
+  
+  loss = - torch.sum(target.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - targets.cpu()) * torch.log(1 - inputs.cpu()), 1)
+  
+  return loss
 
-    mask_loss = WeightedBCELoss2d()(inputs[:,0:1], targets[:,0:1], mask_weights)
-    edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
-    backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], targets[:,2:3], backgrounds_weights)
+    # mask_weights = make_weight(targets[:,0:1])
+    # edges_weights = make_weight(targets[:,1:2])
+    # backgrounds_weights = make_weight(targets[:,2:3])
 
-    loss = 3 * dice_loss(inputs[:,0:1], targets[:,0:1]) + 30 * dice_loss(inputs[:,1:2], targets[:,1:2]) + 1 * dice_loss(inputs[:,2:3], targets[:,2:3])
+    # mask_loss = WeightedBCELoss2d()(inputs[:,0:1], targets[:,0:1], mask_weights)
+    # edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
+    # backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], targets[:,2:3], backgrounds_weights)
+
+    # loss = 3 * dice_loss(inputs[:,0:1], targets[:,0:1]) + 30 * dice_loss(inputs[:,1:2], targets[:,1:2]) + 1 * dice_loss(inputs[:,2:3], targets[:,2:3])
 
     return loss
 
