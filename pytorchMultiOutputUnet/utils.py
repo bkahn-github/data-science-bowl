@@ -16,7 +16,7 @@ class EarlyStopping:
 
     def evaluate(self, model, loss, epoch, patience=0):
         
-        if loss < self.best_score:
+        if loss <= self.best_score:
             logging.info('Val score has improved, saving model')
             self.best_score = loss
             self.best_epoch = epoch
