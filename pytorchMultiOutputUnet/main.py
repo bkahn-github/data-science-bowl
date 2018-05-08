@@ -107,7 +107,7 @@ def train(epochs, weights, kfolds):
 
                     outs = model(x)
                     val_loss = loss(outs, y)
-                    total_val_loss -= 1
+                    total_val_loss = total_val_loss - 1
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
