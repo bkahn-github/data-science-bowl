@@ -91,9 +91,9 @@ def train(epochs, weights, kfolds):
 
                 outs = model(x)
                 train_loss = loss(outs, y)
-                total_train_loss += train_loss.item()
-
-                train_loss.backward()
+                # total_train_loss += train_loss.item()
+                # train_loss.backward()
+                train_loss.backward(gradient=train_loss)
                 optimizer.step()
 
             total_val_loss = 0
@@ -108,7 +108,7 @@ def train(epochs, weights, kfolds):
 
                     outs = model(x)
                     val_loss = loss(outs, y)
-                    total_val_loss += val_loss.item()
+                    # total_val_loss += val_loss.item()
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
