@@ -41,7 +41,7 @@ def make_weight(labels_truth):
     return weight
 
 def loss(inputs, targets):
-    epsilon = 1e-8
+    epsilon = 1e-5
     inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
     weight = 30 * targets[:,0:1].cpu() + 3 * targets[:,1:2].cpu() + 1 * targets[:,2:3].cpu()
     
