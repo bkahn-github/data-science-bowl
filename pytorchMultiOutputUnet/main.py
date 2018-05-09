@@ -91,7 +91,8 @@ def train(epochs, weights, kfolds):
 
                 outs = model(x)
                 train_loss = loss(outs, y)
-        
+                total_train_loss += (torch.sum(train_loss.view(-1)) / len(train_loss.view(-1))).item()
+
                 train_loss.backward(gradient=train_loss)
                 optimizer.step()
 
@@ -107,7 +108,7 @@ def train(epochs, weights, kfolds):
 
                     outs = model(x)
                     val_loss = loss(outs, y)
-                    # total_val_loss = total_val_loss - 1
+                    total_val_loss += (torch.sum(val_loss.view(-1)) / len(val_loss.view(-1))).item()
 
             message, train_loss, val_loss = calculate_losses(total_train_loss, total_val_loss, train_ids, val_ids, epoch)
             print(message)
