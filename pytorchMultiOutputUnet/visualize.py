@@ -52,7 +52,7 @@ def show_images(weights):
 
     ax = plt.subplot(2, 3, 1)
     ax.set_title('Image')
-    ax.imshow(x)
+    ax.imshow(x*0.5+0.5)
 
     ax = plt.subplot(2, 3, 2)
     ax.set_title('Ground truth')
