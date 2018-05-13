@@ -42,64 +42,23 @@ def show_images(weights):
     y = y.detach().cpu().numpy()
     outs = outs.detach().cpu().numpy()
 
-    fig = plt.figure(figsize=(30, 20))
+    img = np.concatenate((outs[0][0:1].reshape(256, 256, 1), outs[0][1:2].reshape(256, 256, 1), (outs[0][2]).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
+    truth = np.concatenate((y[0][0:1].reshape(256, 256, 1), y[0][1:2].reshape(256, 256, 1), (y[0][2] > 0).astype(np.uint8).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
 
-    ax = plt.subplot(4, 4, 1)
+    fig = plt.figure(figsize=(20, 20))
+
+    ax = plt.subplot(2, 2, 1)
     ax.set_title('Ground truth')
-    ax.imshow(y[1].reshape(256, 256, 3))
+    ax.imshow(truth)
 
-    ax = plt.subplot(4, 4, 2)
-    ax.set_title('Ground truth mask')
-    ax.imshow(y[1][0].reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 3)
-    ax.set_title('Ground truth edges')
-    ax.imshow(y[1][1].reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 4)
-    ax.set_title('Ground truth background')
-    ax.imshow(y[1][2].reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 5)
-    ax.set_title('Ground truth mask - edges')
-    ax.imshow((y[1][0] - y[1][1]).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 6)
-    ax.set_title('Ground truth background - mask')
-    ax.imshow((y[1][2] - y[1][0]).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 7)
+    ax = plt.subplot(2, 2, 2)
     ax.set_title('Predicted mask')
-    ax.imshow((outs[1][0]).reshape(256, 256))
+    ax.imshow(img[:,:,:])
 
-    ax = plt.subplot(4, 4, 8)
-    ax.set_title('Predicted mask with Otsu thresholding')
-    ax.imshow((outs[1][0] > threshold_otsu(outs[1][0])).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 9)
+    ax = plt.subplot(2, 2, 3)
     ax.set_title('Predicted edges')
-    ax.imshow((outs[1][1]).reshape(256, 256))
+    ax.imshow(img[:,:,1])
 
-    ax = plt.subplot(4, 4, 10)
-    ax.set_title('Predicted edges with Otsu thresholding')
-    ax.imshow((outs[1][1] > threshold_otsu(outs[1][1])).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 11)
-    ax.set_title('Predicted background')
-    ax.imshow((outs[1][2]).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 12)
-    ax.set_title('Predicted background with Otsu thresholding')
-    ax.imshow((outs[1][2] > threshold_otsu(outs[1][2])).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 13)
+    ax = plt.subplot(2, 2, 4)
     ax.set_title('Predicted mask - edges')
-    ax.imshow((outs[1][0]) - (outs[1][1]).reshape(256, 256))  
-
-    ax = plt.subplot(4, 4, 14)
-    ax.set_title('Predicted mask - edges with Otsu thresholding')
-    ax.imshow(((outs[1][0] - outs[1][1]) > threshold_otsu((outs[1][0]) - (outs[1][1]))).reshape(256, 256))
-
-    ax = plt.subplot(4, 4, 15)
-    ax.set_title('Predicted background - mask with Otsu thresholding')
-    ax.imshow(((outs[1][2] - outs[1][0]) > threshold_otsu((outs[1][2]) - (outs[1][0]))).reshape(256, 256))
+    ax.imshow(img[:,:,0] - img[:,:,1])
