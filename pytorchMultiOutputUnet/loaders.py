@@ -1,9 +1,13 @@
 import os
 import glob
+import cv2
 import numpy as np
 
 import torch
 import torchvision
+
+import imgaug
+from imgaug import augmenters as iaa
 
 from utils import get_path
 
@@ -12,6 +16,24 @@ from torchvision import transforms, utils
 
 from skimage import io, transform
 from PIL import Image
+
+seq = iaa.Sequential([iaa.Noop()])
+
+def randomCrop(image, mask, output_size):
+    h, w = image.shape[:2]
+    new_h, new_w = output_size, output_size
+    
+    if h != new_h:
+        top = np.random.randint(0, h - new_h)
+        left = np.random.randint(0, w - new_w)
+    else:
+        top = 0
+        left = 0
+        
+    image = image[top: top + new_h, left: left + new_w]
+    mask = mask[top: top + new_h, left: left + new_w]
+
+    return image, mask
 
 class TrainDataset(Dataset):
     def __init__(self, ids, x_transform=None, target_transforms=None):
@@ -29,16 +51,14 @@ class TrainDataset(Dataset):
 
         img_path, targets_path = get_path(id)
         
-        img = Image.open(img_path)
-        img.load()
-
-        RGBimg = Image.new("RGB", img.size, (255, 255, 255))
-        RGBimg.paste(img, mask=img.split()[3])
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        target = cv2.imread(targets_path, cv2.IMREAD_COLOR)
         
-        img = np.array(RGBimg)
+        seq_det = seq.to_deterministic()
+        img = seq_det.augment_image(img)
+        target = seq_det.augment_image(target)
 
-        target = io.imread(targets_path)
-        target = target.reshape(target.shape[0], target.shape[1], 3)
+        img, target = randomCrop(img, target, 256)
 
         img = self.x_transform(img)
         target = self.target_transforms(target)
@@ -48,13 +68,11 @@ class TrainDataset(Dataset):
 
 x_transforms = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize((256, 256)),
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
 target_transforms = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize((256, 256)),
     transforms.ToTensor()
 ])
