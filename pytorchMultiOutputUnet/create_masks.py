@@ -15,10 +15,9 @@ def get_edges(img):
   
 def get_sizes(mask_folder):
     mask = glob.glob(os.path.join(mask_folder, 'masks/*'))[0]
-    img = Image.open(mask)
-    img = np.asarray(img)
+    mask = cv2.imread(mask, cv2.IMREAD_GRAYSCALE)
 
-    return img.shape
+    return mask.shape
 
 def create_masks(root_folder, stage_number, stage_section, output_folder, mode, subset=False):
     stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section) 
@@ -37,8 +36,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
         masks_with_edges = np.zeros(size)
 
         for mask in glob.glob(os.path.join(mask_folder, 'masks/*')):
-            img = Image.open(mask)
-            img = np.asarray(img)
+            img = cv2.imread(mask, cv2.IMREAD_GRAYSCALE)
             img = img / 255.0
 
             img_with_edges = get_edges(img)
