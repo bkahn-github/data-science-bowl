@@ -34,32 +34,38 @@ def show_images(weights):
         for data in dataLoader:
             img, target = data['img'], data['target']
 
-            x = Variable(img).to(device)
-            y = Variable(target).to(device)
+            x = img.to(device)
+            y = target.to(device)
 
             outs = model(x)
             break
 
+    x = x.detach().cpu().numpy()    
     y = y.detach().cpu().numpy()
     outs = outs.detach().cpu().numpy()
 
-    img = np.concatenate((outs[0][0:1].reshape(256, 256, 1), outs[0][1:2].reshape(256, 256, 1), (outs[0][2]).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
-    truth = np.concatenate((y[0][0:1].reshape(256, 256, 1), y[0][1:2].reshape(256, 256, 1), (y[0][2] > 0).astype(np.uint8).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
+    x = np.concatenate((x[0][0:1].reshape(256, 256, 1), x[0][1:2].reshape(256, 256, 1), (x[0][2] > 0).astype(np.uint8).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
+    y = np.concatenate((y[0][0:1].reshape(256, 256, 1), y[0][1:2].reshape(256, 256, 1), (y[0][2] > 0).astype(np.uint8).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
+    outs = np.concatenate((outs[0][0:1].reshape(256, 256, 1), outs[0][1:2].reshape(256, 256, 1), (outs[0][2]).reshape(256, 256, 1)), axis=-1).reshape(256, 256, 3)
 
     fig = plt.figure(figsize=(20, 20))
 
-    ax = plt.subplot(2, 2, 1)
+    ax = plt.subplot(2, 3, 1)
+    ax.set_title('Image')
+    ax.imshow(x)
+
+    ax = plt.subplot(2, 3, 2)
     ax.set_title('Ground truth')
-    ax.imshow(truth)
+    ax.imshow(y)
 
-    ax = plt.subplot(2, 2, 2)
+    ax = plt.subplot(2, 3, 3)
     ax.set_title('Predicted mask')
-    ax.imshow(img[:,:,:])
+    ax.imshow(outs[:,:,:])
 
-    ax = plt.subplot(2, 2, 3)
+    ax = plt.subplot(2, 3, 4)
     ax.set_title('Predicted edges')
-    ax.imshow(img[:,:,1])
+    ax.imshow(outs[:,:,1])
 
-    ax = plt.subplot(2, 2, 4)
+    ax = plt.subplot(2, 3, 5)
     ax.set_title('Predicted mask - edges')
-    ax.imshow(img[:,:,0] - img[:,:,1])
+    ax.imshow(outs[:,:,0] - outs[:,:,1])
