@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from skimage.filters import threshold_otsu
 
 from config import config
-from loaders import TrainDataset, x_transforms, target_transforms
+from loaders import TrainDataset, augmentation
 from model import Unet
 from utils import get_kfolds
 
@@ -27,7 +27,7 @@ def show_images(weights):
   
     kfolds = get_kfolds(2)
   
-    dataset = TrainDataset(kfolds[0][0], x_transform=x_transforms, target_transforms=target_transforms)
+    dataset = TrainDataset(kfolds[0][0], augmentation=augmentation)
     dataLoader = DataLoader(dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE, num_workers=config.NUM_WORKERS)
 
     with torch.no_grad():
