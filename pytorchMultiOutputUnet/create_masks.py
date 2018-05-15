@@ -44,14 +44,14 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
             masks = np.add(masks, img)
             masks_with_edges = np.add(masks_with_edges, img_with_edges)
         
-        target = np.zeros((size[0], size[1], 3))
+        mask = np.zeros((size[0], size[1], 3))
         
-        target[:,:,0] = masks == 1
-        target[:,:,1] = masks_with_edges == 2
-        target[:,:,2] = masks == 0
+        mask[:,:,0] = masks == 1
+        mask[:,:,1] = masks_with_edges == 2
+        mask[:,:,2] = masks == 0
         
-        target *= 255
-        target = target.astype(np.uint8)
+        mask *= 255
+        mask = mask.astype(np.uint8)
 
         output_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
-        imwrite(output_path, target)
+        imwrite(output_path, mask)

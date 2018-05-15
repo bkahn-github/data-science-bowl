@@ -106,11 +106,11 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        img_path, targets_path = get_path(id)
+        img_path, masks_path = get_path(id)
         
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        target = cv2.imread(targets_path, cv2.IMREAD_COLOR)
+        mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
-        img, target = self.augmentation(img, target)
+        img, mask = self.augmentation(img, mask)
 
-        return {'img': img, 'target': target}
+        return {'img': img, 'mask': mask}

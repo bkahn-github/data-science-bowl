@@ -40,31 +40,31 @@ def make_weight(labels_truth):
     weight = weight.view(B,C,H,W)
     return weight
 
-def loss(inputs, targets):
+def loss(inputs, masks):
     epsilon = 1e-5
     inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
-    weight = 30 * targets[:,0:1].cpu() + 3 * targets[:,1:2].cpu() + 1 * targets[:,2:3].cpu()
+    weight = 30 * masks[:,0:1].cpu() + 3 * masks[:,1:2].cpu() + 1 * masks[:,2:3].cpu()
     
-    loss = - torch.sum(targets.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - targets.cpu()) * torch.log(1 - inputs.cpu()), 1)
+    loss = - torch.sum(masks.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - masks.cpu()) * torch.log(1 - inputs.cpu()), 1)
   
     return loss
 
-    # mask_weights = make_weight(targets[:,0:1])
-    # edges_weights = make_weight(targets[:,1:2])
-    # backgrounds_weights = make_weight(targets[:,2:3])
+    # mask_weights = make_weight(masks[:,0:1])
+    # edges_weights = make_weight(masks[:,1:2])
+    # backgrounds_weights = make_weight(masks[:,2:3])
 
-    # mask_loss = WeightedBCELoss2d()(inputs[:,0:1], targets[:,0:1], mask_weights)
-    # edges_loss = WeightedBCELoss2d()(inputs[:,1:2], targets[:,1:2], edges_weights)
-    # backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], targets[:,2:3], backgrounds_weights)
+    # mask_loss = WeightedBCELoss2d()(inputs[:,0:1], masks[:,0:1], mask_weights)
+    # edges_loss = WeightedBCELoss2d()(inputs[:,1:2], masks[:,1:2], edges_weights)
+    # backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], masks[:,2:3], backgrounds_weights)
 
-    # loss = 3 * dice_loss(inputs[:,0:1], targets[:,0:1]) + 30 * dice_loss(inputs[:,1:2], targets[:,1:2]) + 1 * dice_loss(inputs[:,2:3], targets[:,2:3])
+    # loss = 3 * dice_loss(inputs[:,0:1], masks[:,0:1]) + 30 * dice_loss(inputs[:,1:2], masks[:,1:2]) + 1 * dice_loss(inputs[:,2:3], masks[:,2:3])
 
     return loss
 
-def dice_loss(inputs, targets):
-    num = targets.size(0)
+def dice_loss(inputs, masks):
+    num = masks.size(0)
     m1  = inputs.view(num,-1)
-    m2  = targets.view(num,-1)
+    m2  = masks.view(num,-1)
     intersection = (m1 * m2)
     score = 2. * (intersection.sum(1)+1) / (m1.sum(1) + m2.sum(1)+1)
     score = 1 - score.sum()/num
