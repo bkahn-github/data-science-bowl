@@ -63,7 +63,10 @@ class Rotate(object):
         
         img = skimage.transform.rotate(img, angle, preserve_range=True)
         mask = skimage.transform.rotate(mask, angle, preserve_range=True)
-        
+
+        img = img.astype(np.uint8)
+        mask = mask.astype(np.uint8)
+
         return img, mask
 
 class ToTensor(object):
