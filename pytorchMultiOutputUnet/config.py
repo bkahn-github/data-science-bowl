@@ -24,4 +24,10 @@ class Config():
     LR = 0.0001
     WEIGHTS = ''
 
+    AUGMENT = True
+    RANDOMCROP = 256
+    FLIPLR = 0.5
+    FLIPUD = 0.5
+    ROTATE = 25
+
 config = Config()

@@ -8,6 +8,7 @@ import torch
 import torchvision
 
 from utils import get_path
+from config import config
 
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
@@ -17,7 +18,7 @@ from skimage import io, transform
 from PIL import Image
 
 class RandomCrop(object):
-    def __call__(self, sample, size=0.5):
+    def __call__(self, sample, size):
         img = sample[0]
         mask = sample[1]
 
@@ -85,10 +86,10 @@ def augmentation(img, mask):
     flipUD = FlipUD()
     rotate = Rotate()
 
-    img, mask = randomCrop([img, mask], 256)
-    img, mask = flipLR([img, mask], 0.5)
-    img, mask = flipUD([img, mask], 0.5)
-    img, mask = rotate([img, mask], 25)
+    img, mask = randomCrop([img, mask], config.RANDOMCROP)
+    img, mask = flipLR([img, mask], config.FLIPLR)
+    img, mask = flipUD([img, mask], config.FLIPUD)
+    img, mask = rotate([img, mask], config.ROTATE)
     img, mask = toTensor([img, mask])    
 
     return img, mask
