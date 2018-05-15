@@ -4,6 +4,8 @@ import random
 import numpy as np
 
 import torch
+import torchvision
+
 from utils import get_path
 
 from torch.utils.data import Dataset
