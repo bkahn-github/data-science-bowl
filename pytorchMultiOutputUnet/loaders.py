@@ -80,12 +80,10 @@ class ToTensor(object):
         return img, mask
     
 def augmentation(img, mask):
-    randomCrop = RandomCrop()
     flipLR = FlipLR()
     flipUD = FlipUD()
     rotate = Rotate()
 
-    img, mask = randomCrop([img, mask], config.RANDOMCROP)
     img, mask = flipLR([img, mask], config.FLIPLR)
     img, mask = flipUD([img, mask], config.FLIPUD)
     img, mask = rotate([img, mask], config.ROTATE)
@@ -113,6 +111,9 @@ class TrainDataset(Dataset):
             img, mask = self.augmentation(img, mask)
 
         toTensor = ToTensor()
+        randomCrop = RandomCrop()
+        
+        img, mask = randomCrop([img, mask], config.RANDOMCROP)
         img, mask = toTensor([img, mask])
 
         return {'img': img, 'mask': mask}
