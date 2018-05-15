@@ -81,7 +81,6 @@ class ToTensor(object):
     
 def augmentation(img, mask):
     randomCrop = RandomCrop()
-    toTensor = ToTensor()
     flipLR = FlipLR()
     flipUD = FlipUD()
     rotate = Rotate()
@@ -90,7 +89,6 @@ def augmentation(img, mask):
     img, mask = flipLR([img, mask], config.FLIPLR)
     img, mask = flipUD([img, mask], config.FLIPUD)
     img, mask = rotate([img, mask], config.ROTATE)
-    img, mask = toTensor([img, mask])    
 
     return img, mask
 
@@ -111,6 +109,10 @@ class TrainDataset(Dataset):
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
-        img, mask = self.augmentation(img, mask)
+        if config.AUGMENT:
+            img, mask = self.augmentation(img, mask)
+
+        toTensor = ToTensor()
+        img, mask = toTensor([img, mask])
 
         return {'img': img, 'mask': mask}
