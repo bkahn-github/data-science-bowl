@@ -49,6 +49,7 @@ class FlipUD(object):
         img, mask = sample[0], sample[1]
         
         if random.random() < p:
+            print(random.random())
             img = img[::-1].copy()
             mask = mask[::-1].copy()
             return img, mask
