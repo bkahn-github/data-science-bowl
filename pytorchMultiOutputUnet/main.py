@@ -31,8 +31,8 @@ def subset(subset):
 
 def preprocess():
     logging.info('Starting Preprocessing')
-    logging.info('Creating targets')
-    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'targets', config.SUBSET)
+    logging.info('Creating masks')
+    create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'masks', config.SUBSET)
 
 def train(epochs, weights, kfolds):
     logging.info('Starting Training')
@@ -82,10 +82,10 @@ def train(epochs, weights, kfolds):
             
             total_train_loss = 0
             for data in tqdm(trainDataloader):
-                img, target = data['img'], data['target']
+                img, mask = data['img'], data['mask']
 
                 x = img.requires_grad_().to(device)
-                y = target.requires_grad_().to(device)
+                y = mask.requires_grad_().to(device)
 
                 optimizer.zero_grad()
 
@@ -99,10 +99,10 @@ def train(epochs, weights, kfolds):
             total_val_loss = 0
             with torch.no_grad():
                 for data in tqdm(valDataloader):
-                    img, target = data['img'], data['target']
+                    img, mask = data['img'], data['mask']
 
                     x = img.to(device)
-                    y = target.to(device)
+                    y = mask.to(device)
 
                     optimizer.zero_grad()
 

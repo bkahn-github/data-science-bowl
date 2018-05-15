@@ -32,10 +32,10 @@ def show_images(weights):
 
     with torch.no_grad():
         for data in dataLoader:
-            img, target = data['img'], data['target']
+            img, mask = data['img'], data['mask']
 
             x = img.to(device)
-            y = target.to(device)
+            y = mask.to(device)
 
             outs = model(x)
             break
