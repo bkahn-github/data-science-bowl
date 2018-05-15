@@ -54,6 +54,17 @@ class FlipUD(object):
             return img, mask
         return img, mask
 
+class Rotate(object):
+    def __call__(self, sample, max_angle):
+        img, mask = sample[0], sample[1]
+
+        angle = random.randint(0, max_angle)
+        
+        img = skimage.transform.rotate(img, angle, preserve_range=True)
+        mask = skimage.transform.rotate(mask, angle, preserve_range=True)
+        
+        return img, mask
+
 class ToTensor(object):
     def __call__(self, sample):
         img, mask = sample[0], sample[1]
@@ -68,10 +79,12 @@ def augmentation(img, mask):
     toTensor = ToTensor()
     flipLR = FlipLR()
     flipUD = FlipUD()
-    
+    rotate = Rotate()
+
     img, mask = randomCrop([img, mask], 256)
     img, mask = flipLR([img, mask], 0.5)
     img, mask = flipUD([img, mask], 0.5)
+    img, mask = rotate([img, mask], 25)
     img, mask = toTensor([img, mask])    
 
     return img, mask
