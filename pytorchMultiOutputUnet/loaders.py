@@ -8,13 +8,13 @@ import torch
 import torchvision
 
 from utils import get_path
-from config import config   
 
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
 import skimage
 from skimage import io, transform
+from PIL import Image
 
 class RandomCrop(object):
     def __call__(self, sample, size=0.5):
