@@ -70,6 +70,17 @@ class Rotate(object):
 
         return img, mask
 
+class RescaleIntensity(object):
+    def __call__(self, sample):
+        img, mask = sample[0], sample[1]
+        
+        img_gray = img[0]
+        threshold = skimage.filters.threshold_otsu(img_gray)
+        if np.mean(img_gray) > threshold:
+            img = skimage.util.invert(img)
+    
+        return img, mask
+
 class ToTensor(object):
     def __call__(self, sample):
         img, mask = sample[0], sample[1]
@@ -102,6 +113,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
+        rescaleIntensity = RescaleIntensity()
         randomCrop = RandomCrop()
         toTensor = ToTensor()
 
@@ -110,8 +122,9 @@ class TrainDataset(Dataset):
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
+        img, mask = rescaleIntensity([img, mask])
         img, mask = randomCrop([img, mask], config.RANDOMCROP)
-        
+
         if config.AUGMENT:
             img, mask = self.augmentation(img, mask)
 
