@@ -70,7 +70,7 @@ class Rotate(object):
 
         return img, mask
 
-class RescaleIntensity(object):
+class InvertImages(object):
     def __call__(self, sample):
         img, mask = sample[0], sample[1]
         
@@ -113,7 +113,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        rescaleIntensity = RescaleIntensity()
+        invertImages = InvertImages()
         randomCrop = RandomCrop()
         toTensor = ToTensor()
 
@@ -122,7 +122,7 @@ class TrainDataset(Dataset):
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
-        img, mask = rescaleIntensity([img, mask])
+        img, mask = invertImages([img, mask])
         img, mask = randomCrop([img, mask], config.RANDOMCROP)
 
         if config.AUGMENT:
