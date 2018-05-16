@@ -75,8 +75,7 @@ class InvertImages(object):
         img, mask = sample[0], sample[1]
         
         img_gray = img[0]
-        threshold = skimage.filters.threshold_otsu(img_gray)
-        if np.mean(img_gray) > threshold:
+        if np.mean(img_gray) > config.INVERT:
             img = skimage.util.invert(img)
     
         return img, mask
