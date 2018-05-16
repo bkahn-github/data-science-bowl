@@ -25,6 +25,7 @@ class Config():
     WEIGHTS = ''
 
     AUGMENT = True
+    INVERT = 127
     RANDOMCROP = 256
     FLIPLR = 0.5
     FLIPUD = 0.5
