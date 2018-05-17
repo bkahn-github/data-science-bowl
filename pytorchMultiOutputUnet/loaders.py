@@ -74,7 +74,7 @@ class InvertImages(object):
     def __call__(self, sample):
         img, mask = sample[0], sample[1]
         
-        img_gray = img[0]
+        img_gray = img[:,:,0]
         if np.mean(img_gray) > config.INVERT:
             img = 255 - img
     
