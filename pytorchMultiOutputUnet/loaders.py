@@ -143,7 +143,7 @@ class TrainDataset(Dataset):
         id = self.ids[idx]
 
         clahe = CLAHE(cliplimit=config.CLIPLIMIT, gridSize=config.GRIDSIZE)
-        invertImages = InvertImages()
+        invertImages = InvertImages(invert=config.INVERT)
         randomCrop = RandomCrop(size=config.RANDOMCROP)
         toTensor = ToTensor()
 
@@ -153,7 +153,7 @@ class TrainDataset(Dataset):
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
         img, mask = clahe([img, mask])
-        img, mask = invertImages([img, mask], config.INVERT)
+        img, mask = invertImages([img, mask])
         img, mask = randomCrop([img, mask])
 
         if config.AUGMENT:
