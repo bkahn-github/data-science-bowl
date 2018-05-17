@@ -76,7 +76,7 @@ class InvertImages(object):
         
         img_gray = img[0]
         if np.mean(img_gray) > config.INVERT:
-            img = skimage.util.invert(img)
+            img = 255 - img
     
         return img, mask
 
