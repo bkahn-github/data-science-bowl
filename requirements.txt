@@ -11,3 +11,4 @@ kaggle
 Pillow
 torch
 torchvision
+opencv-python
