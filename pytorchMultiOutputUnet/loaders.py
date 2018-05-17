@@ -82,11 +82,11 @@ class CLAHE(object):
         return img, mask
 
 class InvertImages(object):
-    def __call__(self, sample):
+    def __call__(self, sample, invert):
         img, mask = sample[0], sample[1]
         
         img_gray = img[:,:,0]
-        if np.mean(img_gray) > config.INVERT:
+        if np.mean(img_gray) > invert:
             img = 255 - img
     
         return img, mask
@@ -134,7 +134,7 @@ class TrainDataset(Dataset):
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
         img, mask = clahe([img, mask])
-        img, mask = invertImages([img, mask])
+        img, mask = invertImages([img, mask], config.INVERT)
         img, mask = randomCrop([img, mask], config.RANDOMCROP)
 
         if config.AUGMENT:
