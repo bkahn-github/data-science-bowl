@@ -11,4 +11,3 @@ kaggle
 Pillow
 torch
 torchvision
-imgaug
