@@ -71,11 +71,11 @@ class Rotate(object):
         return img, mask
 
 class CLAHE(object):
-    def __call__(self, sample):
+    def __call__(self, sample, cliplimit, gridSize):
         img, mask = sample[0], sample[1]
 
         img = cv2.cvtColor(img, cv2.COLOR_RGB2Lab)
-        clahe = cv2.createCLAHE(clipLimit=2, tileGridSize=(8, 8))
+        clahe = cv2.createCLAHE(clipLimit=cliplimit, tileGridSize=gridSize)
         img[:, :, 0] = clahe.apply(img[:, :, 0])
         img = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
         
@@ -133,7 +133,7 @@ class TrainDataset(Dataset):
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
-        img, mask = clahe([img, mask])
+        img, mask = clahe([img, mask], config.CLIPLIMIT, config.GRIDSIZE)
         img, mask = invertImages([img, mask], config.INVERT)
         img, mask = randomCrop([img, mask], config.RANDOMCROP)
 
