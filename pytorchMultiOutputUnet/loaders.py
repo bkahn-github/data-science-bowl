@@ -18,49 +18,61 @@ from skimage import io, transform
 from PIL import Image
 
 class RandomCrop(object):
-    def __call__(self, sample, size):
+    def __init__(self, size):
+        self.size = size
+
+    def __call__(self, sample):
         img = sample[0]
         mask = sample[1]
 
         h, w = img.shape[:2]
 
-        if h != size:
-            top = np.random.randint(0, h - size)
-            left = np.random.randint(0, w - size)
+        if h != self.size:
+            top = np.random.randint(0, h - self.size)
+            left = np.random.randint(0, w - self.size)
         else:
             top = 0
             left = 0
 
-        img = img[top: top + size, left: left + size]
-        mask = mask[top: top + size, left: left + size]
+        img = img[top: top + self.size, left: left + self.size]
+        mask = mask[top: top + self.size, left: left + self.size]
 
         return img, mask
 
 class FlipLR(object):
-    def __call__(self, sample, p):
+    def __init__(self, p):
+        self.p = p
+
+    def __call__(self, sample):
         img, mask = sample[0], sample[1]
         
-        if random.random() < p:
+        if random.random() < self.p:
             img = img[:, ::-1].copy()
             mask = mask[:, ::-1].copy()
             return img, mask
         return img, mask
 
 class FlipUD(object):
-    def __call__(self, sample, p):
+    def __init__(self, p):
+        self.p = p
+
+    def __call__(self, sample):
         img, mask = sample[0], sample[1]
         
-        if random.random() < p:
+        if random.random() < self.p:
             img = img[::-1].copy()
             mask = mask[::-1].copy()
             return img, mask
         return img, mask
 
 class Rotate(object):
-    def __call__(self, sample, max_angle):
+    def __init__(self, max_angle):
+        self.max_angle = max_angle
+
+    def __call__(self, sample):
         img, mask = sample[0], sample[1]
 
-        angle = random.randint(0, max_angle)
+        angle = random.randint(0, self.max_angle)
         
         img = skimage.transform.rotate(img, angle, preserve_range=True)
         mask = skimage.transform.rotate(mask, angle, preserve_range=True)
@@ -71,22 +83,29 @@ class Rotate(object):
         return img, mask
 
 class CLAHE(object):
-    def __call__(self, sample, cliplimit, gridSize):
+    def __init__(self, cliplimit, gridSize):
+        self.cliplimit = cliplimit
+        self.gridSize = gridSize
+
+    def __call__(self, sample):
         img, mask = sample[0], sample[1]
 
         img = cv2.cvtColor(img, cv2.COLOR_RGB2Lab)
-        clahe = cv2.createCLAHE(clipLimit=cliplimit, tileGridSize=gridSize)
+        clahe = cv2.createCLAHE(clipLimit=self.cliplimit, tileGridSize=self.gridSize)
         img[:, :, 0] = clahe.apply(img[:, :, 0])
         img = cv2.cvtColor(img, cv2.COLOR_LAB2RGB)
         
         return img, mask
 
 class InvertImages(object):
-    def __call__(self, sample, invert):
+    def __init__(self, invert):
+        self.invert = invert
+
+    def __call__(self, sample):
         img, mask = sample[0], sample[1]
         
         img_gray = img[:,:,0]
-        if np.mean(img_gray) > invert:
+        if np.mean(img_gray) > self.invert:
             img = 255 - img
     
         return img, mask
@@ -101,13 +120,13 @@ class ToTensor(object):
         return img, mask
     
 def augmentation(img, mask):
-    flipLR = FlipLR()
-    flipUD = FlipUD()
-    rotate = Rotate()
+    flipLR = FlipLR(p=config.FLIPLR)
+    flipUD = FlipUD(p=config.FLIPUD)
+    rotate = Rotate(max_angle=config.ROTATE)
 
-    img, mask = flipLR([img, mask], config.FLIPLR)
-    img, mask = flipUD([img, mask], config.FLIPUD)
-    img, mask = rotate([img, mask], config.ROTATE)
+    img, mask = flipLR([img, mask])
+    img, mask = flipUD([img, mask])
+    img, mask = rotate([img, mask])
 
     return img, mask
 
@@ -123,9 +142,9 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        clahe = CLAHE()
+        clahe = CLAHE(cliplimit=config.CLIPLIMIT, gridSize=config.GRIDSIZE)
         invertImages = InvertImages()
-        randomCrop = RandomCrop()
+        randomCrop = RandomCrop(size=config.RANDOMCROP)
         toTensor = ToTensor()
 
         img_path, masks_path = get_path(id)
@@ -133,9 +152,9 @@ class TrainDataset(Dataset):
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         mask = cv2.imread(masks_path, cv2.IMREAD_COLOR)
         
-        img, mask = clahe([img, mask], config.CLIPLIMIT, config.GRIDSIZE)
+        img, mask = clahe([img, mask])
         img, mask = invertImages([img, mask], config.INVERT)
-        img, mask = randomCrop([img, mask], config.RANDOMCROP)
+        img, mask = randomCrop([img, mask])
 
         if config.AUGMENT:
             img, mask = self.augmentation(img, mask)
