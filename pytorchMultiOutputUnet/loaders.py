@@ -14,8 +14,6 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
 import skimage
-from skimage import io, transform
-from PIL import Image
 
 class RandomCrop(object):
     def __init__(self, size):

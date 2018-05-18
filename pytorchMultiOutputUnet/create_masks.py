@@ -1,13 +1,10 @@
 import os
 import glob
-from tqdm import tqdm
-from PIL import Image
-from imageio import imwrite
 import numpy as np
-import matplotlib.pyplot as plt
+from tqdm import tqdm
+from imageio import imwrite
 import cv2
-from scipy import ndimage
-import skimage.morphology
+import skimage
 
 def get_edges(img):
     img = skimage.morphology.binary_dilation(img, selem=np.ones((5,5))).astype(np.uint8)

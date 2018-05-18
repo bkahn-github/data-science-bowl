@@ -1,8 +1,10 @@
 import torch
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 class Config():
 
-    if torch.cuda.is_available():
+    if device == 'cuda:0':
         ROOT_FOLDER = '/content/.kaggle/competitions/data-science-bowl-2018/'
     else:
         ROOT_FOLDER = '/home/bilal/.kaggle/competitions/data-science-bowl-2018/'

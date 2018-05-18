@@ -18,7 +18,6 @@ from metrics import loss
 from utils import get_kfolds, calculate_losses, calculate_kfolds_losses, save_model, load_model, EarlyStopping
 
 import torch.nn as nn
-from torch.autograd import Variable
 import torch.optim as optim
     
 def subset(subset):

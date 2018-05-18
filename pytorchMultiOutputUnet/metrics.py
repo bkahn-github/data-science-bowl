@@ -2,7 +2,6 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -59,7 +58,7 @@ def loss(inputs, masks):
 
     # loss = 3 * dice_loss(inputs[:,0:1], masks[:,0:1]) + 30 * dice_loss(inputs[:,1:2], masks[:,1:2]) + 1 * dice_loss(inputs[:,2:3], masks[:,2:3])
 
-    return loss
+    # return loss
 
 def dice_loss(inputs, masks):
     num = masks.size(0)

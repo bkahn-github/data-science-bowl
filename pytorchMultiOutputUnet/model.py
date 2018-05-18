@@ -4,7 +4,6 @@ import numpy as np
 import torch
 import torchvision
 
-from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 
