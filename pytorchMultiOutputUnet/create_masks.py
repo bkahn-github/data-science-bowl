@@ -5,6 +5,7 @@ from tqdm import tqdm
 from imageio import imwrite
 import cv2
 import skimage
+import skimage.morphology
 
 def get_edges(img):
     img = skimage.morphology.binary_dilation(img, selem=np.ones((5,5))).astype(np.uint8)
