@@ -5,11 +5,9 @@ import numpy as np
 import torch
 import torchvision
 
-from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
 import matplotlib.pyplot as plt
-from skimage.filters import threshold_otsu
 
 from config import config
 from loaders import TrainDataset, augmentation
