@@ -1,25 +1,24 @@
 import os
-import logging
-from tqdm import tqdm
-from glob import glob
 import argparse
+import logging
+from glob import glob
+from tqdm import tqdm
 
 import torch
-import torchvision
-
+import torch.nn as nn
+import torch.optim as optim
 from torch.utils.data import DataLoader
+
+import torchvision
 
 from config import config
 from create_masks import create_masks
 from loaders import TrainDataset, augmentation
-from model import Unet
-from visualize import show_images
 from metrics import loss
-from utils import get_kfolds, calculate_losses, calculate_kfolds_losses, save_model, load_model, EarlyStopping
+from model import Unet
+from utils import EarlyStopping, calculate_kfolds_losses, calculate_losses, get_kfolds, load_model, save_model
+from visualize import show_images
 
-import torch.nn as nn
-import torch.optim as optim
-    
 def subset(subset):
     if subset == 'True':
         logging.info('Using a subset')
@@ -34,6 +33,7 @@ def preprocess():
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'masks', config.SUBSET)
 
 def train(epochs, weights, kfolds):
+    print('hello')
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 

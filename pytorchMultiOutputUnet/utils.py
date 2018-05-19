@@ -3,10 +3,9 @@ import glob
 import logging
 
 import torch
+from sklearn.model_selection import KFold, train_test_split
 
 from config import config
-
-from sklearn.model_selection import KFold, train_test_split
 
 class EarlyStopping:
     def __init__(self):

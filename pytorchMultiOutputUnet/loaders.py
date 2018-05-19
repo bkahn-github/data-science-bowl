@@ -1,19 +1,19 @@
 import os
-import glob
-import cv2
 import random
+import glob
 import numpy as np
 
+import cv2
+import skimage
+
 import torch
+from torch.utils.data import DataLoader, Dataset
+
 import torchvision
-
-from utils import get_path
-from config import config
-
-from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 
-import skimage
+from config import config
+from utils import get_path
 
 class RandomCrop(object):
     def __init__(self, size):

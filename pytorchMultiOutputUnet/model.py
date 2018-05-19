@@ -2,10 +2,10 @@ import os
 import numpy as np
 
 import torch
-import torchvision
-
 import torch.nn as nn
 import torch.nn.functional as F
+
+import torchvision
 
 class ConvBlock(nn.Module):
     def __init__(self, in_ch, out_ch, pooling=True):

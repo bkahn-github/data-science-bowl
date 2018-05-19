@@ -1,13 +1,12 @@
 import os
 import logging
 import numpy as np
+import matplotlib.pyplot as plt
 
 import torch
-import torchvision
-
 from torch.utils.data import DataLoader
 
-import matplotlib.pyplot as plt
+import torchvision
 
 from config import config
 from loaders import TrainDataset, augmentation
