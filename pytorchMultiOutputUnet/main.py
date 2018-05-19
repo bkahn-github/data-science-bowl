@@ -143,6 +143,7 @@ if __name__ == "__main__":
     parser.add_argument("--masksOutputFolder")
     parser.add_argument("--edgesOutputFolder")
     parser.add_argument("--subset")
+    parser.add_argument("--subsetSize", type=int)    
     parser.add_argument("--shuffle")
     parser.add_argument("--batchSize", type=int)
     parser.add_argument("--numWorkers", type=int)
@@ -152,6 +153,15 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int)
     parser.add_argument('--lr', type=float)
     parser.add_argument("--weights")
+
+    parser.add_argument("--augment")
+    parser.add_argument("--clipLimit", type=int)
+    parser.add_argument("--gridSize")
+    parser.add_argument("--invert", type=int)
+    parser.add_argument("--randomCrop", type=int)
+    parser.add_argument("--flipLR", type=float)
+    parser.add_argument("--flipUD", type=float)
+    parser.add_argument("--rotate", type=int)
 
     args = parser.parse_args()
 
@@ -177,7 +187,11 @@ if __name__ == "__main__":
 
     if args.subset:
         subset(args.subset)
-    
+
+    if args.subsetSize:
+        config.SUBSET_SIZE = args.subsetSize
+        logging.info('Subset size has been changed to ' + str(config.SUBSET_SIZE))
+
     if args.shuffle:
         config.SHUFFLE = args.shuffle
         logging.info('Shuffle has been changed to ' + config.SHUFFLE)
@@ -210,6 +224,37 @@ if __name__ == "__main__":
         config.WEIGHTS = args.weights
         logging.info('Weights has been changed to ' + config.WEIGHTS)
 
+    if args.augment:
+        config.AUGMENT = args.augment
+        logging.info('Augment has been changed to ' + config.AUGMENT)
+
+    if args.clipLimit:
+        config.CLIP_LIMIT = args.clipLimit
+        logging.info('Clip limit has been changed to ' + str(config.CLIP_LIMIT))
+
+    if args.gridSize:
+        config.GRID_SIZE = args.gridSize
+        logging.info('Grid size has been changed to ' + str(config.GRID_SIZE))
+
+    if args.invert:
+        config.INVERT = args.invert
+        logging.info('Invert has been changed to ' + str(config.INVERT))
+
+    if args.randomCrop:
+        config.RANDOM_CROP = args.randomCrop
+        logging.info('Random crop has been changed to ' + str(config.RANDOM_CROP))
+
+    if args.flipLR:
+        config.FLIP_LR = args.flipLR
+        logging.info('Flip LR has been changed to ' + str(config.FLIP_LR))
+
+    if args.flipUD:
+        config.FLIP_UD = args.flipUD
+        logging.info('Flip UD has been changed to ' + str(config.FLIP_UD))
+
+    if args.rotate:
+        config.ROTATE = args.rotate
+        logging.info('Rotate has been changed to ' + str(config.ROTATE))
 
     if args.mode == 'preprocess':
         preprocess()
