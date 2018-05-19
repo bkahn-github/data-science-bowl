@@ -13,6 +13,7 @@ class Config():
     TARGETS_FOLDER = 'stage1_masks'
 
     SUBSET = False
+    SUBSET_SIZE = 20
 
     SHUFFLE = True
     BATCH_SIZE = 4
