@@ -118,8 +118,8 @@ class ToTensor(object):
         return img, mask
     
 def augmentation(img, mask):
-    flipLR = FlipLR(p=config.FLIPLR)
-    flipUD = FlipUD(p=config.FLIPUD)
+    flipLR = FlipLR(p=config.FLIP_LR)
+    flipUD = FlipUD(p=config.FLIP_UD)
     rotate = Rotate(max_angle=config.ROTATE)
 
     img, mask = flipLR([img, mask])
@@ -140,9 +140,9 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        clahe = CLAHE(cliplimit=config.CLIPLIMIT, gridSize=config.GRIDSIZE)
+        clahe = CLAHE(cliplimit=config.CLIP_LIMIT, gridSize=config.GRID_SIZE)
         invertImages = InvertImages(invert=config.INVERT)
-        randomCrop = RandomCrop(size=config.RANDOMCROP)
+        randomCrop = RandomCrop(size=config.RANDOM_CROP)
         toTensor = ToTensor()
 
         img_path, masks_path = get_path(id)
