@@ -8,6 +8,8 @@ import skimage
 import skimage.morphology
 from imageio import imwrite
 
+from config import config
+
 def get_edges(img):
     # img = skimage.morphology.binary_dilation(img, selem=np.ones((5, 5))).astype(np.uint8)
     img = skimage.morphology.binary_dilation(img, selem=np.ones((3, 3))).astype(np.uint8)
@@ -25,7 +27,7 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
     os.makedirs(stage_folder + '_' + mode, exist_ok=True)
 
     if subset:
-        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:20]
+        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:config.SUBSET_SIZE]
     else:
         masks_folder = glob.glob(os.path.join(stage_folder, '*'))        
     

@@ -52,7 +52,7 @@ def load_model(model, path):
 
 def get_kfolds(kfolds):
     if config.SUBSET:
-        ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:20]
+        ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))[:config.SUBSET_SIZE]
     else:
         ids = glob.glob(os.path.join(config.ROOT_FOLDER, 'stage' + config.STAGE + '_train', '*'))
 
