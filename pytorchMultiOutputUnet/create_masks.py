@@ -9,7 +9,9 @@ import skimage.morphology
 from imageio import imwrite
 
 def get_edges(img):
-    img = skimage.morphology.binary_dilation(img, selem=np.ones((5,5))).astype(np.uint8)
+    # img = skimage.morphology.binary_dilation(img, selem=np.ones((5, 5))).astype(np.uint8)
+    img = skimage.morphology.binary_dilation(img, selem=np.ones((3, 3))).astype(np.uint8)
+
     return img
   
 def get_sizes(mask_folder):
