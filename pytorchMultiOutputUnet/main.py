@@ -33,7 +33,6 @@ def preprocess():
     create_masks(config.ROOT_FOLDER, config.STAGE, 'train', config.TARGETS_FOLDER, 'masks', config.SUBSET)
 
 def train(epochs, weights, kfolds):
-    print('hello')
     logging.info('Starting Training')
     logging.info('Training for ' + str(epochs) + ' epochs')
 
