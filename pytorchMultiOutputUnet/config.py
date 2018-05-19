@@ -25,12 +25,12 @@ class Config():
     WEIGHTS = ''
 
     AUGMENT = True
-    CLIPLIMIT = 2
-    GRIDSIZE = (8, 8)
+    CLIP_LIMIT = 2
+    GRID_SIZE = (8, 8)
     INVERT = 127
-    RANDOMCROP = 256
-    FLIPLR = 0.5
-    FLIPUD = 0.5
+    RANDOM_CROP = 256
+    FLIP_LR = 0.5
+    FLIP_UD = 0.5
     ROTATE = 25
 
 config = Config()
