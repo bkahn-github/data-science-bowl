@@ -140,7 +140,7 @@ class TrainDataset(Dataset):
     def __getitem__(self, idx):
         id = self.ids[idx]
 
-        clahe = CLAHE(cliplimit=config.CLIP_LIMIT, gridSize=config.GRID_SIZE)
+        clahe = CLAHE(cliplimit=config.CLIP_LIMIT, gridSize=(config.GRID_SIZE, config.GRID_SIZE))
         invertImages = InvertImages(invert=config.INVERT)
         randomCrop = RandomCrop(size=config.RANDOM_CROP)
         toTensor = ToTensor()
