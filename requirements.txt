@@ -8,7 +8,4 @@ sklearn
 scikit-image
 imageio
 kaggle
-Pillow
-torch
-torchvision
-opencv-python
+pillow
