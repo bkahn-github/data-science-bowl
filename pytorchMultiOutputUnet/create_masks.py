@@ -48,9 +48,9 @@ def create_masks(root_folder, stage_number, stage_section, output_folder, mode, 
         # mask[:,:,0] = masks == 1
         # mask[:,:,1] = masks_with_edges == 2
         # mask[:,:,2] = masks == 0
-        target[:,:,0] = masks_with_edges == 1
-        target[:,:,1] = masks_with_edges == 2
-        target[:,:,2] = masks_with_edges == 0
+        mask[:,:,0] = masks_with_edges == 1
+        mask[:,:,1] = masks_with_edges == 2
+        mask[:,:,2] = masks_with_edges == 0
         
         mask *= 255
         mask = mask.astype(np.uint8)
