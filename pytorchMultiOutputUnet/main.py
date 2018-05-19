@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     if args.stage:
         config.STAGE = args.stage
-        logging.info('Stage has been changed to ' + config.STAGE)
+        logging.info('Stage has been changed to ' + str(config.STAGE))
 
     if args.imgsFolder:
         config.IMGS_FOLDER = args.imgsFolder
