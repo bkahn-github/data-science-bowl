@@ -54,8 +54,8 @@ class OutConv(nn.Module):
 
     def forward(self, x):
         x = self.conv(x)
-        # x = F.softmax(x, dim=1)
-        x = F.sigmoid(x)
+        x = F.softmax(x, dim=1)
+        # x = F.sigmoid(x)
         
         return x
 
