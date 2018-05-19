@@ -1,57 +1,63 @@
 import os
 import glob
-from tqdm import tqdm
-from PIL import Image
-from imageio import imwrite
 import numpy as np
-import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 import cv2
-from scipy import ndimage
+import skimage
+import skimage.morphology
+from imageio import imwrite
 
-def get_contours(img):
-    img_contour = np.zeros_like(img).astype(np.uint8)
-    _, contours, _ = cv2.findContours(img.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(img_contour, contours, -1, (255, 255, 255), 4)
+from config import config
 
-    return img_contour
+def get_edges(img):
+    # img = skimage.morphology.binary_dilation(img, selem=np.ones((5, 5))).astype(np.uint8)
+    img = skimage.morphology.binary_dilation(img, selem=np.ones((3, 3))).astype(np.uint8)
 
-def get_centers(img):
-    img_center = np.zeros_like(img).astype(np.uint8)
-    x, y = ndimage.measurements.center_of_mass(img)
-    cv2.circle(img_center, (int(x), int(y)), 4, (255, 255, 255), -1)
+    return img
+  
+def get_sizes(mask_folder):
+    mask = glob.glob(os.path.join(mask_folder, 'masks/*'))[0]
+    mask = cv2.imread(mask, cv2.IMREAD_GRAYSCALE)
 
-    return img_center
+    return mask.shape
 
 def create_masks(root_folder, stage_number, stage_section, output_folder, mode, subset=False):
     stage_folder = os.path.join(root_folder, 'stage' + stage_number + '_' + stage_section) 
     os.makedirs(stage_folder + '_' + mode, exist_ok=True)
 
     if subset:
-        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:10]
+        masks_folder = glob.glob(os.path.join(stage_folder, '*'))[:config.SUBSET_SIZE]
     else:
         masks_folder = glob.glob(os.path.join(stage_folder, '*'))        
     
     for mask_folder in tqdm(masks_folder):
         mask_id = mask_folder.split('/')[-1]
-        masks = []
+
+        size = get_sizes(mask_folder)
+        masks = np.zeros(size)
+        masks_with_edges = np.zeros(size)
+
         for mask in glob.glob(os.path.join(mask_folder, 'masks/*')):
-            img = Image.open(mask)
-            img = np.asarray(img)
+            img = cv2.imread(mask, cv2.IMREAD_GRAYSCALE)
             img = img / 255.0
 
-            if mode == 'centers':
-                img = get_centers(img)
-            elif mode == 'contours':
-                img = get_contours(img)
-            elif mode == 'masks':
-                img = img
-
-            masks.append(img)
+            img_with_edges = get_edges(img)
+            
+            masks = np.add(masks, img)
+            masks_with_edges = np.add(masks_with_edges, img_with_edges)
         
-        if mode == 'masks':
-            total_mask = np.sum(masks, axis=0)
-        else:
-            total_mask = np.where(np.sum(masks, axis=0) > 128., 255., 0.).astype(np.uint8)        
+        mask = np.zeros((size[0], size[1], 3))
+        
+        # mask[:,:,0] = masks == 1
+        # mask[:,:,1] = masks_with_edges == 2
+        # mask[:,:,2] = masks == 0
+        mask[:,:,0] = masks_with_edges == 1
+        mask[:,:,1] = masks_with_edges == 2
+        mask[:,:,2] = masks_with_edges == 0
+        
+        mask *= 255
+        mask = mask.astype(np.uint8)
 
-        center_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
-        imwrite(center_path, total_mask)
+        output_path = os.path.join(stage_folder + '_' + mode, mask_id + '.png')        
+        imwrite(output_path, mask)

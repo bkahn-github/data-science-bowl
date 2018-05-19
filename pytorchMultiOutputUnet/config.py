@@ -10,15 +10,28 @@ class Config():
     STAGE='1'
 
     IMGS_FOLDER = 'stage1_train'
-
-    MASKS_OUTPUT_FOLDER = 'stage1_masks'
-    CONTOURS_OUTPUT_FOLDER = 'stage1_contours'
-    CENTERS_OUTPUT_FOLDER = 'stage1_centers'
+    TARGETS_FOLDER = 'stage1_masks'
 
     SUBSET = False
+    SUBSET_SIZE = 20
 
-    BATCH_SIZE = 4
     SHUFFLE = True
-    NUM_WORKERS = 4
+    BATCH_SIZE = 4
+    NUM_WORKERS = 3
+
+    KFOLDS = 6
+    PATIENCE = 0
+    EPOCHS = 10
+    LR = 0.0001
+    WEIGHTS = ''
+
+    AUGMENT = True
+    CLIP_LIMIT = 2
+    GRID_SIZE = 8
+    INVERT = 127
+    RANDOM_CROP = 256
+    FLIP_LR = 0.5
+    FLIP_UD = 0.5
+    ROTATE = 25
 
 config = Config()

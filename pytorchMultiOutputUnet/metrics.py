@@ -1,9 +1,69 @@
 import numpy as np
 
-def dice_loss(inputs, targets):
-    num = targets.size(0)
+import torch
+import torch.nn as nn
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+# Taken from Heng Cher Keng's April 27 code
+class WeightedBCELoss2d(nn.Module):
+    def __init__(self):
+        super(WeightedBCELoss2d, self).__init__()
+
+    def forward(self, logits, labels, weights):
+        w = weights.view(-1)
+        z = logits.contiguous().view(-1)
+        t = labels.contiguous().view(-1)
+
+        loss = w*z.clamp(min=0) - w*z*t + w*torch.log(1 + torch.exp(-z.abs()))
+        loss = loss.sum()/(w.sum()+ 1e-12)
+        return loss
+
+def make_weight(labels_truth):
+    B,C,H,W = labels_truth.size()
+    weight = torch.FloatTensor(B*C*H*W).requires_grad_().to(device)
+
+    pos = labels_truth.detach().sum()
+    neg = B*C*H*W - pos
+    
+    if pos>0:
+        pos_weight = 0.5/pos
+        neg_weight = 0.5/neg
+    else:
+        pos_weight = 0
+        neg_weight = 0
+
+    weight[labels_truth.contiguous().view(-1)> 0.5] = pos_weight
+    weight[labels_truth.contiguous().view(-1)<=0.5] = neg_weight
+
+    weight = weight.view(B,C,H,W)
+    return weight
+
+def loss(inputs, masks):
+    epsilon = 1e-5
+    inputs = torch.clamp(inputs.cpu(), epsilon, 1. - epsilon)
+    weight = 30 * masks[:,0:1].cpu() + 3 * masks[:,1:2].cpu() + 1 * masks[:,2:3].cpu()
+    
+    loss = - torch.sum(masks.cpu() * weight.cpu() * torch.log(inputs.cpu()) + (1 - masks.cpu()) * torch.log(1 - inputs.cpu()), 1)
+  
+    return loss
+
+    # mask_weights = make_weight(masks[:,0:1])
+    # edges_weights = make_weight(masks[:,1:2])
+    # backgrounds_weights = make_weight(masks[:,2:3])
+
+    # mask_loss = WeightedBCELoss2d()(inputs[:,0:1], masks[:,0:1], mask_weights)
+    # edges_loss = WeightedBCELoss2d()(inputs[:,1:2], masks[:,1:2], edges_weights)
+    # backgrounds_loss = WeightedBCELoss2d()(inputs[:,2:3], masks[:,2:3], backgrounds_weights)
+
+    # loss = 3 * dice_loss(inputs[:,0:1], masks[:,0:1]) + 30 * dice_loss(inputs[:,1:2], masks[:,1:2]) + 1 * dice_loss(inputs[:,2:3], masks[:,2:3])
+
+    # return loss
+
+def dice_loss(inputs, masks):
+    num = masks.size(0)
     m1  = inputs.view(num,-1)
-    m2  = targets.view(num,-1)
+    m2  = masks.view(num,-1)
     intersection = (m1 * m2)
     score = 2. * (intersection.sum(1)+1) / (m1.sum(1) + m2.sum(1)+1)
     score = 1 - score.sum()/num
