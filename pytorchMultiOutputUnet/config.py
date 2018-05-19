@@ -27,7 +27,7 @@ class Config():
 
     AUGMENT = True
     CLIP_LIMIT = 2
-    GRID_SIZE = (8, 8)
+    GRID_SIZE = 8
     INVERT = 127
     RANDOM_CROP = 256
     FLIP_LR = 0.5
