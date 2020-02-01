@@ -1,4 +1,4 @@
-# data-science-bowl
+# data-science-bowl-2018
 
 ## Structure
 
